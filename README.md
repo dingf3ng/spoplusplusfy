@@ -2,15 +2,11 @@
 
 Spoplusplusfy - An Orbital Project
 
-## Getting Started
+## Introduction
 
-This project is a starting point for a Flutter application.
+This project is a multi-modal music player
 
-A few resources to get you started if this is your first Flutter project:
+Here is the UI design:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<img width="5250" alt="UI (1)" src="https://github.com/dingf3ng/spoplusplusfy/assets/103719642/4ae84791-4331-4401-b9d2-84df1e2d052f">
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
