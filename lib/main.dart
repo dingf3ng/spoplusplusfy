@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spoplusplusfy/pages/MainPage.dart';
 
 void main() {
-  runApp(Mainpage());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
