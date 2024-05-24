@@ -22,7 +22,7 @@ class MainPage extends StatelessWidget {
           ListView(
             physics: BouncingScrollPhysics(),
             children: [
-              Text('Welcome,\nHere Are The Music For\nYou', style: TextStyle(fontSize: 40, color: goldColour),),
+              Text('Welcome,\nHere Are The Music For\nYou', style: TextStyle(fontSize: 40, color: goldColour, fontFamily: 'Poppins'),),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: SizedBox(
