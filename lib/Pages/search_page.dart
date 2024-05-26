@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -100,7 +99,7 @@ class SearchPage extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               child: SvgPicture.asset('assets/icons/search_gold.svg'),
             ),
-            suffixIcon: Container(
+            suffixIcon: SizedBox(
               width: 100,
               child: IntrinsicHeight(
                 child: Row(
