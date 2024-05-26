@@ -1,4 +1,5 @@
-
+import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
+import 'package:spoplusplusfy/Classes/song.dart';
 import 'dart:collection';
 
 class Playlist {
@@ -17,11 +18,15 @@ class Playlist {
   });
 
   int getHashCode() {
-    return this.id.hashCode;
+    return id.hashCode;
   }
 
-  List<Song> getSongs() {
+  void delete() {
+    PlaylistSongManager.deletePlaylist(this);
+  }
 
+  int length() {
+    return timeLength;
   }
 
 }
