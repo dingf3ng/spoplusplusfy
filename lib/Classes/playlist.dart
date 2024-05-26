@@ -20,8 +20,4 @@ class Playlist {
     return this.id.hashCode;
   }
 
-  List<Song> getSongs() {
-
-  }
-
 }
