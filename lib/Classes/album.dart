@@ -3,12 +3,13 @@ import 'package:spoplusplusfy/Classes/playlist.dart';
 
 class Album extends Playlist{
 
-  Album({
-    required super.name,
-    required super.playlistCoverImagePath,
+  Album({required super.name,
+    required super.playlistCoverPath,
     required super.id,
-    required super.mutable,
-    required super.timeLength
+    required super.timelength,
+    required super.mutable
   });
+
+
 
 }

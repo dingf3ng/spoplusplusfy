@@ -33,7 +33,7 @@ class PlaylistSongManager {
   }
 
   static void addSongToPlayList(Song song, Playlist playlist) {
-    if(!playlist.mutable) {
+    if(!playlist.isMutable()) {
       throw 'Trying to mutate a immutable playlist';
     }
     _listMap.update(
@@ -42,7 +42,7 @@ class PlaylistSongManager {
   }
 
   static void deleteSongFromPlaylist(Song song, Playlist playlist) {
-    if(!playlist.mutable) {
+    if(!playlist.isMutable()) {
       throw 'Trying to mutate a immutable playlist';
     }
     if(_listMap[playlist] == null) {
@@ -55,7 +55,7 @@ class PlaylistSongManager {
   }
 
   static void deletePlaylist (Playlist playlist){
-    if(!playlist.mutable) {
+    if(!playlist.isMutable()) {
       throw 'Trying to mutate a immutable playlist';
     }
     _allValidPlaylist.remove(playlist);

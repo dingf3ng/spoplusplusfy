@@ -1,5 +1,6 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
+import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
 class PlaylistIterator {
@@ -14,7 +15,7 @@ class PlaylistIterator {
   static void setPlaylist(Playlist playlist) {
     List<AudioSource> playlistSource = [];
 
-    for (Song song in playlist.getSongs()) {
+    for (Song song in PlaylistSongManager.getSongsForPlaylist(playlist)) {
       playlistSource.add(song.getAudioSource());
     }
 

@@ -1,32 +1,40 @@
+import 'dart:core';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
-import 'package:spoplusplusfy/Classes/song.dart';
-import 'dart:collection';
 
 class Playlist {
-  String name;
-  String playlistCoverImagePath;
-  int id;
-  int timeLength;
-  bool mutable;
-  
-  Playlist({
-    required this.name,
-    required this.playlistCoverImagePath,
-    required this.id,
-    required this.mutable,
-    required this.timeLength
-  });
+  late String _name;
+  late String _playlistCoverImagePath;
+  late int _id;
+  late int _timeLength;
+  late bool _mutable;
+
+  Playlist(
+      {required String name,
+      required String playlistCoverPath,
+      required int id,
+      required int timelength,
+      required bool mutable})
+      : _name = name,
+        _playlistCoverImagePath = playlistCoverPath,
+        _id = id,
+        _timeLength = timelength,
+        _mutable = mutable;
 
   int getHashCode() {
-    return id.hashCode;
+    return _id.hashCode;
   }
 
   void delete() {
-    PlaylistSongManager.deletePlaylist(this);
+    try {
+      PlaylistSongManager.deletePlaylist(this);
+    } on Exception catch (e) {}
   }
 
   int length() {
-    return timeLength;
+    return _timeLength;
   }
 
+  bool isMutable() {
+    return _mutable;
+  }
 }
