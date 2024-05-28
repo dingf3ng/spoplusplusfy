@@ -4,63 +4,66 @@ import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
 class PlaylistIterator {
-  static AudioPlayer player = AudioPlayer();
-  static late List<Song> currentList;
-  static late Song currentSong;
+  static AudioPlayer _player = AudioPlayer();
+  static late List<Song> _currentList;
+  static late Song _currentSong;
 
   static void changeProgressTo(Duration progress) {
-    player.seek(progress);
+    _player.seek(progress);
   }
 
   static void setPlaylist(Playlist playlist) {
     List<AudioSource> playlistSource = [];
+    List<Song> recordOfSongs = [];
 
     for (Song song in PlaylistSongManager.getSongsForPlaylist(playlist)) {
       playlistSource.add(song.getAudioSource());
+      recordOfSongs.add(song);
     }
 
+    _currentList = recordOfSongs;
     ConcatenatingAudioSource sourceForPlayer =
         ConcatenatingAudioSource(children: playlistSource);
 
-    player.setAudioSource(sourceForPlayer);
+    _player.setAudioSource(sourceForPlayer);
   }
   static void play() {
-    player.play();
+    _player.play();
   }
   static void pause() {
-    player.pause();
+    _player.pause();
   }
   static void fastForward(Duration time) {
     Duration songTotalLength;
 
     // Check to ensure that songTotalLength is never null
-    if (player.duration == null) {
+    if (_player.duration == null) {
       songTotalLength = Duration.zero;
     } else {
-      songTotalLength = player.duration!;
+      songTotalLength = _player.duration!;
     }
 
     // fast forward by time specified, if not beyond length of song
-    if (player.position + time < songTotalLength) {
-      player.seek(player.position + time);
+    if (_player.position + time < songTotalLength) {
+      _player.seek(_player.position + time);
     } else {
-      player.seek(player.duration);
+      _player.seek(_player.duration);
     }
   }
 
   static void fastRewind(Duration time) {
     // fast rewind by time specified, if destination progress is not below 0
-    if (player.position - time > Duration.zero) {
-      player.seek(player.position - time);
+    if (_player.position - time > Duration.zero) {
+      _player.seek(_player.position - time);
     } else {
-      player.seek(Duration.zero);
+      _player.seek(Duration.zero);
     }
 
   }
   static void playNextSong() {
-    player.seekToNext();
+    _player.seekToNext();
   }
   static void playPreviousSong() {
-    player.seekToPrevious();
+    _player.seekToPrevious();
   }
 }
