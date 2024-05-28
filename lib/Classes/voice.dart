@@ -37,4 +37,8 @@ abstract class Voice {
     return _duration;
   }
 
+  AudioSource getAudioSource() {
+    return _audio;
+  }
+
 }
