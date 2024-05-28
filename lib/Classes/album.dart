@@ -1,5 +1,7 @@
 
+import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
+import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
 class Album extends Playlist{
@@ -12,18 +14,19 @@ class Album extends Playlist{
   });
 
   @override
-  void UpdateWith(Song song) {
-    // TODO: implement UpdateWith
+  void updateWith(Song song) {
+    return;
   }
 
   @override
   void delete() {
-    // TODO: implement delete
+    ArtistWorksManager.deleteAlbum(this);
+    PlaylistSongManager.deletePlaylist(this);
   }
 
   @override
   void setName(String newName) {
-    // TODO: implement setName
+    return;
   }
 
 

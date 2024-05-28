@@ -33,9 +33,13 @@ abstract class Playlist {
     return _name;
   }
 
-  void setName(String newName);
+  void setName(String newName) {
+    _name = newName;
+  }
 
-  void UpdateWith(Song song);
+  void updateWith(Song song) {
+    _timeLength += song.getDuration();
+  }
 
   void delete();
 

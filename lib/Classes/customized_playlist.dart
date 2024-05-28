@@ -1,5 +1,6 @@
 
 import 'package:spoplusplusfy/Classes/playlist.dart';
+import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
 class CustomizedPlaylist extends Playlist {
@@ -13,18 +14,19 @@ class CustomizedPlaylist extends Playlist {
   });
 
   @override
-  void UpdateWith(Song song) {
-    // TODO: implement UpdateWith
+  void updateWith(Song song) {
+    super.updateWith(song);
+    PlaylistSongManager.addSongToPlayList(song, this);
   }
 
   @override
   void delete() {
-    // TODO: implement delete
+    PlaylistSongManager.deletePlaylist(this);
   }
 
   @override
-  void setName(String newName) {
-    // TODO: implement setName
+  void setName(String newName){
+    super.setName(newName);
   }
 
 }
