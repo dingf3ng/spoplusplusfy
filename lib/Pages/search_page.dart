@@ -20,8 +20,229 @@ class SearchPage extends StatelessWidget {
           children: [
             _searchField(),
             const SizedBox(height: 40),
+            _artist_showcase(),
+            const SizedBox(height: 40),
+            _album_showcase(),
+            const SizedBox(height: 40),
+            _playlist_showcase(),
+            const SizedBox(height: 40),
+            _song_showcase(),
+            const SizedBox(height: 40),
           ],
         ));
+  }
+
+  Column _artist_showcase() {
+    return Column(
+            children: [
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 25),
+                    child: Text(
+                      'Artists',
+                      style: TextStyle(
+                        color: secondaryColor,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15,),
+              Container(
+                height: 120,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (context, index) => const SizedBox(width: 25,),
+                  padding: const EdgeInsets.only(left: 25, right: 25),
+                  itemCount: 3,// TODO:
+                  itemBuilder: (context, index) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          width: 90,
+                          height: 90,
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
+                            borderRadius: BorderRadius.circular(70),
+                          ),
+                        ),
+                        const Text( // TODO: const to be deleted after adding actual name
+                          'Artist', // TODO
+                          style: TextStyle(
+                            color: secondaryColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
+              )
+            ],
+          );
+  }
+
+  Column _album_showcase() {
+    return Column(
+      children: [
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 25),
+              child: Text(
+                'Albums',
+                style: TextStyle(
+                  color: secondaryColor,
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 15,),
+        Container(
+          height: 160,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (context, index) => const SizedBox(width: 25,),
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            itemCount: 3,// TODO:
+            itemBuilder: (context, index) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    width: 130,
+                    height: 130,
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  const Text( // TODO: const to be deleted after adding actual name
+                    'Album', // TODO
+                    style: TextStyle(
+                      color: secondaryColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  )
+                ],
+              );
+            },
+          ),
+        )
+      ],
+    );
+  }
+
+  Column _playlist_showcase() {
+    return Column(
+      children: [
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 25),
+              child: Text(
+                'Playlists',
+                style: TextStyle(
+                  color: secondaryColor,
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 15,),
+        Container(
+          height: 160,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (context, index) => const SizedBox(width: 25,),
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            itemCount: 3,// TODO:
+            itemBuilder: (context, index) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    width: 140,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  const Text( // TODO: const to be deleted after adding actual name
+                    'Playlist', // TODO
+                    style: TextStyle(
+                      color: secondaryColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  )
+                ],
+              );
+            },
+          ),
+        )
+      ],
+    );
+  }
+
+  Column _song_showcase() {
+    return Column(
+      children: [
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 25),
+              child: Text(
+                'Songs',
+                style: TextStyle(
+                    color: secondaryColor,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+        Container(
+          height: 20,
+        ),
+        Container(
+          height: 300,
+          child: ListView.separated(
+            shrinkWrap: true,
+            primary: false,
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            separatorBuilder: (context, index) => const SizedBox(height: 10,),
+            itemCount: 15,
+            itemBuilder: (context, index) {
+              return Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border.all(color: secondaryColor),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              );
+            },
+          ),
+        )
+      ],
+    );
   }
 
   AppBar _appBar() {
@@ -59,7 +280,8 @@ class SearchPage extends StatelessWidget {
         ),
         Container(
           width: 20,
-        )
+        ),
+
       ],
     );
   }
