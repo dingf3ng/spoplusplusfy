@@ -1,19 +1,65 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spoplusplusfy/Classes/artist.dart';
+import 'package:spoplusplusfy/Classes/customized_playlist.dart';
+import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
-class SearchPage extends StatelessWidget {
+import '../Classes/album.dart';
+
+class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
   //A fake database for now, to be deleted later
 
+
+  @override
+  State<StatefulWidget> createState() {
+    return _SearchPageState();
+  }
+  
+}
+
+class _SearchPageState extends State<SearchPage> {
+
+  final TextEditingController _searchController = TextEditingController();
+  
   static const Color primaryColor = Color(0x00000000);
   static const Color secondaryColor = Color(0xffFFE8A3);
 
+  List<Artist> _resultArtists = [];
+  List<Album> _resultAlbums = [];
+  List<CustomizedPlaylist> _resultPlaylists = [];
+  List<Song> _resultSongs = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_searchDone);
+  }
+
+  void _searchDone() {
+    String query = _searchController.text;
+    setState(() {
+      _resultArtists =
+      SearchEngine.search(query, SearchType.artist) as List<Artist>;
+      _resultAlbums =
+      SearchEngine.search(query, SearchType.album) as List<Album>;
+      _resultPlaylists =
+      SearchEngine.search(query, SearchType.playlist)
+      as List<CustomizedPlaylist>;
+      _resultSongs =
+      SearchEngine.search(query, SearchType.song) as List<Song>;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      extendBodyBehindAppBar: false,
+        extendBodyBehindAppBar: false,
         backgroundColor: primaryColor,
         appBar: _appBar(),
         body: ListView(
@@ -34,58 +80,58 @@ class SearchPage extends StatelessWidget {
 
   Column _artist_showcase() {
     return Column(
-            children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 25),
+              child: Text(
+                'Artists',
+                style: TextStyle(
+                  color: secondaryColor,
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 15,),
+        Container(
+          height: 120,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (context, index) => const SizedBox(width: 25,),
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            itemCount: 3,// TODO:
+            itemBuilder: (context, index) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 25),
-                    child: Text(
-                      'Artists',
-                      style: TextStyle(
-                        color: secondaryColor,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                      borderRadius: BorderRadius.circular(70),
                     ),
                   ),
+                  const Text( // TODO: const to be deleted after adding actual name
+                    'Artist', // TODO
+                    style: TextStyle(
+                      color: secondaryColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  )
                 ],
-              ),
-              const SizedBox(height: 15,),
-              Container(
-                height: 120,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  separatorBuilder: (context, index) => const SizedBox(width: 25,),
-                  padding: const EdgeInsets.only(left: 25, right: 25),
-                  itemCount: 3,// TODO:
-                  itemBuilder: (context, index) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          width: 90,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            color: secondaryColor,
-                            borderRadius: BorderRadius.circular(70),
-                          ),
-                        ),
-                        const Text( // TODO: const to be deleted after adding actual name
-                          'Artist', // TODO
-                          style: TextStyle(
-                            color: secondaryColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        )
-                      ],
-                    );
-                  },
-                ),
-              )
-            ],
-          );
+              );
+            },
+          ),
+        )
+      ],
+    );
   }
 
   Column _album_showcase() {
@@ -253,11 +299,11 @@ class SearchPage extends StatelessWidget {
       leading: GestureDetector(
         onTap: () {},
         child: FittedBox(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 8, 8),
-            child: SvgPicture.asset('assets/icons/setting_gold.svg'),
-          )
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 8, 8),
+              child: SvgPicture.asset('assets/icons/setting_gold.svg'),
+            )
         ),
       ),
       actions: [
@@ -269,9 +315,9 @@ class SearchPage extends StatelessWidget {
               const Text(
                 'UserName ',
                 style: TextStyle(
-                  fontFamily: 'NotoSans',
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FontStyle.italic
+                    fontFamily: 'NotoSans',
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.italic
                 ),
               ),
               SvgPicture.asset('assets/icons/share_gold.svg',height: 32, width: 32)
@@ -294,11 +340,11 @@ class SearchPage extends StatelessWidget {
           decoration: InputDecoration(
             filled: false,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(
-                color: secondaryColor,
-                width: 2
-              )
+                borderRadius: BorderRadius.circular(15),
+                borderSide: const BorderSide(
+                    color: secondaryColor,
+                    width: 2
+                )
             ),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
@@ -345,5 +391,5 @@ class SearchPage extends StatelessWidget {
           ),
         ));
   }
-  
+
 }

@@ -1,11 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:spoplusplusfy/Classes/Name.dart';
 import 'package:spoplusplusfy/Classes/follower_manager.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
 
 enum Gender {Male, Female, Mysterious}
 
-abstract class Person {
+abstract class Person implements Name {
 
   String _name;
   late int _id;
@@ -23,6 +24,12 @@ abstract class Person {
       this._gender = gender,
       this._portrait = portrait;
 
+  @override
+  String getName() {
+    return _name;
+  }
+
+  @override
   void setName(String s) {
     _name = s;
   }
@@ -39,9 +46,6 @@ abstract class Person {
     _portrait = i;
   }
 
-  String getName() {
-    return _name;
-  }
 
   Gender getGender() {
     return _gender;

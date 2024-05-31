@@ -1,11 +1,11 @@
 
+import 'package:spoplusplusfy/Classes/Name.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/voice.dart';
 
-class Song extends Voice{
+class Song extends Voice implements Name{
 
   late String _name;
-
 
   Song({
     required name,
@@ -15,10 +15,14 @@ class Song extends Voice{
     required super.duration,
     required super.volume}) : _name = name;
 
+  @override
   String getName() {
     return _name;
   }
 
-
+  @override
+  void setName(String name) {
+    return;
+  }
 
 }
