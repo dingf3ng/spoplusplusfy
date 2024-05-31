@@ -345,6 +345,5 @@ class SearchPage extends StatelessWidget {
           ),
         ));
   }
-
-
+  
 }
