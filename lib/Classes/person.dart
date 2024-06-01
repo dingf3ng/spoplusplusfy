@@ -55,7 +55,7 @@ abstract class Person implements Name {
     return _age;
   }
 
-  Image getPortrait(Image i) {
+  Image getPortrait() {
     return _portrait;
   }
 

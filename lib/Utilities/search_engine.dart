@@ -46,28 +46,29 @@ class SearchEngine {
     //TODO: further tokenize
     return words;
   }
-  static List<Name> search(String target, SearchType arg) {
-    List<Name> result = [];
-    HashMap<Name, int> map = HashMap();
+  static List<T> search<T extends Name>(String target, SearchType arg) {
+    List<T> result = [];
+    HashMap<T, int> map = HashMap();
 
-    Set<Name> targetSet = arg == SearchType.artist ?
+    Set<T> targetSet = (arg == SearchType.artist ?
     _artistSet : arg == SearchType.album ?
-    _artistSet : arg == SearchType.playlist ?
-    _playlistSet : _songSet;
+    _albumSet : arg == SearchType.playlist ?
+    _playlistSet : _songSet).cast();
 
     List<String> tokens = _tokenize(target);
-    for(Name name in targetSet) {
-      String temp = name.getName().toLowerCase();
+    for(T withName in targetSet) {
+      String temp = withName.getName().toLowerCase();
       for(String s in tokens) {
         String slc = s.toLowerCase();
         if(temp.contains(slc)) {
-          if(!map.containsKey(name)) result.add(name);
-          map.update(name, (n) => n + 1, ifAbsent: () => 1);
+          if(!map.containsKey(withName)) result.add(withName);
+          map.update(withName, (n) => n + 1, ifAbsent: () => 1);
         }
       }
     }
-
     result.sort((a, b) => map[b]! - map[a]!);
     return result;
   }
+
+
 }

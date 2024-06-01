@@ -44,14 +44,14 @@ class _SearchPageState extends State<SearchPage> {
     String query = _searchController.text;
     setState(() {
       _resultArtists =
-      SearchEngine.search(query, SearchType.artist) as List<Artist>;
+      SearchEngine.search<Artist>(query, SearchType.artist).cast();
+      print('_resultArtists_ddddddddddddddddddddddddddddddddddd');
       _resultAlbums =
-      SearchEngine.search(query, SearchType.album) as List<Album>;
+      SearchEngine.search<Album>(query, SearchType.album);
       _resultPlaylists =
-      SearchEngine.search(query, SearchType.playlist)
-      as List<CustomizedPlaylist>;
+      SearchEngine.search<CustomizedPlaylist>(query, SearchType.playlist);
       _resultSongs =
-      SearchEngine.search(query, SearchType.song) as List<Song>;
+      SearchEngine.search(query, SearchType.song);
     });
   }
 
@@ -104,7 +104,7 @@ class _SearchPageState extends State<SearchPage> {
             scrollDirection: Axis.horizontal,
             separatorBuilder: (context, index) => const SizedBox(width: 25,),
             padding: const EdgeInsets.only(left: 25, right: 25),
-            itemCount: 3,// TODO:
+            itemCount: _resultArtists.length,// TODO:
             itemBuilder: (context, index) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -116,6 +116,7 @@ class _SearchPageState extends State<SearchPage> {
                       color: secondaryColor,
                       borderRadius: BorderRadius.circular(70),
                     ),
+                    child: _resultArtists[index].getPortrait(),
                   ),
                   const Text( // TODO: const to be deleted after adding actual name
                     'Artist', // TODO
@@ -334,9 +335,10 @@ class _SearchPageState extends State<SearchPage> {
 
   Container _searchField() {
     return Container(
-        margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
 
+        margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: TextField(
+          controller: _searchController,
           decoration: InputDecoration(
             filled: false,
             border: OutlineInputBorder(

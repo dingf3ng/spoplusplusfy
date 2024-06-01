@@ -9,7 +9,6 @@ class Song extends Voice implements Name{
 
   Song({
     required name,
-    required artist,
     required super.audio,
     required super.id,
     required super.duration,
