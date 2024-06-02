@@ -54,19 +54,20 @@ Player Page: Shows the currently playing song and artist. Use swipe gestures to 
 Search Page: Allows searching for songs and playlists. Provides quick access to settings and user profile.
 
 ## Classes
-Artist: Represents an artist and their associated songs and albums.
-DatabaseHelper: Manages the SQLite database for storing playlists and songs.
-FollowerManager: Manages the followers and following relationships between Person objects.
-Person: Represents a person with attributes like name, gender, age, and portrait.
-Playlist: Represents a music playlist with methods to manage it.
-PlaylistIterator: Manages the playback of songs in a playlist using Just Audio.
-PlaylistSongManager: Manages the relationship between playlists and songs.
-Song: Represents a song with attributes like name, artist, and playlist.
-Voice: Represents a generic audio entity with an audio source.
-Pages
-MainPage: The main landing page of the app that displays playlists.
-PlayerPage: The player interface for playing songs and controlling playback.
-SearchPage: The search interface for finding songs and playlists.
+- Artist: Represents an artist and their associated songs and albums.
+- DatabaseHelper: Manages the SQLite database for storing playlists and songs.
+- FollowerManager: Manages the followers and following relationships between Person objects.
+- Person: Represents a person with attributes like name, gender, age, and portrait.
+- Playlist: Represents a music playlist with methods to manage it.
+- PlaylistIterator: Manages the playback of songs in a playlist using Just Audio.
+- PlaylistSongManager: Manages the relationship between playlists and songs.
+- Song: Represents a song with attributes like name, artist, and playlist.
+- Voice: Represents a generic audio entity with an audio source.
+- 
+## Pages
+- MainPage: The main landing page of the app that displays playlists.
+- PlayerPage: The player interface for playing songs and controlling playback.
+- SearchPage: The search interface for finding songs and playlists.
 
 ## Code Documentation
 Each class and method is documented using DartDoc comments. Below are some examples:
