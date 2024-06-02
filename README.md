@@ -4,6 +4,18 @@ Spoplusplusfy - An Orbital Project
 
 Spoplusplusfy is a music streaming application built using Flutter. It features a rich UI for managing playlists, songs, and artists, and provides a seamless music listening experience with advanced audio controls. The app leverages SQLite for local database management and Just Audio for audio playback.
 
+
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Code Documentation](#code-documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Introduction
 
 This project is a multi-modal music player
@@ -11,15 +23,6 @@ This project is a multi-modal music player
 Here is the UI design:
 
 <img width="864" alt="UI" src="https://github.com/dingf3ng/spoplusplusfy/assets/103719642/50b42d64-a76a-4b27-bdc8-f7da158805cc">
-
-## Table of Contents
-
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Code Documentation](#code-documentation)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
