@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
-import 'package:spoplusplusfy/Pages/MainPage.dart';
+import 'package:spoplusplusfy/Pages/main_page.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
 import 'package:sqflite/sqflite.dart';
 

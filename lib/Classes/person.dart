@@ -38,21 +38,13 @@ class Person {
     _portrait = i;
   }
 
-  String getName() {
-    return _name;
-  }
+  String getName() => _name;
 
-  String getGender() {
-    return _gender;
-  }
+  String getGender() => _gender;
 
-  int? getAge() {
-    return _age;
-  }
+  int? getAge() => _age;
 
-  Image getPortrait(Image i) {
-    return _portrait;
-  }
+  Image getPortrait(Image i) => _portrait;
 
   void follow(Person p) {}
 
