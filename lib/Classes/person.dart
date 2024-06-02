@@ -1,32 +1,37 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:spoplusplusfy/Classes/Name.dart';
+import 'package:spoplusplusfy/Classes/follower_manager.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
 
-enum Gender { Male, Female, Mysterious }
+import 'follower_manager.dart';
 
-class Person {
+enum Gender {Male, Female, Mysterious}
+
+abstract class Person implements Name {
+
   String _name;
   late int _id;
-  String _gender;
+  Gender _gender;
   int? _age;
   Image _portrait;
 
   Person({
     required String name,
     required int id,
-    required String gender,
+    required Gender gender,
     required Image portrait,
-  })  : this._name = name,
-        this._id = id,
-        this._gender = gender,
-        this._portrait = portrait;
+  }) : this._name = name,
+      this._id = id,
+      this._gender = gender,
+      this._portrait = portrait;
 
   void setName(String s) {
     _name = s;
   }
 
-  void setGender(String g) {
+  void setGender(Gender g) {
     _gender = g;
   }
 
@@ -40,13 +45,23 @@ class Person {
 
   String getName() => _name;
 
-  String getGender() => _gender;
+  Gender getGender() {
+    return _gender;
+  }
 
   int? getAge() => _age;
 
   Image getPortrait(Image i) => _portrait;
 
-  void follow(Person p) {}
+  void follow(Person p) {
+    FollowerManager.addToFollowing(this, p);
+  }
 
-  void delete() {}
+  void unfollow(Person p) {
+    FollowerManager.removeFromFollowing(this, p);
+  }
+
+  void delete() {
+    FollowerManager.deletePerson(this);
+  }
 }

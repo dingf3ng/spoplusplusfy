@@ -20,17 +20,38 @@ class FollowerManager {
     return FollowerManager._private();
   }
 
-  List<Person> getFollowerList(Person person) {
+  static List<Person> getFollowerList(Person person) {
     if(_followerMap[person] == null) throw 'Error';
     return _followerMap[person]!;
   }
 
-  List<Person> getFollowingList(Person person) {
+  static List<Person> getFollowingList(Person person) {
     if(_followingMap[person] == null) throw 'Error';
     return _followingMap[person]!;
   }
 
-  void deletePerson(Person) {
+  static void addToFollowing(Person subject, Person object) {
+    _followingMap.update(
+        subject,  (following) => following..add(object),
+        ifAbsent: () => [object]
+    );
+    _followerMap.update(
+        object,  (follower) => follower..add(subject),
+        ifAbsent: () => [subject]
+    );
+  }
+
+  static void removeFromFollowing(Person subject, Person object) {
+    _followingMap.update(subject, (list) => list..remove(object));
+    _followerMap.update(object, (list) => list..remove(subject));
+  }
+
+  static void removeFromFollower(Person subject, Person object) {
+    _followerMap.update(subject, (list) => list..remove(object));
+    _followingMap.update(object, (list) => list..remove(subject));
+  }
+
+  static void deletePerson(Person) {
     _validPerson.remove(Person);
   }
 }

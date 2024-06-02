@@ -1,10 +1,30 @@
-import 'package:flutter/material.dart';
+import 'dart:collection';
 
-import 'Pages/main_page.dart';
-import 'Pages/search_page.dart';
+import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:spoplusplusfy/Classes/artist.dart';
+import 'package:spoplusplusfy/Classes/person.dart';
+import 'package:spoplusplusfy/Pages/search_page.dart';
+
+import 'Classes/album.dart';
+import 'Classes/song.dart';
+import 'Utilities/search_engine.dart';
 
 void main() {
-  runApp(MainPage());
+  runApp(const Spoplusplusfy());
+  Set<Artist> artset = { 
+    Artist(name: 'Prince', id: 1, gender: Gender.Male, portrait: const Image(image: AssetImage('assets/images/prince.jpg'))),
+  };
+  Set<Album> albset = {
+    Album(name: 'Sign O\' The Time', playlistCoverPath: 'assets/images/sign.webp', id: 1, timelength: 1),
+    Album(name: 'Purple Rain',  playlistCoverPath: 'assets/images/purple_rain.webp', id: 2, timelength: 1),
+  };
+  Set<Song> sonset = {
+    Song(name: 'Purple Rain', audio: AudioSource.file(''), id: 1, duration: 1000, volume: 100),
+    Song(name: 'Raspberry Beret', audio: AudioSource.file(''), id: 1, duration: 1000, volume: 100)
+  };
+  SearchEngine searchEngine = SearchEngine.init(artset, albset, {}, sonset, HashSet());
+
 }
 
 class Spoplusplusfy extends StatelessWidget {

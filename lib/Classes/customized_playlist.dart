@@ -1,34 +1,32 @@
 
-import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
-class Album extends Playlist{
+class CustomizedPlaylist extends Playlist {
 
-  Album({required super.name,
+  CustomizedPlaylist({
+    required super.name,
     required super.playlistCoverPath,
     required super.id,
     required super.timelength,
-    super.mutable = false,
+    super.mutable = true,
   });
 
   @override
   void updateWith(Song song) {
-    return;
+    super.updateWith(song);
+    PlaylistSongManager.addSongToPlayList(song, this);
   }
 
   @override
   void delete() {
-    ArtistWorksManager.deleteAlbum(this);
     PlaylistSongManager.deletePlaylist(this);
   }
 
   @override
-  void setName(String newName) {
-    return;
+  void setName(String newName){
+    super.setName(newName);
   }
-
-
 
 }

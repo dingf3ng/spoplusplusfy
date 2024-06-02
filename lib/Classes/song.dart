@@ -13,8 +13,9 @@ class Song extends Voice {
   late bool mutable;
 
   Song(int id, int duration, String name, Artist artist, Playlist playlist,
-      bool isMutable)
+      bool isMutable, int volume)
       : super(
+            volume: volume,
             id: id,
             duration: duration,
             audio: AudioSource.uri(Uri.parse(
@@ -29,4 +30,11 @@ class Song extends Voice {
     return _name;
   }
   getArtist() => _artist;
+
+  @override
+  void setName(String name) {
+    return;
+  }
+
+
 }
