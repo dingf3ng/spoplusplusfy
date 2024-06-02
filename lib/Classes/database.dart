@@ -29,14 +29,9 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'spo++fy_database.db');
 
-    // Check if the database exists
-    if (!await File(path).exists()) {
-      // If it doesn't exist, copy it from the assets
       ByteData data = await rootBundle.load('assets/database/spo++fy_database.db');
       List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await File(path).writeAsBytes(bytes);
-    }
-
     return openDatabase(path, version: 1);
   }
 
@@ -55,7 +50,7 @@ class DatabaseHelper {
 
     return List.generate(songs.length, (i) {
       Artist artist = Artist(
-        name: songs[i]['artist']??'no_name',
+        name: songs[i]['artist_name']??'no_name',
         id: 111,
         gender: 'Test',
         portrait: Image.asset('assets/images/artist_portrait.jpg'),

@@ -5,27 +5,40 @@ import 'package:spoplusplusfy/Classes/song.dart';
 
 class PlaylistIterator {
   static final AudioPlayer _player = AudioPlayer();
-  static late List<Song> _currentList;
-  static late Song _currentSong;
+  static List<Song> _currentList = [];
+  static Song? _currentSong;
+  static int songIndex = 0;
 
   static void changeProgressTo(Duration progress) {
     _player.seek(progress);
   }
 
-  static void setPlaylist(Playlist playlist) {
-    List<AudioSource> playlistSource = [];
-    List<Song> recordOfSongs = [];
+  static Song getCurrentSong() => _currentSong ?? (throw StateError('No current song'));
 
-    for (Song song in PlaylistSongManager.getSongsForPlaylist(playlist)) {
+  static bool isPlaying() => _player.playing;
+
+  static Future<void> setPlaylist(Playlist playlist) async {
+    List<AudioSource> playlistSource = [];
+    _currentList.clear(); // Clear the list to avoid duplicates
+
+    for (Song song in await PlaylistSongManager.getSongsForPlaylist(playlist)) {
       playlistSource.add(song.getAudioSource());
-      recordOfSongs.add(song);
+      _currentList.add(song);
     }
 
-    _currentList = recordOfSongs;
-    ConcatenatingAudioSource sourceForPlayer =
-        ConcatenatingAudioSource(children: playlistSource);
+    ConcatenatingAudioSource sourceForPlayer = ConcatenatingAudioSource(children: playlistSource);
 
-    _player.setAudioSource(sourceForPlayer);
+    await _player.setAudioSource(sourceForPlayer);
+
+    _player.currentIndexStream.listen((index) {
+      if (index != null && index < _currentList.length) {
+        _currentSong = _currentList[index];
+      }
+    });
+
+    if (_currentList.isNotEmpty) {
+      _currentSong = _currentList[0];
+    }
   }
 
   static void play() {
@@ -37,16 +50,8 @@ class PlaylistIterator {
   }
 
   static void fastForward(Duration time) {
-    Duration songTotalLength;
+    Duration songTotalLength = _player.duration ?? Duration.zero;
 
-    // Check to ensure that songTotalLength is never null
-    if (_player.duration == null) {
-      songTotalLength = Duration.zero;
-    } else {
-      songTotalLength = _player.duration!;
-    }
-
-    // fast forward by time specified, if not beyond length of song
     if (_player.position + time < songTotalLength) {
       _player.seek(_player.position + time);
     } else {
@@ -55,7 +60,6 @@ class PlaylistIterator {
   }
 
   static void fastRewind(Duration time) {
-    // fast rewind by time specified, if destination progress is not below 0
     if (_player.position - time > Duration.zero) {
       _player.seek(_player.position - time);
     } else {
@@ -65,9 +69,11 @@ class PlaylistIterator {
 
   static void playNextSong() {
     _player.seekToNext();
+    _currentSong = _currentList[_player.currentIndex ?? 0];
   }
 
   static void playPreviousSong() {
     _player.seekToPrevious();
+    _currentSong = _currentList[_player.currentIndex ?? 0];
   }
 }

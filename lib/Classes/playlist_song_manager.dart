@@ -1,5 +1,6 @@
 
 import 'dart:collection';
+import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
@@ -23,13 +24,15 @@ class PlaylistSongManager {
     return PlaylistSongManager._privateConstructor();
   }
 
-  static List<Song> getSongsForPlaylist(Playlist playlist) {
-    if(_listMap[playlist] == null) {
-      throw 'Error by manipulating a element does not exist';
-    }
-    return _listMap[playlist]!..removeWhere(
-            (song) => !_allValidSong.contains(song)
-    );
+  static Future<List<Song>> getSongsForPlaylist(Playlist playlist) async {
+    // if(_listMap[playlist] == null) {
+    //   throw 'Error by manipulating a element does not exist';
+    // }
+    // TODO: check if this is ok to write like this
+    return DatabaseHelper().getSongsForPlaylist(playlist);
+    // return _listMap[playlist]!..removeWhere(
+    //         (song) => !_allValidSong.contains(song)
+    // );
   }
 
   static void addSongToPlayList(Song song, Playlist playlist) {

@@ -28,4 +28,5 @@ class Song extends Voice {
   String getName() {
     return _name;
   }
+  getArtist() => _artist;
 }
