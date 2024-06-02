@@ -63,7 +63,7 @@ Search Page: Allows searching for songs and playlists. Provides quick access to 
 - PlaylistSongManager: Manages the relationship between playlists and songs.
 - Song: Represents a song with attributes like name, artist, and playlist.
 - Voice: Represents a generic audio entity with an audio source.
-- 
+ 
 ## Pages
 - MainPage: The main landing page of the app that displays playlists.
 - PlayerPage: The player interface for playing songs and controlling playback.
