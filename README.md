@@ -42,6 +42,9 @@ Here is the UI design:
    ```bash
    flutter pub get
 
+3. **Install songs**
+   unzip folder **songs.zip** in https://drive.google.com/file/d/1cjJYS_tzfEeLd83guGTlnFSXsJ0c0Mcy/view?usp=sharing. Copy the songs folder into the assets folder in the project directory.
+
 3. **Run the app:**
    ```bash
    flutter run
