@@ -12,7 +12,8 @@ class Song extends Voice implements Name{
     required super.audio,
     required super.id,
     required super.duration,
-    required super.volume}) : _name = name;
+    required super.volume,
+    }) : _name = name;
 
   @override
   String getName() {
@@ -23,5 +24,6 @@ class Song extends Voice implements Name{
   void setName(String name) {
     return;
   }
+
 
 }

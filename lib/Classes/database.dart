@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spoplusplusfy/Classes/Artist.dart';
+import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -57,7 +58,7 @@ class DatabaseHelper {
       Artist artist = Artist(
         name: songs[i]['artist']??'no_name',
         id: 111,
-        gender: 'Test',
+        gender: Gender.Mysterious,
         portrait: Image.asset('assets/images/artist_portrait.jpg'),
       );
       return Song(

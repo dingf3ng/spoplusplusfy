@@ -53,4 +53,8 @@ abstract class Playlist implements Name{
   bool isMutable() {
     return _mutable;
   }
+
+  int getId() {
+    return _id;
+  }
 }

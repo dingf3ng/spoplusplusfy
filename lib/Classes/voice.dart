@@ -1,22 +1,44 @@
 import 'package:just_audio/just_audio.dart';
 
-class Voice {
-  AudioSource audio;
-  int id;
-  int duration;
+abstract class Voice {
+  static const maxVolume = 100;
+  static const minVolume = 0;
+
+  late AudioSource _audio;
+  late int _id;
+  late int _duration;
+  int _volume;
 
   Voice({
-    required this.audio,
-    required this.id,
-    required this.duration,
-  });
+    required AudioSource audio,
+    required int id,
+    required int duration,
+    required int volume
+  }) :
+        _audio = audio,
+        _id = id,
+        _duration = duration,
+        _volume = volume;
+
+  int getVolume() {
+    return _volume;
+  }
+
+  void setVolume(int toVol) {
+    _volume = toVol;
+  }
 
   int getId() {
-    return id;
+    return _id;
+  }
+
+  int getDuration() {
+    return _duration;
   }
 
   AudioSource getAudioSource() {
     return AudioSource.uri(
-        Uri.parse('assets/songs/${id.toString().substring(0, 3)}/$id.mp3'));
+        Uri.parse('assets/songs/${_id.toString().substring(0, 3)}/$_id.mp3'));
   }
+
 }
