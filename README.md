@@ -54,88 +54,88 @@ Main Page: Displays a list of random playlists. Tap on a playlist to navigate to
 Player Page: Shows the currently playing song and artist. Use swipe gestures to switch tracks and control buttons to play/pause the music.
 Search Page: Allows searching for songs and playlists. Provides quick access to settings and user profile.
 
-Project Structure
+## Project Structure
 
 ├── README.md
 ├── analysis_options.yaml
 ├── android
-│ ├── app
-│ ├── build.gradle
-│ ├── gradle
-│ ├── gradle.properties
-│ ├── gradlew
-│ ├── gradlew.bat
-│ ├── local.properties
-│ └── settings.gradle
+│   ├── app
+│   ├── build.gradle
+│   ├── gradle
+│   ├── gradle.properties
+│   ├── gradlew
+│   ├── gradlew.bat
+│   ├── local.properties
+│   └── settings.gradle
 ├── assets
-│ ├── database
-│ ├── icons
-│ ├── images
-│ └── songs
+│   ├── database
+│   ├── icons
+│   ├── images
+│   └── songs
 ├── build
-│ ├── 922e83c271242497b412509e05f3f479
-│ ├── 9b46fe769667f65dc7b6bbae7e5da17c.cache.dill.track.dill
-│ ├── app
-│ ├── audio_session
-│ ├── just_audio
-│ ├── last_build_run.json
-│ ├── native_assets
-│ ├── path_provider_android
-│ ├── sqflite
-│ ├── test_cache
-│ └── unit_test_assets
+│   ├── 922e83c271242497b412509e05f3f479
+│   ├── 9b46fe769667f65dc7b6bbae7e5da17c.cache.dill.track.dill
+│   ├── app
+│   ├── audio_session
+│   ├── just_audio
+│   ├── last_build_run.json
+│   ├── native_assets
+│   ├── path_provider_android
+│   ├── sqflite
+│   ├── test_cache
+│   └── unit_test_assets
 ├── coverage
-│ └── lcov.info
+│   └── lcov.info
 ├── fonts
-│ ├── GreatVibes-Regular.ttf
-│ ├── NotoSans-Bold.ttf
-│ ├── NotoSans-BoldItalic.ttf
-│ ├── NotoSans-Italic.ttf
-│ ├── NotoSans-Light.ttf
-│ ├── NotoSans-LightItalic.ttf
-│ ├── NotoSans-Medium.ttf
-│ ├── NotoSans-MediumItalic.ttf
-│ ├── NotoSans-Regular.ttf
-│ ├── NotoSans-SemiBold.ttf
-│ └── NotoSans-SemiBoldItalic.ttf
+│   ├── GreatVibes-Regular.ttf
+│   ├── NotoSans-Bold.ttf
+│   ├── NotoSans-BoldItalic.ttf
+│   ├── NotoSans-Italic.ttf
+│   ├── NotoSans-Light.ttf
+│   ├── NotoSans-LightItalic.ttf
+│   ├── NotoSans-Medium.ttf
+│   ├── NotoSans-MediumItalic.ttf
+│   ├── NotoSans-Regular.ttf
+│   ├── NotoSans-SemiBold.ttf
+│   └── NotoSans-SemiBoldItalic.ttf
 ├── ios
-│ ├── Flutter
-│ ├── Podfile
-│ ├── Runner
-│ ├── Runner.xcodeproj
-│ ├── Runner.xcworkspace
-│ └── RunnerTests
+│   ├── Flutter
+│   ├── Podfile
+│   ├── Runner
+│   ├── Runner.xcodeproj
+│   ├── Runner.xcworkspace
+│   └── RunnerTests
 ├── lib
-│ ├── Classes
-│ ├── Pages
-│ ├── Utilities
-│ └── main.dart
+│   ├── Classes
+│   ├── Pages
+│   ├── Utilities
+│   └── main.dart
 ├── linux
-│ ├── CMakeLists.txt
-│ ├── flutter
-│ ├── main.cc
-│ ├── my_application.cc
-│ └── my_application.h
+│   ├── CMakeLists.txt
+│   ├── flutter
+│   ├── main.cc
+│   ├── my_application.cc
+│   └── my_application.h
 ├── macos
-│ ├── Flutter
-│ ├── Podfile
-│ ├── Podfile.lock
-│ ├── Pods
-│ ├── Runner
-│ ├── Runner.xcodeproj
-│ ├── Runner.xcworkspace
-│ └── RunnerTests
+│   ├── Flutter
+│   ├── Podfile
+│   ├── Podfile.lock
+│   ├── Pods
+│   ├── Runner
+│   ├── Runner.xcodeproj
+│   ├── Runner.xcworkspace
+│   └── RunnerTests
 ├── pubspec.lock
 ├── pubspec.yaml
 ├── spoplusplusfy
 ├── test
-│ ├── test_database.dart
-│ └── widget_test.dart
+│   ├── test_database.dart
+│   └── widget_test.dart
 ├── web
-│ ├── favicon.png
-│ ├── icons
-│ ├── index.html
-│ └── manifest.json
+│   ├── favicon.png
+│   ├── icons
+│   ├── index.html
+│   └── manifest.json
 └── windows
 ├── CMakeLists.txt
 ├── flutter
