@@ -4,12 +4,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:spoplusplusfy/Classes/Artist.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import 'artist.dart';
+import 'album.dart';
 import 'playlist.dart';
 
 /// A singleton class that helps in managing the SQLite database.
@@ -77,12 +78,13 @@ class DatabaseHelper {
         portrait: Image.asset('assets/images/artist_portrait.jpg'),
       );
       return Song(
-        songs[i]['song_id'] ?? 000,
-        songs[i]['duration'] ?? 000,
-        songs[i]['name'] ?? 'no_name',
-        artist,
-        playlist,
-        false,
+        id: songs[i]['song_id'] ?? 000,
+        duration: songs[i]['duration'] ?? 000,
+        name: songs[i]['name'] ?? 'no_name',
+        artist: artist,
+        playlist: playlist,
+        isMutable: false,
+        volume: 100,
       );
     });
   }
@@ -100,7 +102,7 @@ class DatabaseHelper {
     }
     final randomIndex = Random().nextInt(playlists.length);
     final playlistData = playlists[randomIndex];
-    return Playlist(
+    return Album(
       name: playlistData['name'] ?? 'no_name',
       playlistCoverPath: 'assets/images/playlist_cover.jpg',
       id: playlistData['album_id'] ?? 000,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
+import 'package:spoplusplusfy/Pages/main_page.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
 
 import 'Classes/album.dart';
@@ -11,7 +12,7 @@ import 'Classes/song.dart';
 import 'Utilities/search_engine.dart';
 
 void main() {
-  runApp(const Spoplusplusfy());
+  runApp(MainPage());
   Set<Artist> artset = { 
     Artist(name: 'Prince', id: 1, gender: Gender.Male, portrait: const Image(image: AssetImage('assets/images/prince.jpg'))),
   };
@@ -20,8 +21,8 @@ void main() {
     Album(name: 'Purple Rain',  playlistCoverPath: 'assets/images/purple_rain.webp', id: 2, timelength: 1),
   };
   Set<Song> sonset = {
-    Song(name: 'Purple Rain', audio: AudioSource.file(''), id: 1, duration: 1000, volume: 100),
-    Song(name: 'Raspberry Beret', audio: AudioSource.file(''), id: 1, duration: 1000, volume: 100)
+    Song(name: 'Purple Rain', id: 750, duration: 1000, volume: 100, artist: artset.first, playlist: albset.first, isMutable: false),
+    Song(name: 'Raspberry Beret', id: 751, duration: 1000, volume: 100, artist: artset.first, playlist: albset.first, isMutable: false),
   };
   SearchEngine searchEngine = SearchEngine.init(artset, albset, {}, sonset, HashSet());
 

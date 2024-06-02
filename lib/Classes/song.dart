@@ -4,7 +4,7 @@ import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/voice.dart';
 
-import 'Artist.dart';
+import 'artist.dart';
 
 class Song extends Voice {
   late String _name;
@@ -12,8 +12,8 @@ class Song extends Voice {
   late Playlist belongingPlaylist;
   late bool mutable;
 
-  Song(int id, int duration, String name, Artist artist, Playlist playlist,
-      bool isMutable, int volume)
+  Song({required id, required duration, required name, required artist, required playlist,
+      required isMutable, required volume})
       : super(
             volume: volume,
             id: id,

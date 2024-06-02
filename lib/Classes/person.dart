@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:spoplusplusfy/Classes/Name.dart';
 import 'package:spoplusplusfy/Classes/follower_manager.dart';
-import 'package:spoplusplusfy/Classes/person.dart';
 
 import 'follower_manager.dart';
 
@@ -51,7 +50,7 @@ abstract class Person implements Name {
 
   int? getAge() => _age;
 
-  Image getPortrait(Image i) => _portrait;
+  Image getPortrait() => _portrait;
 
   void follow(Person p) {
     FollowerManager.addToFollowing(this, p);

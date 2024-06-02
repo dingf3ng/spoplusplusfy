@@ -10,9 +10,10 @@ class Artist extends Person {
     required super.portrait
   });
 
-  @override
-  void delete() {
-    super.delete();
-    ArtistWorksManager.deleteArtist(this);
-  }
+  // @override
+  // void delete() {
+  //   super.delete();
+  //   ArtistWorksManager.deleteArtist(this);
+  // }
+
 }

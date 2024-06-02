@@ -42,5 +42,3 @@ abstract class Voice {
     return AudioSource.asset('assets/songs/$firstThreeDigitsStr/$idStr.mp3');
   }
 }
-
-}
