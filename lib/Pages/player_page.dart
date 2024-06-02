@@ -111,7 +111,6 @@ class _PlayerPageState extends State<PlayerPage> {
                 ),
                 child: GestureDetector(
                   onPanUpdate: (details) {
-                    if (!isSwiping) {
                       setState(() {
                         isSwiping = true;
                         if (details.delta.dx > 8) {
@@ -122,7 +121,6 @@ class _PlayerPageState extends State<PlayerPage> {
                         songTitle = PlaylistIterator.getCurrentSong().getName();
                         songArtist = PlaylistIterator.getCurrentSong().getArtist().getName();
                       });
-                    }
                   },
                   onPanEnd: (details) {
                     setState(() {

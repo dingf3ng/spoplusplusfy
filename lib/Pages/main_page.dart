@@ -48,14 +48,45 @@ class MainPage extends StatelessWidget {
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
                 children: [
-                   Text(
-                      '    Welcome,\n    Here Are The Music For\n    You',
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: goldColour,
-                        fontFamily: 'Noto-Sans',
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SearchPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: goldColour,
+                            width: 3,
+                          ),
+                          color: goldColour,
+                          borderRadius: BorderRadius.circular(30),
+                          ),
+                        child: Text("enter search page", style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.black,
+                          fontFamily: 'Noto-Sans',
+                        ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
+                   Padding(
+                     padding: const EdgeInsets.only(top: 30.0),
+                     child: Text(
+                        '    Welcome,\n    Here Are The Music For\n    You',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: goldColour,
+                          fontFamily: 'Noto-Sans',
+                        ),
+                      ),
+                   ),
                   Padding(
                     padding: const EdgeInsets.all(30.0),
                     child: GridView.builder(

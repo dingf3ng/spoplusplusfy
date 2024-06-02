@@ -297,6 +297,7 @@ class _SearchPageState extends State<SearchPage> {
       elevation: 0,
       leadingWidth: 70,
       toolbarHeight: 90,
+      backgroundColor: primaryColor,
       leading: GestureDetector(
         onTap: () {},
         child: FittedBox(
