@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'Pages/main_page.dart';
+import 'Pages/search_page.dart';
+
 void main() {
   runApp(MainPage());
 }
