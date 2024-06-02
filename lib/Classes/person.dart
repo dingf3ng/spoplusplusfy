@@ -1,32 +1,40 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:spoplusplusfy/Classes/Name.dart';
+import 'package:spoplusplusfy/Classes/follower_manager.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
 
-enum Gender { Male, Female, Mysterious }
+enum Gender {Male, Female, Mysterious}
 
-class Person {
+abstract class Person implements Name {
+
   String _name;
   late int _id;
-  String _gender;
+  Gender _gender;
   int? _age;
   Image _portrait;
 
   Person({
     required String name,
     required int id,
-    required String gender,
+    required Gender gender,
     required Image portrait,
-  })  : this._name = name,
-        this._id = id,
-        this._gender = gender,
-        this._portrait = portrait;
+  }) : this._name = name,
+      this._id = id,
+      this._gender = gender,
+      this._portrait = portrait;
 
+  @override
+  String getName() {
+    return _name;
+  }
+
+  @override
   void setName(String s) {
     _name = s;
   }
 
-  void setGender(String g) {
+  void setGender(Gender g) {
     _gender = g;
   }
 
@@ -38,11 +46,8 @@ class Person {
     _portrait = i;
   }
 
-  String getName() {
-    return _name;
-  }
 
-  String getGender() {
+  Gender getGender() {
     return _gender;
   }
 
@@ -50,11 +55,19 @@ class Person {
     return _age;
   }
 
-  Image getPortrait(Image i) {
+  Image getPortrait() {
     return _portrait;
   }
 
-  void follow(Person p) {}
+  void follow(Person p) {
+    FollowerManager.addToFollowing(this, p);
+  }
 
-  void delete() {}
+  void unfollow(Person p) {
+    FollowerManager.removeFromFollowing(this, p);
+  }
+
+  void delete() {
+    FollowerManager.deletePerson(this);
+  }
 }

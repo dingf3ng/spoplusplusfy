@@ -1,11 +1,13 @@
 import 'dart:core';
+import 'package:spoplusplusfy/Classes/Name.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
+import 'package:spoplusplusfy/Classes/song.dart';
 
-class Playlist {
-  late String _name;
+abstract class Playlist implements Name{
+  String _name;
   late String _playlistCoverImagePath;
   late int _id;
-  late int _timeLength;
+  int _timeLength;
   late bool _mutable;
 
   Playlist(
@@ -24,11 +26,25 @@ class Playlist {
     return _id.hashCode;
   }
 
-  void delete() {
-    try {
-      PlaylistSongManager.deletePlaylist(this);
-    } on Exception catch (e) {}
+  String getCoverPath() {
+    return _playlistCoverImagePath;
   }
+
+  @override
+  String getName() {
+    return _name;
+  }
+
+  @override
+  void setName(String newName) {
+    _name = newName;
+  }
+
+  void updateWith(Song song) {
+    _timeLength += song.getDuration();
+  }
+
+  void delete();
 
   int length() {
     return _timeLength;
@@ -36,13 +52,5 @@ class Playlist {
 
   bool isMutable() {
     return _mutable;
-  }
-
-  int getId() {
-    return _id;
-  }
-
-  String getName() {
-    return _name;
   }
 }
