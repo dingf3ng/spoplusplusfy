@@ -12,9 +12,10 @@ import 'Classes/song.dart';
 import 'Utilities/search_engine.dart';
 
 void main() {
-  runApp(MainPage());
+
   Set<Artist> artset = { 
     Artist(name: 'Prince', id: 1, gender: Gender.Male, portrait: const Image(image: AssetImage('assets/images/prince.jpg'))),
+    Artist(name: 'Pink Floyd', id: 2, gender: Gender.Male, portrait: const Image(image: AssetImage('assets/images/pf.jpg'))),
   };
   Set<Album> albset = {
     Album(name: 'Sign O\' The Time', playlistCoverPath: 'assets/images/sign.webp', id: 1, timelength: 1),
@@ -25,7 +26,7 @@ void main() {
     Song(name: 'Raspberry Beret', id: 751, duration: 1000, volume: 100, artist: artset.first, playlist: albset.first, isMutable: false),
   };
   SearchEngine searchEngine = SearchEngine.init(artset, albset, {}, sonset, HashSet());
-
+  runApp(const Spoplusplusfy());
 }
 
 class Spoplusplusfy extends StatelessWidget {
@@ -43,7 +44,7 @@ class Spoplusplusfy extends StatelessWidget {
           cursorColor: Color(0xffFFE8A3),
         )
       ),
-      home: const SearchPage(),
+      home: MainPage(),
     );
   }
 }

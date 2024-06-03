@@ -95,7 +95,7 @@ class MainPage extends StatelessWidget {
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 30,
-                        mainAxisSpacing: 0.79,
+                        mainAxisSpacing: 40,
                         childAspectRatio: 0.80,
                       ),
                       itemBuilder: (context, index) => GestureDetector(
@@ -111,7 +111,7 @@ class MainPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              height: 170,
+                              height: 125,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: goldColour,

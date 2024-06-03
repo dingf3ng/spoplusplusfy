@@ -42,6 +42,7 @@ abstract class Person implements Name {
     _portrait = i;
   }
 
+  @override
   String getName() => _name;
 
   Gender getGender() {
