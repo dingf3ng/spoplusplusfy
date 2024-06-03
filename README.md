@@ -4,11 +4,13 @@ Spoplusplusfy - An Orbital Project
 
 Spoplusplusfy is a music streaming application built using Flutter. It features a rich UI for managing playlists, songs, and artists, and provides a seamless music listening experience with advanced audio controls. The app leverages SQLite for local database management and Just Audio for audio playback.
 
-
-
 ## Table of Contents
 
 - [Introduction](#introduction)
+- [Level of Achievement](#level-of-achievement)
+- [Project Scope](#project-scope)
+- [User Stories](#user-stories)
+- [Motivation](#motivation)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -23,6 +25,26 @@ This project is a multi-modal music player
 Here is the UI design:
 
 <img width="864" alt="UI" src="https://github.com/dingf3ng/spoplusplusfy/assets/103719642/50b42d64-a76a-4b27-bdc8-f7da158805cc">
+
+## Level of Achievement
+
+Apollo
+
+## Project Scope
+
+- One-sentence: A multi-modal music player for both curated and average music enjoyers.
+
+- Longer version: We will develop a music player with support for streaming music such that the user can listen to their favorite music everywhere with their phones. Additionally, we have social modes and pro modes to allow users to edit their music for their own practice, as well as discuss their favorite music with people alike around the globe with our platform.
+
+## User Stories
+
+- A user seeking a refreshing and straightforward music player interface that prioritizes uninterrupted listening without the clutter of unnecessary features. The user can use Pure Mode.
+- A music aficionado looking for new tunes, eager to leverage a sophisticated, tailored recommendation system for discovering their next favorite song.
+- A sociable music lover interested in connecting with others who share their musical tastes, eager to exchange thoughts and experiences related to their favorite tracks.
+- An aspiring musician aiming to enhance their skills, in need of advanced features that allow for the isolation and replacement of specific instrument tracks within a song with their own recordings.
+## Motivation
+
+Currently, mainstream music players on the market tend to fall into one of two categories: those with limited features and those with overly complex user interfaces. This leaves users with varied needs—ranging from uninterrupted listening experiences to social interactions with like-minded music enthusiasts and sharing music reviews—without a single, versatile platform. As a result, users find themselves toggling between multiple applications to fulfill their diverse requirements. We believe in the principle that "less is more" and anticipate a strong demand for a unified solution that eliminates the need for multiple software, catering to the diverse needs and preferences of all users.
 
 ## Features
 
@@ -39,7 +61,7 @@ Here is the UI design:
    ```bash
    git clone https://github.com/yourusername/spoplusplusfy.git
    cd spoplusplusfy
-
+   
 2. **Install dependencies:**
    ```bash
    flutter pub get
