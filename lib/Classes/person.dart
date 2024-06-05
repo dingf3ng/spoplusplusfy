@@ -21,6 +21,7 @@ abstract class Person implements Name {
     required int id,
     required Gender gender,
     required Image portrait,
+    required int age,
   }) : this._name = name,
       this._id = id,
       this._gender = gender,

@@ -44,112 +44,129 @@ class MainPage extends StatelessWidget {
               return Center(child: Text('No Playlists Available'));
             } else {
               List<Playlist> playlists = snapshot.data!;
-              return ListView(
-                shrinkWrap: true,
-                physics: BouncingScrollPhysics(),
-                children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SearchPage(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: goldColour,
-                            width: 3,
-                          ),
-                          color: goldColour,
-                          borderRadius: BorderRadius.circular(30),
-                          ),
-                        child: Text("enter search page", style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.black,
-                          fontFamily: 'Noto-Sans',
-                        ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                   Padding(
-                     padding: const EdgeInsets.only(top: 30.0),
-                     child: Text(
-                        '    Welcome,\n    Here Are The Music For\n    You',
-                        style: TextStyle(
-                          fontSize: 30,
-                          color: goldColour,
-                          fontFamily: 'Noto-Sans',
-                        ),
-                      ),
-                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 30,
-                        mainAxisSpacing: 0.79,
-                        childAspectRatio: 0.80,
-                      ),
-                      itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PlayerPage(playlist: playlists[index]),
-                            ),
-                          );
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 170,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: goldColour,
-                                  width: 3,
-                                ),
-                                color: goldColour,
-                                borderRadius: BorderRadius.circular(30),
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/playlist_cover.jpg'),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                playlists[index].getName(),
-                                style: TextStyle(
-                                  color: goldColour,
-                                  fontFamily: 'Noto-Sans',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      itemCount: playlists.length,
-                    ),
-                  ),
-                ],
-              );
+              return _buildMainBody(context, playlists);
             }
           },
         ),
       ),
     );
+  }
+
+  ListView _buildMainBody(BuildContext context, List<Playlist> playlists) {
+    return ListView(
+              shrinkWrap: true,
+              physics: BouncingScrollPhysics(),
+              children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchPage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: goldColour,
+                          width: 3,
+                        ),
+                        color: goldColour,
+                        borderRadius: BorderRadius.circular(30),
+                        ),
+                      child: Text("enter search page", style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.black,
+                        fontFamily: 'Noto-Sans',
+                      ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                 Padding(
+                   padding: const EdgeInsets.only(top: 30.0),
+                   child: Text(
+                      '    Welcome,\n    Here Are The Music For\n    You',
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: goldColour,
+                        fontFamily: 'Noto-Sans',
+                      ),
+                    ),
+                 ),
+                Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: _buildGridAlbums(playlists),
+                ),
+              ],
+            );
+  }
+
+  GridView _buildGridAlbums(List<Playlist> playlists) {
+    return GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 30,
+                    mainAxisSpacing: 0.79,
+                    childAspectRatio: 0.80,
+                  ),
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PlayerPage(playlist: playlists[index]),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Column(
+                              children: [
+                                Container(
+                                  height: 170,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: goldColour,
+                                      width: 3,
+                                    ),
+                                    color: goldColour,
+                                    borderRadius: BorderRadius.circular(30),
+                                    image: DecorationImage(
+                                      image: NetworkImage(playlists[index].getCoverPath(),
+                                      scale: 0.1),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            playlists[index].getName(),
+                            style: TextStyle(
+                              color: goldColour,
+                              fontFamily: 'Noto-Sans',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  itemCount: playlists.length,
+                );
   }
 }

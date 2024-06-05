@@ -4,6 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
 
+import '../Classes/artist.dart';
+import '../Classes/person.dart';
+
 /// A stateful widget representing the player page.
 class PlayerPage extends StatefulWidget {
   /// The playlist to be played.
@@ -27,10 +30,13 @@ class _PlayerPageState extends State<PlayerPage> {
   String songTitle = '';
 
   /// The artist of the current song.
-  String songArtist = '';
-
-  /// Tracks the swipe status.
-  bool isSwiping = false;
+  Artist songArtist = Artist(
+    name: '',
+    id: 111,
+    gender: Gender.Mysterious,
+    portrait: Image.asset('assets/images/artist_portrait.jpg'),
+    age: 111,
+  );
 
   @override
   void initState() {
@@ -45,7 +51,7 @@ class _PlayerPageState extends State<PlayerPage> {
     setState(() {
       isPlaying = PlaylistIterator.isPlaying();
       songTitle = PlaylistIterator.getCurrentSong().getName();
-      songArtist = PlaylistIterator.getCurrentSong().getArtist().getName();
+      songArtist = PlaylistIterator.getCurrentSong().getArtist();
     });
   }
 
@@ -89,7 +95,7 @@ class _PlayerPageState extends State<PlayerPage> {
               textAlign: TextAlign.center,
             ),
             Text(
-              songArtist,
+              songArtist.getName(),
               style: songArtistStyle,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -112,20 +118,14 @@ class _PlayerPageState extends State<PlayerPage> {
                 child: GestureDetector(
                   onPanUpdate: (details) {
                       setState(() {
-                        isSwiping = true;
                         if (details.delta.dx > 8) {
                           PlaylistIterator.playPreviousSong();
                         } else if (details.delta.dx < -8) {
                           PlaylistIterator.playNextSong();
                         }
                         songTitle = PlaylistIterator.getCurrentSong().getName();
-                        songArtist = PlaylistIterator.getCurrentSong().getArtist().getName();
+                        songArtist.setName(PlaylistIterator.getCurrentSong().getArtist().getName());
                       });
-                  },
-                  onPanEnd: (details) {
-                    setState(() {
-                      isSwiping = false;
-                    });
                   },
                 ),
               ),

@@ -46,7 +46,7 @@ abstract class Playlist implements Name{
 
   void delete();
 
-  int length() {
+  int timeLength() {
     return _timeLength;
   }
 

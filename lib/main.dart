@@ -14,11 +14,11 @@ import 'Utilities/search_engine.dart';
 void main() {
   runApp(MainPage());
   Set<Artist> artset = { 
-    Artist(name: 'Prince', id: 1, gender: Gender.Male, portrait: const Image(image: AssetImage('assets/images/prince.jpg'))),
+    Artist(name: 'Prince', id: 1, gender: Gender.Male, portrait: const Image(image: AssetImage('assets/images/prince.jpg')), age: 57),
   };
   Set<Album> albset = {
-    Album(name: 'Sign O\' The Time', playlistCoverPath: 'assets/images/sign.webp', id: 1, timelength: 1),
-    Album(name: 'Purple Rain',  playlistCoverPath: 'assets/images/purple_rain.webp', id: 2, timelength: 1),
+    Album(name: 'Sign O\' The Time', playlistCoverPath: 'assets/images/sign.webp', id: 1, timelength: 1, artist: artset.first),
+    Album(name: 'Purple Rain',  playlistCoverPath: 'assets/images/purple_rain.webp', id: 2, timelength: 1, artist: artset.first),
   };
   Set<Song> sonset = {
     Song(name: 'Purple Rain', id: 750, duration: 1000, volume: 100, artist: artset.first, playlist: albset.first, isMutable: false),

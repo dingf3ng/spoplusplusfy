@@ -35,6 +35,4 @@ class Song extends Voice {
   void setName(String name) {
     return;
   }
-
-
 }

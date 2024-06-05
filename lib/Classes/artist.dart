@@ -7,7 +7,8 @@ class Artist extends Person {
     required super.name,
     required super.id,
     required super.gender,
-    required super.portrait
+    required super.portrait,
+    required super.age,
   });
 
   // @override

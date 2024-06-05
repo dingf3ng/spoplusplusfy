@@ -76,6 +76,7 @@ class DatabaseHelper {
         id: 111,
         gender: Gender.Mysterious,
         portrait: Image.asset('assets/images/artist_portrait.jpg'),
+        age: 111,
       );
       return Song(
         id: songs[i]['song_id'] ?? 000,
@@ -96,7 +97,7 @@ class DatabaseHelper {
   /// Throws an exception if no playlists are available.
   Future<Playlist> getRandomPlaylist() async {
     final db = await database;
-    final List<Map<String, dynamic>> playlists = await db!.query('albums');
+    final List<Map<String, dynamic>> playlists = await db!.query('updated_album_database');
     if (playlists.isEmpty) {
       throw Exception('No playlists available');
     }
@@ -104,10 +105,17 @@ class DatabaseHelper {
     final playlistData = playlists[randomIndex];
     return Album(
       name: playlistData['name'] ?? 'no_name',
-      playlistCoverPath: 'assets/images/playlist_cover.jpg',
+      playlistCoverPath: playlistData['cover_url']??'assets/images/playlist_cover.jpg',
       id: playlistData['album_id'] ?? 000,
       timelength: playlistData['duration'] ?? 0,
       mutable: false,
+      artist: Artist(
+        name: playlistData['artist_name'],
+        id: 111,
+        gender: Gender.Mysterious,
+        portrait: Image.asset('assets/images/artist_portrait.jpg'),
+        age: 111,
+      ),
     );
   }
 }
