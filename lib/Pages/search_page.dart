@@ -45,7 +45,6 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _resultArtists =
       SearchEngine.search<Artist>(query, SearchType.artist).cast();
-      print('_resultArtists_ddddddddddddddddddddddddddddddddddd');
       _resultAlbums =
       SearchEngine.search<Album>(query, SearchType.album);
       _resultPlaylists =
@@ -78,60 +77,65 @@ class _SearchPageState extends State<SearchPage> {
         ));
   }
 
-  Column _artist_showcase() {
-    return Column(
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: Text(
-                'Artists',
-                style: TextStyle(
-                  color: secondaryColor,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
+  Visibility _artist_showcase() {
+    return Visibility(
+      visible: _resultArtists.isNotEmpty,
+      child: Column(
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 25),
+                child: Text(
+                  'Artists',
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 15,),
-        Container(
-          height: 120,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(width: 25,),
-            padding: const EdgeInsets.only(left: 25, right: 25),
-            itemCount: _resultArtists.length,// TODO:
-            itemBuilder: (context, index) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    width: 90,
-                    height: 90,
-                    decoration: BoxDecoration(
-                      color: secondaryColor,
-                      borderRadius: BorderRadius.circular(70),
-                    ),
-                    child: _resultArtists[index].getPortrait(),
-                  ),
-                  const Text( // TODO: const to be deleted after adding actual name
-                    'Artist', // TODO
-                    style: TextStyle(
-                      color: secondaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  )
-                ],
-              );
-            },
+            ],
           ),
-        )
-      ],
+          const SizedBox(height: 15,),
+          Container(
+            height: 120,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => const SizedBox(width: 25,),
+              padding: const EdgeInsets.only(left: 25, right: 25),
+              itemCount: _resultArtists.length, // TODO:
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: 90,
+                      height: 90,
+                      decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.circular(70),
+                      ),
+                      child: ClipOval(
+                        child: _resultArtists[index].getPortrait(),
+                      ),
+                    ),
+                    Text( // TODO: const to be deleted after adding actual name
+                      _resultArtists[index].getName(), // TODO
+                      style: const TextStyle(
+                        color: secondaryColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -319,7 +323,8 @@ class _SearchPageState extends State<SearchPage> {
                 style: TextStyle(
                     fontFamily: 'NotoSans',
                     fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.italic
+                    fontStyle: FontStyle.italic,
+                    color: secondaryColor,
                 ),
               ),
               SvgPicture.asset('assets/icons/share_gold.svg',height: 32, width: 32)
@@ -340,6 +345,7 @@ class _SearchPageState extends State<SearchPage> {
         margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: TextField(
           controller: _searchController,
+          style: TextStyle(color: secondaryColor),
           decoration: InputDecoration(
             filled: false,
             border: OutlineInputBorder(

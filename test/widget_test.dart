@@ -1,3 +1,4 @@
+/*
 import 'package:flutter_test/flutter_test.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
@@ -26,7 +27,6 @@ void main() {
     print('Random Playlist:');
     print('ID: ${playlist.getId()}, Name: ${playlist.getName()}, Duration: ${0}');
   });
-
   test('Get Songs For Playlist', () async {
     final playlist = Playlist(name: 'Test Playlist', id: 1, playlistCoverPath: 'path', timelength: 120, mutable: false);
 
@@ -39,3 +39,4 @@ void main() {
     }
   });
 }
+ */

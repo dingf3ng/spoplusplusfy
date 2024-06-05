@@ -4,9 +4,10 @@ import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/voice.dart';
 
+import 'Name.dart';
 import 'artist.dart';
 
-class Song extends Voice {
+class Song extends Voice implements Name {
   late String _name;
   late Artist _artist;
   late Playlist belongingPlaylist;
@@ -26,6 +27,7 @@ class Song extends Voice {
     mutable = isMutable;
   }
 
+  @override
   String getName() {
     return _name;
   }
