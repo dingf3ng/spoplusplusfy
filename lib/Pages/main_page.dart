@@ -26,8 +26,7 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.black,
@@ -48,8 +47,7 @@ class MainPage extends StatelessWidget {
             }
           },
         ),
-      ),
-    );
+      );
   }
 
   ListView _buildMainBody(BuildContext context, List<Playlist> playlists) {
@@ -128,25 +126,21 @@ class MainPage extends StatelessWidget {
                       children: [
                         Column(
                           children: [
-                            Column(
-                              children: [
-                                Container(
-                                  height: 170,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: goldColour,
-                                      width: 3,
-                                    ),
-                                    color: goldColour,
-                                    borderRadius: BorderRadius.circular(30),
-                                    image: DecorationImage(
-                                      image: NetworkImage(playlists[index].getCoverPath(),
-                                      scale: 0.1),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
+                            Container(
+                              height: 170,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: goldColour,
+                                  width: 3,
                                 ),
-                              ],
+                                color: goldColour,
+                                borderRadius: BorderRadius.circular(30),
+                                image: DecorationImage(
+                                  image: NetworkImage(playlists[index].getCoverPath(),
+                                  scale: 0.1),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ],
                         ),
