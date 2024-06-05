@@ -1,20 +1,19 @@
 
 import 'dart:collection';
-
 import 'package:spoplusplusfy/Classes/album.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
 class ArtistWorksManager {
 
-  static late HashMap<Artist, List<Song>> _artistSongMap;
-  static late HashMap<Artist, List<Album>> _artistAlbumMap;
-  static late HashMap<Song, List<Artist>> _songArtistMap;
-  static late HashMap<Album, List<Artist>> _albumArtistMap;
+  static late HashMap<Artist, List<Song>> _artistSongMap = HashMap();
+  static late HashMap<Artist, List<Album>> _artistAlbumMap = HashMap();
+  static late HashMap<Song, List<Artist>> _songArtistMap = HashMap();
+  static late HashMap<Album, List<Artist>> _albumArtistMap = HashMap();
 
-  static late HashSet<Song> _validSongs;
-  static late HashSet<Album> _validAlbums;
-  static late HashSet<Artist> _validArtists;
+  static late HashSet<Song> _validSongs = HashSet();
+  static late HashSet<Album> _validAlbums = HashSet();
+  static late HashSet<Artist> _validArtists = HashSet();
 
   ArtistWorksManager._private();
 
@@ -60,12 +59,14 @@ class ArtistWorksManager {
     _artistSongMap.update(
         artist,  (artist) => artist..add(song), ifAbsent: () => [song]
     );
+    _songArtistMap.update(song, (song) => song..add(artist), ifAbsent: () => [artist]);
   }
 
   static void addAlbumForArtist(Artist artist, Album album) {
     _artistAlbumMap.update(
         artist,  (artist) => artist..add(album), ifAbsent: () => [album]
     );
+    _albumArtistMap.update(album, (album) => album..add(artist), ifAbsent: () => [artist]);
   }
 
   static void deleteArtist(Artist artist) {
@@ -78,6 +79,18 @@ class ArtistWorksManager {
 
   static void deleteSong(Song song) {
     _validSongs.remove(song);
+  }
+
+  static void addArtist(Artist artist) {
+    _validArtists.add(artist);
+  }
+
+  static void addAlbum(Album album) {
+    _validAlbums.add(album);
+  }
+
+  static void addSong(Song song) {
+    _validSongs.add(song);
   }
 
 }

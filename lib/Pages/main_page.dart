@@ -46,7 +46,7 @@ class MainPage extends StatelessWidget {
               List<Playlist> playlists = snapshot.data!;
               return ListView(
                 shrinkWrap: true,
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 children: [
                     GestureDetector(
                       onTap: () {

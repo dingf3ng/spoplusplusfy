@@ -38,5 +38,4 @@ class Song extends Voice implements Name {
     return;
   }
 
-
 }

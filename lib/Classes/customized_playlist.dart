@@ -24,7 +24,7 @@ class CustomizedPlaylist extends Playlist {
     PlaylistSongManager.deletePlaylist(this);
   }
 
-  @override
+
   void setName(String newName){
     super.setName(newName);
   }
