@@ -109,7 +109,7 @@ class MainPage extends StatelessWidget {
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 30,
-                    mainAxisSpacing: 0.79,
+                    mainAxisSpacing: 30,
                     childAspectRatio: 0.80,
                   ),
                   itemBuilder: (context, index) => GestureDetector(
@@ -127,7 +127,7 @@ class MainPage extends StatelessWidget {
                         Column(
                           children: [
                             Container(
-                              height: 170,
+                              height: 140,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: goldColour,
@@ -145,13 +145,13 @@ class MainPage extends StatelessWidget {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(5.0),
                           child: Text(
                             playlists[index].getName(),
                             style: TextStyle(
                               color: goldColour,
                               fontFamily: 'Noto-Sans',
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),
                             overflow: TextOverflow.ellipsis,

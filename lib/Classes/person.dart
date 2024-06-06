@@ -21,11 +21,12 @@ abstract class Person implements Name {
     required int id,
     required Gender gender,
     required Image portrait,
-    required int age,
+    int? age,
   }) : this._name = name,
       this._id = id,
       this._gender = gender,
-      this._portrait = portrait;
+      this._portrait = portrait,
+      this._age = age;
 
   void setName(String s) {
     _name = s;

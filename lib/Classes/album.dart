@@ -11,7 +11,6 @@ class Album extends Playlist{
     required super.id,
     required super.timelength,
     super.mutable = false,
-    required artist,
   });
 
   @override

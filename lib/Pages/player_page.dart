@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
 
@@ -30,13 +31,7 @@ class _PlayerPageState extends State<PlayerPage> {
   String songTitle = '';
 
   /// The artist of the current song.
-  Artist songArtist = Artist(
-    name: '',
-    id: 111,
-    gender: Gender.Mysterious,
-    portrait: Image.asset('assets/images/artist_portrait.jpg'),
-    age: 111,
-  );
+  List<Artist> songArtists = [];
 
   @override
   void initState() {
@@ -51,7 +46,7 @@ class _PlayerPageState extends State<PlayerPage> {
     setState(() {
       isPlaying = PlaylistIterator.isPlaying();
       songTitle = PlaylistIterator.getCurrentSong().getName();
-      songArtist = PlaylistIterator.getCurrentSong().getArtist();
+      songArtists = ArtistWorksManager.getArtistsOfSong(PlaylistIterator.getCurrentSong());
     });
   }
 
@@ -95,7 +90,9 @@ class _PlayerPageState extends State<PlayerPage> {
               textAlign: TextAlign.center,
             ),
             Text(
-              songArtist.getName(),
+              ArtistWorksManager.getArtistsOfSongAsString(
+                PlaylistIterator.getCurrentSong()
+              ),
               style: songArtistStyle,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -124,7 +121,9 @@ class _PlayerPageState extends State<PlayerPage> {
                           PlaylistIterator.playNextSong();
                         }
                         songTitle = PlaylistIterator.getCurrentSong().getName();
-                        songArtist.setName(PlaylistIterator.getCurrentSong().getArtist().getName());
+                        songArtists = ArtistWorksManager.getArtistsOfSong(
+                            PlaylistIterator.getCurrentSong()
+                        );
                       });
                   },
                 ),

@@ -42,9 +42,19 @@ class ArtistWorksManager {
       ..removeWhere((x) => !_validArtists.contains(x));
   }
 
+  static String getArtistsOfSongAsString(Song song) {
+    return getArtistsOfSong(song).map((artist) => artist.getName())
+        .reduce((value,element) => '$value, $element');
+  }
+
   static List<Artist> getArtistsOfAlbum(Album album) {
     return _albumArtistMap[album]!
       ..removeWhere((x) => !_validArtists.contains(x));
+  }
+
+  static String getArtistsOfAlbumAsString(Album album) {
+    return getArtistsOfAlbum(album).map((artist) => artist.getName())
+        .reduce((value,element) => '$value, $element');
   }
 
   static List<Song> getSongsOfArtist(Artist artist) {

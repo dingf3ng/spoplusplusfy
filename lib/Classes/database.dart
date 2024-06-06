@@ -104,18 +104,11 @@ class DatabaseHelper {
     final randomIndex = Random().nextInt(playlists.length);
     final playlistData = playlists[randomIndex];
     return Album(
-      name: playlistData['name'] ?? 'no_name',
+      name: playlistData['name'] ?? 'Untitled',
       playlistCoverPath: playlistData['cover_url']??'assets/images/playlist_cover.jpg',
       id: playlistData['album_id'] ?? 000,
       timelength: playlistData['duration'] ?? 0,
       mutable: false,
-      artist: Artist(
-        name: playlistData['artist_name'],
-        id: 111,
-        gender: Gender.Mysterious,
-        portrait: Image.asset('assets/images/artist_portrait.jpg'),
-        age: 111,
-      ),
     );
   }
 }

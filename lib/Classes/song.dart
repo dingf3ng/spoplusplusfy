@@ -9,7 +9,6 @@ import 'artist.dart';
 
 class Song extends Voice implements Name {
   late String _name;
-  late Artist _artist;
   late Playlist belongingPlaylist;
   late bool mutable;
 
@@ -22,7 +21,6 @@ class Song extends Voice implements Name {
             audio: AudioSource.uri(Uri.parse(
                 'assets/songs/${id.toString().substring(0, 3)}/$id.mp3'))) {
     _name = name;
-    _artist = artist;
     belongingPlaylist = playlist;
     mutable = isMutable;
   }
@@ -31,7 +29,6 @@ class Song extends Voice implements Name {
   String getName() {
     return _name;
   }
-  getArtist() => _artist;
 
   @override
   void setName(String name) {

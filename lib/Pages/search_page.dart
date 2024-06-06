@@ -333,9 +333,7 @@ class _SearchPageState extends State<SearchPage> {
                         width: 50,
                         child: Text(
                           ArtistWorksManager
-                              .getArtistsOfSong(_resultSongs[index])
-                              .map((artist) => artist.getName())
-                              .reduce((value,element) => '$value, $element'),
+                              .getArtistsOfSongAsString(_resultSongs[index]),
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: secondaryColor,
