@@ -7,20 +7,21 @@ abstract class Playlist implements Name{
   String _name;
   late String _playlistCoverImagePath;
   late int _id;
-  int _timeLength;
+  int _timeLength = 0;
   late bool _mutable;
 
   Playlist(
       {required String name,
       required String playlistCoverPath,
       required int id,
-      required int timelength,
+      int? timeLength,
       required bool mutable})
       : _name = name,
         _playlistCoverImagePath = playlistCoverPath,
         _id = id,
-        _timeLength = timelength,
+        _timeLength = timeLength ?? 0,
         _mutable = mutable;
+
 
   int getHashCode() {
     return _id.hashCode;
@@ -46,7 +47,7 @@ abstract class Playlist implements Name{
 
   void delete();
 
-  int timeLength() {
+  int? timeLength() {
     return _timeLength;
   }
 

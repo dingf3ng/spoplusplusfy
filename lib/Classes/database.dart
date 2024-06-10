@@ -29,7 +29,7 @@ class DatabaseHelper {
   /// Getter for the database instance.
   /// If the database is already initialized, it returns the existing instance,
   /// otherwise, it initializes the database and returns the new instance.
-  Future<Database?> get database async {
+  static Future<Database?> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
     return _database!;
@@ -37,7 +37,7 @@ class DatabaseHelper {
 
   /// Initializes the database.
   /// Checks if the database already exists, if not, it copies the database from assets.
-  Future<Database?> _initDatabase() async {
+  static Future<Database?> _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'spo++fy_database.db');
 
@@ -71,19 +71,10 @@ class DatabaseHelper {
     );
 
     return List.generate(songs.length, (i) {
-      Artist artist = Artist(
-        name: songs[i]['artist_name'] ?? 'no_name',
-        id: 111,
-        gender: Gender.Mysterious,
-        portrait: Image.asset('assets/images/artist_portrait.jpg'),
-        age: 111,
-      );
       return Song(
         id: songs[i]['song_id'] ?? 000,
         duration: songs[i]['duration'] ?? 000,
         name: songs[i]['name'] ?? 'no_name',
-        artist: artist,
-        playlist: playlist,
         isMutable: false,
         volume: 100,
       );
@@ -107,7 +98,7 @@ class DatabaseHelper {
       name: playlistData['name'] ?? 'Untitled',
       playlistCoverPath: playlistData['cover_url']??'assets/images/playlist_cover.jpg',
       id: playlistData['album_id'] ?? 000,
-      timelength: playlistData['duration'] ?? 0,
+      timeLength: playlistData['duration'] ?? 0,
       mutable: false,
     );
   }

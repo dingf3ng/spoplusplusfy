@@ -127,7 +127,8 @@ class MainPage extends StatelessWidget {
                         Column(
                           children: [
                             Container(
-                              height: 140,
+                              width: 170,
+                              height: 170,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: goldColour,
@@ -151,7 +152,7 @@ class MainPage extends StatelessWidget {
                             style: TextStyle(
                               color: goldColour,
                               fontFamily: 'Noto-Sans',
-                              fontSize: 12,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
                             overflow: TextOverflow.ellipsis,

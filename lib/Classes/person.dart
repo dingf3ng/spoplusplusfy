@@ -55,6 +55,8 @@ abstract class Person implements Name {
 
   Image getPortrait() => _portrait;
 
+  int getId() => _id;
+
   void follow(Person p) {
     FollowerManager.addToFollowing(this, p);
   }

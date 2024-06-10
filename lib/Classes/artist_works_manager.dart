@@ -3,38 +3,73 @@ import 'dart:collection';
 import 'package:spoplusplusfy/Classes/album.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:spoplusplusfy/Utilities/search_engine.dart';
+import 'package:sqflite/sqflite.dart';
+
+import 'database.dart';
 
 class ArtistWorksManager {
 
-  static late HashMap<Artist, List<Song>> _artistSongMap = HashMap();
-  static late HashMap<Artist, List<Album>> _artistAlbumMap = HashMap();
-  static late HashMap<Song, List<Artist>> _songArtistMap = HashMap();
-  static late HashMap<Album, List<Artist>> _albumArtistMap = HashMap();
+  static late HashMap<Artist, List<Song>> _artistSongMap;
+  static late HashMap<Artist, List<Album>> _artistAlbumMap;
+  static late HashMap<Song, List<Artist>> _songArtistMap;
+  static late HashMap<Album, List<Artist>> _albumArtistMap;
 
-  static late HashSet<Song> _validSongs = HashSet();
-  static late HashSet<Album> _validAlbums = HashSet();
-  static late HashSet<Artist> _validArtists = HashSet();
+  static late HashSet<Song> _validSongs;
+  static late HashSet<Album> _validAlbums;
+  static late HashSet<Artist> _validArtists;
 
   ArtistWorksManager._private();
 
-  static ArtistWorksManager init(
-      HashMap<Artist, List<Song>> artistSongMap,
-      HashMap<Artist, List<Album>> artistAlbumMap,
-      HashMap<Song, List<Artist>> songArtistMap,
-      HashMap<Album, List<Artist>> albumArtistMap,
-      HashSet<Song> validSongs,
-      HashSet<Album> validAlbums,
-      HashSet<Artist> validArtists,
-      ) {
+  final DatabaseHelper _dbHelper = DatabaseHelper();
 
-    _artistSongMap = artistSongMap;
-    _artistAlbumMap = artistAlbumMap;
-    _songArtistMap = songArtistMap;
-    _albumArtistMap = albumArtistMap;
-    _validAlbums = validAlbums;
-    _validArtists = validArtists;
-    _validSongs = validSongs;
-    return ArtistWorksManager._private();
+  static Future<void> init() async {
+    final Database? db = await DatabaseHelper.database;
+    _artistSongMap = HashMap();
+    _artistAlbumMap = HashMap();
+    _songArtistMap = HashMap();
+    _albumArtistMap = HashMap();
+    _validSongs = HashSet();
+    _validAlbums = HashSet();
+    _validArtists = HashSet();
+
+    HashMap<int, Album> Id2Album = HashMap();
+    HashMap<int, Song> Id2Song = HashMap();
+    HashMap<String, Artist> Id2Artist = HashMap();
+
+    // read data from db
+    //read album
+    final List<Map<String,Object?>>? albumMaps = await db?.query('updated_album_database');
+    final List<Album> albums = albumMaps!.map((map) => Album.fromMap(map)).toList();
+    _validAlbums.addAll(albums);
+
+    //read song
+    final List<Map<String, Object?>>? songMaps = await db?.query('songs');
+    final List<Song> songs = songMaps!.map((map) => Song.fromMap(map)).toList();
+    _validSongs.addAll(songs);
+
+    //read artist
+    final List<Map<String, Object?>>? artistMap = await db?.query(
+        'songs',
+      columns: ['artist_name'],
+      distinct: true
+    );
+    final List<Artist> artists = artistMap!.map((map) => Artist.fromMap(map)).toList();
+    _validArtists.addAll(artists);
+
+    SearchEngine.init(artists.toSet(), albums.toSet(), {}, songs.toSet(), HashSet());
+
+    for(Album album in albums) {
+      Id2Album.putIfAbsent(album.getId(), () => album);
+    }
+    for(Song song in songs) {
+      Id2Song.putIfAbsent(song.getId(), () => song);
+    }
+    for(Artist artist in artists) {
+      Id2Artist.putIfAbsent(artist.getName(), () => artist);
+    }
+
+
   }
 
   static List<Artist> getArtistsOfSong(Song song) {

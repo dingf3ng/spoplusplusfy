@@ -9,7 +9,7 @@ class CustomizedPlaylist extends Playlist {
     required super.name,
     required super.playlistCoverPath,
     required super.id,
-    required super.timelength,
+    required super.timeLength,
     super.mutable = true,
   });
 

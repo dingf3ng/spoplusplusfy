@@ -1,8 +1,10 @@
 
 import 'dart:collection';
+import 'package:spoplusplusfy/Classes/album.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:sqflite/sqflite.dart';
 
 class PlaylistSongManager {
   static late HashMap<Playlist, List<Song>> _listMap;
@@ -11,17 +13,48 @@ class PlaylistSongManager {
   static late HashSet<Song> _allValidSong;
 
   PlaylistSongManager._privateConstructor();
+
+  final DatabaseHelper _dbHelper = DatabaseHelper();
   
-  static PlaylistSongManager init(HashSet<Playlist> validPlaylist,
-      HashSet<Song> validSong,
-      HashMap<Playlist, List<Song>> listMap,
-      HashMap<Song, List<Playlist>> songMap,
-      ) {
-    _allValidPlaylist = validPlaylist;
-    _allValidSong = validSong;
-    _listMap = listMap;
-    _songMap = songMap;
-    return PlaylistSongManager._privateConstructor();
+  static Future<void> init() async{
+    final Database? db = await DatabaseHelper.database;
+    // init all the maps and sets
+    _listMap = HashMap();
+    _songMap = HashMap();
+    _allValidPlaylist = HashSet();
+    _allValidSong = HashSet();
+
+    HashMap<int, Album> Id2Album = HashMap();
+    HashMap<int, Song> Id2Song = HashMap();
+
+    // read data from db
+    //read album
+    final List<Map<String,Object?>>? albumMaps = await db?.query('updated_album_database');
+    final List<Album> albums = albumMaps!.map((map) => Album.fromMap(map)).toList();
+    //TODO: read created playlists
+    _allValidPlaylist.addAll(albums);
+
+    //read song
+    final List<Map<String, Object?>>? songMaps = await db?.query('songs');
+    final List<Song> songs = songMaps!.map((map) => Song.fromMap(map)).toList();
+    _allValidSong.addAll(songs);
+
+    //load relationships
+    for(Album album in albums) {
+      Id2Album.putIfAbsent(album.getId(), () => album);
+    }
+    for(Song song in songs) {
+      Id2Song.putIfAbsent(song.getId(), () => song);
+    }
+    final List<Map<String,Object?>>? relationships = await db?.query('combined_songs_albums');
+    for(Map<String, Object?> relationship in relationships!) {
+      int? song_id = relationship['field1'] as int?;
+      int? album_id = relationship['field5'] as int?;
+      _listMap.update(Id2Album[album_id]!, (list) => list..add(Id2Song[song_id]!),
+          ifAbsent: () => [Id2Song[song_id]!]);
+      _songMap.update(Id2Song[song_id]!, (list) => list..add(Id2Album[album_id]!),
+          ifAbsent: () => [Id2Album[album_id]!]);
+    }
   }
 
   static Future<List<Song>> getSongsForPlaylist(Playlist playlist) async {

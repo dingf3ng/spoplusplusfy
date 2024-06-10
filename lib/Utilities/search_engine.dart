@@ -20,17 +20,18 @@ class SearchEngine {
 
   SearchEngine._private();
 
-  static SearchEngine init(Set<Artist> artists,
+  static void init(
+      Set<Artist> artists,
       Set<Album> albums,
       Set<CustomizedPlaylist> playlists,
       Set<Song> songs,
-      HashSet<String> tokens) {
+      HashSet<String> tokens
+      ) {
     _artistSet = artists;
     _albumSet = albums;
     _playlistSet = playlists;
     _songSet = songs;
     _tokens = tokens;
-    return SearchEngine._private();
   }
 
   static List<String> _tokenize(String s) {
