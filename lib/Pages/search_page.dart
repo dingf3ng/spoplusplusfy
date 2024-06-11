@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
+import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
@@ -28,8 +29,8 @@ class _SearchPageState extends State<SearchPage> {
   static const Color primaryColor = Color(0x00000000);
   static const Color secondaryColor = Color(0xffFFE8A3);
 
-  List<Artist> _resultArtists = [];
-  List<Album> _resultAlbums = [];
+  static List<Artist> _resultArtists = [];
+  static List<Album> _resultAlbums = [];
   List<CustomizedPlaylist> _resultPlaylists = [];
   List<Song> _resultSongs = [];
 
@@ -66,11 +67,8 @@ class _SearchPageState extends State<SearchPage> {
             _searchField(),
             const SizedBox(height: 40),
             _artist_showcase(),
-            const SizedBox(height: 40),
             _album_showcase(),
-            const SizedBox(height: 40),
             _playlist_showcase(),
-            const SizedBox(height: 40),
             _song_showcase(),
             const SizedBox(height: 40),
           ],
@@ -99,13 +97,13 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
           const SizedBox(height: 15,),
-          Container(
+          SizedBox(
             height: 120,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) => const SizedBox(width: 25,),
               padding: const EdgeInsets.only(left: 25, right: 25),
-              itemCount: _resultArtists.length, // TODO:
+              itemCount: _resultArtists.length,
               itemBuilder: (context, index) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -115,14 +113,15 @@ class _SearchPageState extends State<SearchPage> {
                       height: 90,
                       decoration: BoxDecoration(
                         color: secondaryColor,
+                        border: Border.all(color: secondaryColor, width: 3),
                         borderRadius: BorderRadius.circular(70),
                       ),
                       child: ClipOval(
                         child: _resultArtists[index].getPortrait(),
                       ),
                     ),
-                    Text( // TODO: const to be deleted after adding actual name
-                      _resultArtists[index].getName(), // TODO
+                    Text(
+                      _resultArtists[index].getName(),
                       style: const TextStyle(
                         color: secondaryColor,
                         fontSize: 12,
@@ -133,166 +132,235 @@ class _SearchPageState extends State<SearchPage> {
                 );
               },
             ),
-          )
+          ),
+          const SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  Column _album_showcase() {
-    return Column(
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: Text(
-                'Albums',
-                style: TextStyle(
-                  color: secondaryColor,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 15,),
-        Container(
-          height: 160,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(width: 25,),
-            padding: const EdgeInsets.only(left: 25, right: 25),
-            itemCount: 3,// TODO:
-            itemBuilder: (context, index) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    width: 130,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      color: secondaryColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  const Text( // TODO: const to be deleted after adding actual name
-                    'Album', // TODO
-                    style: TextStyle(
-                      color: secondaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  )
-                ],
-              );
-            },
-          ),
-        )
-      ],
-    );
-  }
-
-  Column _playlist_showcase() {
-    return Column(
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: Text(
-                'Playlists',
-                style: TextStyle(
-                  color: secondaryColor,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 15,),
-        Container(
-          height: 160,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(width: 25,),
-            padding: const EdgeInsets.only(left: 25, right: 25),
-            itemCount: 3,// TODO:
-            itemBuilder: (context, index) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    width: 140,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      color: secondaryColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  const Text( // TODO: const to be deleted after adding actual name
-                    'Playlist', // TODO
-                    style: TextStyle(
-                      color: secondaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  )
-                ],
-              );
-            },
-          ),
-        )
-      ],
-    );
-  }
-
-  Column _song_showcase() {
-    return Column(
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: Text(
-                'Songs',
-                style: TextStyle(
+  Visibility _album_showcase() {
+    return Visibility(
+      visible: _resultAlbums.isNotEmpty,
+      child: Column(
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 25),
+                child: Text(
+                  'Albums',
+                  style: TextStyle(
                     color: secondaryColor,
                     fontSize: 25,
-                    fontWeight: FontWeight.w600),
-              ),
-            ),
-          ],
-        ),
-        Container(
-          height: 20,
-        ),
-        Container(
-          height: 300,
-          child: ListView.separated(
-            shrinkWrap: true,
-            primary: false,
-            padding: const EdgeInsets.only(left: 25, right: 25),
-            separatorBuilder: (context, index) => const SizedBox(height: 10,),
-            itemCount: 15,
-            itemBuilder: (context, index) {
-              return Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: secondaryColor),
-                  borderRadius: BorderRadius.circular(20),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
-        )
-      ],
+          const SizedBox(height: 15,),
+          SizedBox(
+            height: 160,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => const SizedBox(width: 25,),
+              padding: const EdgeInsets.only(left: 25, right: 25),
+              itemCount: _resultAlbums.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: secondaryColor,
+                          width: 3,
+                        ),
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(_resultAlbums[index].getCoverPath()),
+                          fit: BoxFit.cover,
+                        )
+                      ),
+                    ),
+                    Text(
+                      _resultAlbums[index].getName(),
+                      style: const TextStyle(
+                        color: secondaryColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  Visibility _playlist_showcase() {
+    return Visibility(
+      visible: _resultPlaylists.isNotEmpty,
+      child: Column(
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 25),
+                child: Text(
+                  'Playlists',
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15,),
+          SizedBox(
+            height: 160,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => const SizedBox(width: 25,),
+              padding: const EdgeInsets.only(left: 25, right: 25),
+              itemCount: _resultPlaylists.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        color: secondaryColor,
+                        border: Border.all(
+                          color: secondaryColor,
+                          width: 3,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(_resultPlaylists[index].getCoverPath()),
+                        )
+                      ),
+                    ),
+                    Text(
+                      _resultPlaylists[index].getName(),
+                      style: const TextStyle(
+                        color: secondaryColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  Visibility _song_showcase() {
+    return Visibility(
+      visible: _resultSongs.isNotEmpty,
+      child: Column(
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 25),
+                child: Text(
+                  'Songs',
+                  style: TextStyle(
+                      color: secondaryColor,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            height: 20,
+          ),
+          SizedBox(
+            height: 300,
+            child: ListView.separated(
+              shrinkWrap: true,
+              primary: false,
+              padding: const EdgeInsets.only(left: 25, right: 25),
+              separatorBuilder: (context, index) => const SizedBox(height: 10,),
+              itemCount: _resultSongs.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    border: Border.all(color: secondaryColor, width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        child: Text(
+                          _resultSongs[index].getName(),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: secondaryColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 50,
+                        child: Text(
+                          ArtistWorksManager
+                              .getArtistsOfSongAsString(_resultSongs[index]),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: secondaryColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 50,
+                        child: Text(
+                          _formatTime(_resultSongs[index].getDuration()),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: secondaryColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -345,7 +413,7 @@ class _SearchPageState extends State<SearchPage> {
         margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: TextField(
           controller: _searchController,
-          style: TextStyle(color: secondaryColor),
+          style: const TextStyle(color: secondaryColor),
           decoration: InputDecoration(
             filled: false,
             border: OutlineInputBorder(
@@ -401,4 +469,11 @@ class _SearchPageState extends State<SearchPage> {
         ));
   }
 
+}
+
+String _formatTime(int duration) {
+  int h = duration ~/ 3600;
+  int m = (duration - h * 3600) ~/ 60;
+  int s = (duration - h * 3600 - m * 60);
+  return h != 0 ? '$h:$m:$s' : '$m:$s';
 }

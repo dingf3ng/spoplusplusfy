@@ -9,10 +9,17 @@ class Album extends Playlist{
   Album({required super.name,
     required super.playlistCoverPath,
     required super.id,
-    required super.timelength,
+    super.timeLength,
     super.mutable = false,
-    required artist,
   });
+
+  factory Album.fromMap(Map<String, Object?> map) {
+    return Album(name: map['name'] as String,
+        playlistCoverPath: map['cover_url'] as String,
+        id: map['album_id'] as int,
+        mutable: false,
+    );
+  }
 
   @override
   void updateWith(Song song) {

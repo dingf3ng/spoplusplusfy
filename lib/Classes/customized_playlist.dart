@@ -9,7 +9,7 @@ class CustomizedPlaylist extends Playlist {
     required super.name,
     required super.playlistCoverPath,
     required super.id,
-    required super.timelength,
+    required super.timeLength,
     super.mutable = true,
   });
 
@@ -24,9 +24,6 @@ class CustomizedPlaylist extends Playlist {
     PlaylistSongManager.deletePlaylist(this);
   }
 
-  @override
-  void setName(String newName){
-    super.setName(newName);
-  }
+
 
 }
