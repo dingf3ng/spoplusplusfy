@@ -4,9 +4,9 @@ abstract class Voice {
   static const maxVolume = 100;
   static const minVolume = 0;
 
-  late AudioSource _audio;
-  late int _id;
-  late int _duration;
+  late final AudioSource _audio;
+  late final int _id;
+  late final int _duration;
   int _volume;
 
   Voice({

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
@@ -6,7 +5,6 @@ import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
 
 import '../Classes/artist.dart';
-import '../Classes/person.dart';
 
 /// A stateful widget representing the player page.
 class PlayerPage extends StatefulWidget {
@@ -16,7 +14,7 @@ class PlayerPage extends StatefulWidget {
   /// Constructs a [PlayerPage] instance.
   ///
   /// [playlist]: The playlist to be played.
-  PlayerPage({required this.playlist});
+  const PlayerPage({super.key, required this.playlist});
 
   @override
   _PlayerPageState createState() => _PlayerPageState();
@@ -129,8 +127,8 @@ class _PlayerPageState extends State<PlayerPage> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(40.0),
+            const Padding(
+              padding: EdgeInsets.all(40.0),
               child: Text(
                 'lyrics',
                 style: TextStyle(

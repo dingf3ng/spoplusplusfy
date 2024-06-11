@@ -5,7 +5,7 @@ import 'package:spoplusplusfy/Classes/song.dart';
 
 class PlaylistIterator {
   static final AudioPlayer _player = AudioPlayer();
-  static List<Song> _currentList = [];
+  static final List<Song> _currentList = [];
   static Song? _currentSong;
   static int songIndex = 0;
 

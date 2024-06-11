@@ -1,17 +1,15 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:spoplusplusfy/Classes/Name.dart';
 import 'package:spoplusplusfy/Classes/follower_manager.dart';
 
-import 'follower_manager.dart';
 
 enum Gender {Male, Female, Mysterious}
 
 abstract class Person implements Name {
 
   String _name;
-  late int _id;
+  late final int _id;
   Gender _gender;
   int? _age;
   Image _portrait;
@@ -22,12 +20,13 @@ abstract class Person implements Name {
     required Gender gender,
     required Image portrait,
     int? age,
-  }) : this._name = name,
-      this._id = id,
-      this._gender = gender,
-      this._portrait = portrait,
-      this._age = age;
+  }) : _name = name,
+      _id = id,
+      _gender = gender,
+      _portrait = portrait,
+      _age = age;
 
+  @override
   void setName(String s) {
     _name = s;
   }
@@ -54,6 +53,8 @@ abstract class Person implements Name {
   int? getAge() => _age;
 
   Image getPortrait() => _portrait;
+
+  int getId() => _id;
 
   void follow(Person p) {
     FollowerManager.addToFollowing(this, p);
