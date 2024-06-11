@@ -7,8 +7,8 @@ import 'package:spoplusplusfy/Pages/main_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  PlaylistSongManager.init();
-  ArtistWorksManager.init();
+  await PlaylistSongManager.init();
+  await ArtistWorksManager.init();
   runApp(const Spoplusplusfy());
 }
 

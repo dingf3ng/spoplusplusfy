@@ -120,12 +120,17 @@ class _SearchPageState extends State<SearchPage> {
                         child: _resultArtists[index].getPortrait(),
                       ),
                     ),
-                    Text(
-                      _resultArtists[index].getName(),
-                      style: const TextStyle(
-                        color: secondaryColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      width: 90,
+                      alignment: Alignment.center,
+                      child: Text(
+                        _resultArtists[index].getName(),
+                        style: const TextStyle(
+                          color: secondaryColor,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     )
                   ],
@@ -173,8 +178,8 @@ class _SearchPageState extends State<SearchPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                      width: 130,
-                      height: 130,
+                      width: 140,
+                      height: 140,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: secondaryColor,
@@ -183,17 +188,22 @@ class _SearchPageState extends State<SearchPage> {
                         color: secondaryColor,
                         borderRadius: BorderRadius.circular(20),
                         image: DecorationImage(
-                          image: AssetImage(_resultAlbums[index].getCoverPath()),
+                          image: NetworkImage(_resultAlbums[index].getCoverPath()),
                           fit: BoxFit.cover,
                         )
                       ),
                     ),
-                    Text(
-                      _resultAlbums[index].getName(),
-                      style: const TextStyle(
-                        color: secondaryColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      alignment: Alignment.center,
+                      width: 140,
+                      child: Text(
+                        _resultAlbums[index].getName(),
+                        style: const TextStyle(
+                          color: secondaryColor,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     )
                   ],
@@ -255,12 +265,17 @@ class _SearchPageState extends State<SearchPage> {
                         )
                       ),
                     ),
-                    Text(
-                      _resultPlaylists[index].getName(),
-                      style: const TextStyle(
-                        color: secondaryColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
+                    Container(
+                      width: 140,
+                      alignment: Alignment.center,
+                      child: Text(
+                        _resultPlaylists[index].getName(),
+                        style: const TextStyle(
+                          color: secondaryColor,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     )
                   ],
@@ -317,7 +332,7 @@ class _SearchPageState extends State<SearchPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       SizedBox(
-                        width: 100,
+                        width: 150,
                         child: Text(
                           _resultSongs[index].getName(),
                           overflow: TextOverflow.ellipsis,
@@ -329,7 +344,7 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ),
                       SizedBox(
-                        width: 50,
+                        width: 100,
                         child: Text(
                           ArtistWorksManager
                               .getArtistsOfSongAsString(_resultSongs[index]),
