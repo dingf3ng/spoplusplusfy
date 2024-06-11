@@ -12,7 +12,7 @@ import 'Classes/song.dart';
 import 'Utilities/search_engine.dart';
 
 void main() {
-  runApp(MainPage());
+  runApp(MaterialApp(home: MainPage()));
   Set<Artist> artset = { 
     Artist(name: 'Prince', id: 1, gender: Gender.Male, portrait: const Image(image: AssetImage('assets/images/prince.jpg')), age: 57),
   };
