@@ -1,20 +1,14 @@
-import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
-import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Pages/main_page.dart';
 
-import 'Classes/album.dart';
-import 'Classes/song.dart';
-import 'Utilities/search_engine.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  ArtistWorksManager.init();
   PlaylistSongManager.init();
+  ArtistWorksManager.init();
   runApp(const Spoplusplusfy());
 }
 
@@ -37,7 +31,7 @@ class Spoplusplusfy extends StatelessWidget {
           cursorColor: Color(0xffFFE8A3),
         )
       ),
-      home: MainPage(),
+      home: const MainPage(),
     );
   }
 }

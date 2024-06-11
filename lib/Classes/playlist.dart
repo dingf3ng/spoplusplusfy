@@ -1,14 +1,13 @@
 import 'dart:core';
 import 'package:spoplusplusfy/Classes/Name.dart';
-import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
 abstract class Playlist implements Name{
   String _name;
-  late String _playlistCoverImagePath;
-  late int _id;
+  late final String _playlistCoverImagePath;
+  late final int _id;
   int _timeLength = 0;
-  late bool _mutable;
+  late final bool _mutable;
 
   Playlist(
       {required String name,

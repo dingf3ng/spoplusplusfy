@@ -25,8 +25,5 @@ class CustomizedPlaylist extends Playlist {
   }
 
 
-  void setName(String newName){
-    super.setName(newName);
-  }
 
 }

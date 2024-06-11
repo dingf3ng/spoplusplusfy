@@ -52,7 +52,7 @@ class ArtistWorksManager {
     final List<Map<String, Object?>>? artistMap = await db?.query(
         'songs',
       columns: ['artist_name'],
-      distinct: true
+      distinct: true,
     );
     final List<Artist> artists = artistMap!.map((map) => Artist.fromMap(map)).toList();
     _validArtists.addAll(artists);

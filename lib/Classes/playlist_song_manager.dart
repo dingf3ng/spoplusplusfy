@@ -48,12 +48,12 @@ class PlaylistSongManager {
     }
     final List<Map<String,Object?>>? relationships = await db?.query('combined_songs_albums');
     for(Map<String, Object?> relationship in relationships!) {
-      int? song_id = relationship['field1'] as int?;
-      int? album_id = relationship['field5'] as int?;
-      _listMap.update(Id2Album[album_id]!, (list) => list..add(Id2Song[song_id]!),
-          ifAbsent: () => [Id2Song[song_id]!]);
-      _songMap.update(Id2Song[song_id]!, (list) => list..add(Id2Album[album_id]!),
-          ifAbsent: () => [Id2Album[album_id]!]);
+      int? songId = relationship['field1'] as int?;
+      int? albumId = relationship['field5'] as int?;
+      _listMap.update(Id2Album[albumId]!, (list) => list..add(Id2Song[songId]!),
+          ifAbsent: () => [Id2Song[songId]!]);
+      _songMap.update(Id2Song[songId]!, (list) => list..add(Id2Album[albumId]!),
+          ifAbsent: () => [Id2Album[albumId]!]);
     }
   }
 

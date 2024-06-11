@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
-import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
@@ -98,7 +97,7 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
           const SizedBox(height: 15,),
-          Container(
+          SizedBox(
             height: 120,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
@@ -162,7 +161,7 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
           const SizedBox(height: 15,),
-          Container(
+          SizedBox(
             height: 160,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
@@ -230,7 +229,7 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
           const SizedBox(height: 15,),
-          Container(
+          SizedBox(
             height: 160,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
@@ -298,7 +297,7 @@ class _SearchPageState extends State<SearchPage> {
           Container(
             height: 20,
           ),
-          Container(
+          SizedBox(
             height: 300,
             child: ListView.separated(
               shrinkWrap: true,
@@ -317,7 +316,7 @@ class _SearchPageState extends State<SearchPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Container(
+                      SizedBox(
                         width: 100,
                         child: Text(
                           _resultSongs[index].getName(),
@@ -329,7 +328,7 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: 50,
                         child: Text(
                           ArtistWorksManager
@@ -342,7 +341,7 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: 50,
                         child: Text(
                           _formatTime(_resultSongs[index].getDuration()),
@@ -414,7 +413,7 @@ class _SearchPageState extends State<SearchPage> {
         margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: TextField(
           controller: _searchController,
-          style: TextStyle(color: secondaryColor),
+          style: const TextStyle(color: secondaryColor),
           decoration: InputDecoration(
             filled: false,
             border: OutlineInputBorder(

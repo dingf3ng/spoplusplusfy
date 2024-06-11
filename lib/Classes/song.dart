@@ -1,11 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
-import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/voice.dart';
 
 import 'Name.dart';
-import 'artist.dart';
 
 class Song extends Voice implements Name {
   late String _name;

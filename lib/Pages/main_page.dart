@@ -1,20 +1,15 @@
 import 'dart:async';
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
-import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
-import 'package:spoplusplusfy/main.dart';
 import 'package:spoplusplusfy/Pages/player_page.dart';
 
-final Color goldColour = Color.fromRGBO(255, 232, 163, 1.0);
+const Color goldColour = Color.fromRGBO(255, 232, 163, 1.0);
 
 class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
 
   Future<List<Playlist>> _getPlaylists() async {
     List<Playlist> playlists = [];
@@ -36,11 +31,11 @@ class MainPage extends StatelessWidget {
           future: _getPlaylists(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text('No Playlists Available'));
+              return const Center(child: Text('No Playlists Available'));
             } else {
               List<Playlist> playlists = snapshot.data!;
               return _buildMainBody(context, playlists);
@@ -53,14 +48,14 @@ class MainPage extends StatelessWidget {
   ListView _buildMainBody(BuildContext context, List<Playlist> playlists) {
     return ListView(
               shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               children: [
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SearchPage(),
+                          builder: (context) => const SearchPage(),
                         ),
                       );
                     },
@@ -74,7 +69,7 @@ class MainPage extends StatelessWidget {
                         color: goldColour,
                         borderRadius: BorderRadius.circular(30),
                         ),
-                      child: Text("enter search page", style: TextStyle(
+                      child: const Text("enter search page", style: TextStyle(
                         fontSize: 30,
                         color: Colors.black,
                         fontFamily: 'Noto-Sans',
@@ -83,8 +78,8 @@ class MainPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                 Padding(
-                   padding: const EdgeInsets.only(top: 30.0),
+                 const Padding(
+                   padding: EdgeInsets.only(top: 30.0),
                    child: Text(
                       '    Welcome,\n    Here Are The Music For\n    You',
                       style: TextStyle(
@@ -105,7 +100,7 @@ class MainPage extends StatelessWidget {
   GridView _buildGridAlbums(List<Playlist> playlists) {
     return GridView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 30,
@@ -149,7 +144,7 @@ class MainPage extends StatelessWidget {
                           padding: const EdgeInsets.all(5.0),
                           child: Text(
                             playlists[index].getName(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: goldColour,
                               fontFamily: 'Noto-Sans',
                               fontSize: 16,

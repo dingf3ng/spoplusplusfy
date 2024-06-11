@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-import 'artist.dart';
 import 'album.dart';
 import 'playlist.dart';
 
