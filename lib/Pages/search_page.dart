@@ -5,15 +5,14 @@ import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:spoplusplusfy/Pages/main_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
 import '../Classes/album.dart';
 
+
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
-
-  //A fake database for now, to be deleted later
-
 
   @override
   State<StatefulWidget> createState() {
@@ -22,7 +21,7 @@ class SearchPage extends StatefulWidget {
   
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin{
 
   final TextEditingController _searchController = TextEditingController();
   
@@ -55,6 +54,7 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -62,17 +62,31 @@ class _SearchPageState extends State<SearchPage> {
         extendBodyBehindAppBar: false,
         backgroundColor: primaryColor,
         appBar: _appBar(),
-        body: ListView(
-          children: [
-            _searchField(),
-            const SizedBox(height: 40),
-            _artist_showcase(),
-            _album_showcase(),
-            _playlist_showcase(),
-            _song_showcase(),
-            const SizedBox(height: 40),
-          ],
-        ));
+        body: NotificationListener(
+          onNotification: (ScrollNotification notification) {
+            if (notification is ScrollUpdateNotification) {
+              final ScrollMetrics metrics = notification.metrics;
+              // Check if we're at the bottom of the list and the user is scrolling up
+              if (metrics.pixels == metrics.maxScrollExtent && notification.scrollDelta! > 0) {
+                Navigator.pop(context);
+                return true;
+              }
+            }
+            return false;
+          },
+          child: ListView(
+            children: [
+              _searchField(),
+              const SizedBox(height: 40),
+              _artist_showcase(),
+              _album_showcase(),
+              _playlist_showcase(),
+              _song_showcase(),
+              const SizedBox(height: 40),
+            ],
+          ),
+        )
+    );
   }
 
   Visibility _artist_showcase() {
