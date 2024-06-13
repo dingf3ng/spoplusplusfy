@@ -17,7 +17,7 @@ class Song extends Voice implements Name {
     required super.volume
   }) : super(
             audio: AudioSource.uri(Uri.parse(
-                'assets/songs/${id.toString().substring(0, 3)}/$id.mp3'))) {
+                'assets/songs/${id.toString().padLeft(6, '0').substring(0, 3)}/${id.toString().padLeft(6, '0')}.mp3'))) {
     _name = name;
     mutable = isMutable;
   }

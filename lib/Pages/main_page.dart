@@ -2,8 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
+import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
-import 'package:spoplusplusfy/Pages/player_page.dart';
+import 'package:spoplusplusfy/Pages/pure_mode_player_page.dart';
 
 const Color goldColour = Color.fromRGBO(255, 232, 163, 1.0);
 
@@ -112,7 +113,7 @@ class MainPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PlayerPage(playlist: playlists[index]),
+                          builder: (context) => PureModePlayerPage(playlist: playlists[index]),
                         ),
                       );
                     },

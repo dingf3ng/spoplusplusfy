@@ -2,11 +2,16 @@ import 'package:just_audio/just_audio.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:spoplusplusfy/Classes/track.dart';
 
 class PlaylistIterator {
   static final AudioPlayer _player = AudioPlayer();
   static final List<Song> _currentList = [];
   static Song? _currentSong;
+  static Track? _currentVocalTrack;
+  static Track? _currentDrumTrack;
+  static Track? _currentBassTrack;
+  static Track? _currentOtherTrack;
   static int songIndex = 0;
 
   static void changeProgressTo(Duration progress) {
@@ -75,5 +80,13 @@ class PlaylistIterator {
   static void playPreviousSong() {
     _player.seekToPrevious();
     _currentSong = _currentList[_player.currentIndex ?? 0];
+  }
+
+  static void separateCurrSongVocal() {
+
+  }
+
+  static void switchToPlayCurrSongVocal() {
+
   }
 }
