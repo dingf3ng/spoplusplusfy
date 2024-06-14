@@ -52,22 +52,23 @@ class _MainPageState extends State<MainPage>
     super.dispose();
   }
 
-  NotificationListener _navigator(Widget child, Widget to) => NotificationListener(
-      onNotification: (notification) {
-        if (notification is ScrollEndNotification) {
-          final ScrollMetrics metrics = notification.metrics;
-          if (metrics.pixels == metrics.minScrollExtent) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => to),
-            );
+  NotificationListener _navigator(Widget child, Widget to) =>
+      NotificationListener(
+        onNotification: (notification) {
+          if (notification is ScrollEndNotification) {
+            final ScrollMetrics metrics = notification.metrics;
+            if (metrics.pixels == metrics.minScrollExtent) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => to),
+              );
+            }
+            return true;
           }
-          return true;
-        }
-        return false;
-      },
-    child: child,
-  );
+          return false;
+        },
+        child: child,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -76,25 +77,24 @@ class _MainPageState extends State<MainPage>
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
-
       ),
       body: _navigator(
-        FutureBuilder<List<Playlist>>(
-          future: _getPlaylists(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No Playlists Available'));
-            } else {
-              List<Playlist> playlists = snapshot.data!;
-              return _buildMainBody(context, playlists);
-            }
-          },
-        ), const SearchPage()
-      ),
+          FutureBuilder<List<Playlist>>(
+            future: _getPlaylists(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No Playlists Available'));
+              } else {
+                List<Playlist> playlists = snapshot.data!;
+                return _buildMainBody(context, playlists);
+              }
+            },
+          ),
+          const SearchPage()),
     );
   }
 
