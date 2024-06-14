@@ -54,11 +54,9 @@ class _MainPageState extends State<MainPage>
 
   NotificationListener _navigator(Widget child, Widget to) => NotificationListener(
       onNotification: (notification) {
-        if (notification is ScrollUpdateNotification) {
+        if (notification is ScrollEndNotification) {
           final ScrollMetrics metrics = notification.metrics;
-          // Check if we're at the top of the list and the user is trying to scroll down
-          if (metrics.pixels == metrics.minScrollExtent &&
-              metrics.axisDirection == AxisDirection.down) {
+          if (metrics.pixels == metrics.minScrollExtent) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => to),

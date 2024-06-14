@@ -57,19 +57,18 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         extendBodyBehindAppBar: false,
         backgroundColor: primaryColor,
         appBar: _appBar(),
         body: NotificationListener(
           onNotification: (ScrollNotification notification) {
-            if (notification is ScrollUpdateNotification) {
+            print('hello');
+            print(notification.runtimeType);
+            if (notification is ScrollEndNotification) {
               final ScrollMetrics metrics = notification.metrics;
-              // Check if we're at the bottom of the list and the user is scrolling up
-              if (metrics.pixels == metrics.maxScrollExtent && notification.scrollDelta! > 0) {
+              if(metrics.pixels == metrics.maxScrollExtent) {
                 Navigator.pop(context);
-                return true;
               }
             }
             return false;
