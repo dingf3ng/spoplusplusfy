@@ -35,15 +35,8 @@ class PlaylistIterator {
 
     await _player.setAudioSource(sourceForPlayer);
 
-    _player.currentIndexStream.listen((index) {
-      if (index != null && index < _currentList.length) {
-        _currentSong = _currentList[index];
-      }
-    });
 
-    if (_currentList.isNotEmpty) {
-      _currentSong = _currentList[0];
-    }
+    _currentSong = _currentList[0];
   }
 
   static void play() {

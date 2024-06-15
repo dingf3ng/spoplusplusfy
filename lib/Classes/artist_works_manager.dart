@@ -1,7 +1,9 @@
 
 import 'dart:collection';
+import 'package:flutter/cupertino.dart';
 import 'package:spoplusplusfy/Classes/album.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
+import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 import 'package:sqflite/sqflite.dart';
@@ -35,7 +37,7 @@ class ArtistWorksManager {
 
     HashMap<int, Album> Id2Album = HashMap();
     HashMap<int, Song> Id2Song = HashMap();
-    HashMap<String, Artist> Id2Artist = HashMap();
+    HashMap<String, Artist> Name2Artist = HashMap();
 
     // read data from db
     //read album
@@ -66,13 +68,27 @@ class ArtistWorksManager {
       Id2Song.putIfAbsent(song.getId(), () => song);
     }
     for(Artist artist in artists) {
-      Id2Artist.putIfAbsent(artist.getName(), () => artist);
+      Name2Artist.putIfAbsent(artist.getName(), () => artist);
     }
 
+    // construct relationships
+    HashSet<Album> added = HashSet();
+    final List<Map<String, Object?>>? relationships = await db?.query('songs');
+    for(Map<String, Object?> relationship in relationships!) {
+      Artist artist = Name2Artist[relationship['artist_name']]!;
+      Song song = Id2Song[relationship['song_id']]!;
+      Album album = Id2Album[relationship['album_id']]!;
+      _artistAlbumMap.update(artist, (list) => added.contains(album) ? list : list..add(album), ifAbsent: () => [album]);
+      _artistSongMap.update(artist, (list) => list..add(song), ifAbsent: () => [song]);
+      _songArtistMap.update(song, (list) => list..add(artist), ifAbsent: () => [artist]);
+      if(!added.contains(album)) _albumArtistMap.update(album, (list) => list..add(artist), ifAbsent: () => [artist]);
+      added.add(album);
+    }
 
   }
 
   static List<Artist> getArtistsOfSong(Song song) {
+    if(!_songArtistMap.containsKey(song)) return [Artist(name: 'a', id: 000, gender: Gender.Mysterious, portrait: Image(image: AssetImage(''),))];
     return _songArtistMap[song]!
       ..removeWhere((x) => !_validArtists.contains(x));
   }
