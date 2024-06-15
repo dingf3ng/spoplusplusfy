@@ -1,35 +1,28 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
-import 'package:spoplusplusfy/Classes/playlist.dart';
-import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../Classes/artist.dart';
+import '../Classes/artist_works_manager.dart';
+import '../Classes/playlist.dart';
+import '../Classes/playlist_iterator.dart';
 
-/// A stateful widget representing the player page.
 class PlayerPage extends StatefulWidget {
-  /// The playlist to be played.
   final Playlist playlist;
 
-  /// Constructs a [PlayerPage] instance.
-  ///
-  /// [playlist]: The playlist to be played.
   const PlayerPage({super.key, required this.playlist});
 
   @override
   _PlayerPageState createState() => _PlayerPageState();
 }
 
-/// The state for the [PlayerPage] widget.
 class _PlayerPageState extends State<PlayerPage> {
-  /// Indicates whether the player is currently playing.
   bool isPlaying = true;
-
-  /// The title of the current song.
   String songTitle = '';
-
-  /// The artist of the current song.
   List<Artist> songArtists = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -37,18 +30,20 @@ class _PlayerPageState extends State<PlayerPage> {
     _initializePlayer();
   }
 
-  /// Initializes the player by setting the playlist and starting playback.
   Future<void> _initializePlayer() async {
+    final stopwatch = Stopwatch()..start();
     await PlaylistIterator.setPlaylist(widget.playlist);
     PlaylistIterator.play();
     setState(() {
       isPlaying = PlaylistIterator.isPlaying();
       songTitle = PlaylistIterator.getCurrentSong().getName();
       songArtists = ArtistWorksManager.getArtistsOfSong(PlaylistIterator.getCurrentSong());
+      isLoading = false;
     });
+    stopwatch.stop();
+    print("Initialization time: ${stopwatch.elapsedMilliseconds}ms");
   }
 
-  /// Pauses or resumes playback based on the current state.
   void _pauseOrPlay() {
     setState(() {
       if (isPlaying) {
@@ -78,7 +73,9 @@ class _PlayerPageState extends State<PlayerPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: Column(
+        child: isLoading
+            ? CircularProgressIndicator()
+            : Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -89,7 +86,7 @@ class _PlayerPageState extends State<PlayerPage> {
             ),
             Text(
               ArtistWorksManager.getArtistsOfSongAsString(
-                PlaylistIterator.getCurrentSong()
+                  PlaylistIterator.getCurrentSong()
               ),
               style: songArtistStyle,
               overflow: TextOverflow.ellipsis,
@@ -112,17 +109,17 @@ class _PlayerPageState extends State<PlayerPage> {
                 ),
                 child: GestureDetector(
                   onPanUpdate: (details) {
-                      setState(() {
-                        if (details.delta.dx > 8) {
-                          PlaylistIterator.playPreviousSong();
-                        } else if (details.delta.dx < -8) {
-                          PlaylistIterator.playNextSong();
-                        }
-                        songTitle = PlaylistIterator.getCurrentSong().getName();
-                        songArtists = ArtistWorksManager.getArtistsOfSong(
-                            PlaylistIterator.getCurrentSong()
-                        );
-                      });
+                    setState(() {
+                      if (details.delta.dx > 8) {
+                        PlaylistIterator.playPreviousSong();
+                      } else if (details.delta.dx < -8) {
+                        PlaylistIterator.playNextSong();
+                      }
+                      songTitle = PlaylistIterator.getCurrentSong().getName();
+                      songArtists = ArtistWorksManager.getArtistsOfSong(
+                          PlaylistIterator.getCurrentSong()
+                      );
+                    });
                   },
                 ),
               ),
