@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spoplusplusfy/Classes/album.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
+import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 import 'package:sqflite/sqflite.dart';
@@ -67,6 +68,7 @@ class ArtistWorksManager {
     for(Song song in songs) {
       Id2Song.putIfAbsent(song.getId(), () => song);
     }
+    PlaylistSongManager.addSongsAndAlbums(albums, songs ,Id2Album, Id2Song);
     for(Artist artist in artists) {
       Name2Artist.putIfAbsent(artist.getName(), () => artist);
     }

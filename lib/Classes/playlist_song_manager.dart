@@ -7,37 +7,32 @@ import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:sqflite/sqflite.dart';
 
 class PlaylistSongManager {
-  static late HashMap<Playlist, List<Song>> _listMap;
-  static late HashMap<Song, List<Playlist>> _songMap;
-  static late HashSet<Playlist> _allValidPlaylist;
-  static late HashSet<Song> _allValidSong;
+  static late HashMap<Playlist, List<Song>> _listMap = HashMap();
+  static late HashMap<Song, List<Playlist>> _songMap = HashMap();
+  static late HashSet<Playlist> _allValidPlaylist = HashSet();
+  static late HashSet<Song> _allValidSong = HashSet();
+
+  static HashMap<int, Album> Id2Album = HashMap();
+  static HashMap<int, Song> Id2Song = HashMap();
+  static List<Album> albums = [];
+  static List<Song> songs = [];
 
   PlaylistSongManager._privateConstructor();
 
   final DatabaseHelper _dbHelper = DatabaseHelper();
-  
+
+  static void addSongsAndAlbums(List<Album> als, List<Song> sos, HashMap<int, Album> idAlbum,
+  HashMap<int, Song> idSong) {
+    _allValidSong.addAll(sos);
+    _allValidPlaylist.addAll(als);
+    Id2Song = idSong;
+    Id2Album = idAlbum;
+    albums = als;
+    songs = sos;
+  }
+
   static Future<void> init() async{
     final Database? db = await DatabaseHelper.database;
-    // init all the maps and sets
-    _listMap = HashMap();
-    _songMap = HashMap();
-    _allValidPlaylist = HashSet();
-    _allValidSong = HashSet();
-
-    HashMap<int, Album> Id2Album = HashMap();
-    HashMap<int, Song> Id2Song = HashMap();
-
-    // read data from db
-    //read album
-    final List<Map<String,Object?>>? albumMaps = await db?.query('updated_album_database');
-    final List<Album> albums = albumMaps!.map((map) => Album.fromMap(map)).toList();
-    //TODO: read created playlists
-    _allValidPlaylist.addAll(albums);
-
-    //read song
-    final List<Map<String, Object?>>? songMaps = await db?.query('songs');
-    final List<Song> songs = songMaps!.map((map) => Song.fromMap(map)).toList();
-    _allValidSong.addAll(songs);
 
     //load relationships
     for(Album album in albums) {
@@ -58,15 +53,15 @@ class PlaylistSongManager {
     }
   }
 
-  static Future<List<Song>> getSongsForPlaylist(Playlist playlist) async {
-    // if(_listMap[playlist] == null) {
-    //   throw 'Error by manipulating a element does not exist';
-    // }
+  static List<Song> getSongsForPlaylist(Playlist playlist) {
+    if(_listMap[playlist] == null) {
+       throw 'Error by manipulating a element does not exist';
+    }
     // TODO: check if this is ok to write like this
-    return DatabaseHelper().getSongsForPlaylist(playlist);
-    // return _listMap[playlist]!..removeWhere(
-    //         (song) => !_allValidSong.contains(song)
-    // );
+    //return DatabaseHelper().getSongsForPlaylist(playlist);
+    return _listMap[playlist]!..removeWhere(
+            (song) => !_allValidSong.contains(song)
+    );
   }
 
   static void addSongToPlayList(Song song, Playlist playlist) {

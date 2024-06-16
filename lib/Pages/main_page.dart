@@ -16,6 +16,7 @@ class MainPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _MainPageState();
   }
+
 }
 
 class _MainPageState extends State<MainPage>
@@ -52,10 +53,10 @@ class _MainPageState extends State<MainPage>
     super.dispose();
   }
 
-  NotificationListener _navigator(Widget child, Widget to) =>
+  NotificationListener _navigator(BuildContext context, Widget child, Widget to) =>
       NotificationListener(
         onNotification: (notification) {
-          if (notification is ScrollEndNotification) {
+          if (notification is ScrollUpdateNotification) {
             final ScrollMetrics metrics = notification.metrics;
             if (metrics.pixels == metrics.minScrollExtent) {
               Navigator.push(
@@ -78,7 +79,7 @@ class _MainPageState extends State<MainPage>
         backgroundColor: Colors.black,
         elevation: 0,
       ),
-      body: _navigator(
+      body: _navigator(context,
           FutureBuilder<List<Playlist>>(
             future: _getPlaylists(),
             builder: (context, snapshot) {

@@ -7,14 +7,11 @@ import 'package:spoplusplusfy/Pages/main_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await PlaylistSongManager.init();
   await ArtistWorksManager.init();
+  await PlaylistSongManager.init();
   runApp(const Spoplusplusfy());
 }
 
-void init() {
-
-}
 
 class Spoplusplusfy extends StatelessWidget {
   const Spoplusplusfy({super.key});

@@ -1,15 +1,15 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
+import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Pages/main_page.dart';
+import 'package:spoplusplusfy/Pages/playlist_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
 import '../Classes/album.dart';
-
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -18,13 +18,12 @@ class SearchPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _SearchPageState();
   }
-  
 }
 
-class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin{
-
+class _SearchPageState extends State<SearchPage>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
-  
+
   static const Color primaryColor = Color(0x00000000);
   static const Color secondaryColor = Color(0xffFFE8A3);
 
@@ -32,7 +31,6 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
   static List<Album> _resultAlbums = [];
   List<CustomizedPlaylist> _resultPlaylists = [];
   List<Song> _resultSongs = [];
-
 
   @override
   void initState() {
@@ -44,16 +42,13 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
     String query = _searchController.text;
     setState(() {
       _resultArtists =
-      SearchEngine.search<Artist>(query, SearchType.artist).cast();
-      _resultAlbums =
-      SearchEngine.search<Album>(query, SearchType.album);
+          SearchEngine.search<Artist>(query, SearchType.artist).cast();
+      _resultAlbums = SearchEngine.search<Album>(query, SearchType.album);
       _resultPlaylists =
-      SearchEngine.search<CustomizedPlaylist>(query, SearchType.playlist);
-      _resultSongs =
-      SearchEngine.search(query, SearchType.song);
+          SearchEngine.search<CustomizedPlaylist>(query, SearchType.playlist);
+      _resultSongs = SearchEngine.search(query, SearchType.song);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +58,9 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
         appBar: _appBar(),
         body: NotificationListener(
           onNotification: (ScrollNotification notification) {
-            print('hello');
-            print(notification.runtimeType);
             if (notification is ScrollEndNotification) {
               final ScrollMetrics metrics = notification.metrics;
-              if(metrics.pixels == metrics.maxScrollExtent) {
+              if (metrics.pixels == metrics.maxScrollExtent) {
                 Navigator.pop(context);
               }
             }
@@ -84,8 +77,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
               const SizedBox(height: 40),
             ],
           ),
-        )
-    );
+        ));
   }
 
   Visibility _artist_showcase() {
@@ -109,12 +101,16 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
               ),
             ],
           ),
-          const SizedBox(height: 15,),
+          const SizedBox(
+            height: 15,
+          ),
           SizedBox(
             height: 120,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              separatorBuilder: (context, index) => const SizedBox(width: 25,),
+              separatorBuilder: (context, index) => const SizedBox(
+                width: 25,
+              ),
               padding: const EdgeInsets.only(left: 25, right: 25),
               itemCount: _resultArtists.length,
               itemBuilder: (context, index) {
@@ -178,48 +174,61 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
               ),
             ],
           ),
-          const SizedBox(height: 15,),
+          const SizedBox(
+            height: 15,
+          ),
           SizedBox(
             height: 160,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              separatorBuilder: (context, index) => const SizedBox(width: 25,),
+              separatorBuilder: (context, index) => const SizedBox(
+                width: 25,
+              ),
               padding: const EdgeInsets.only(left: 25, right: 25),
               itemCount: _resultAlbums.length,
               itemBuilder: (context, index) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      width: 140,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: secondaryColor,
-                          width: 3,
-                        ),
-                        color: secondaryColor,
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          image: NetworkImage(_resultAlbums[index].getCoverPath()),
-                          fit: BoxFit.cover,
-                        )
+                return GestureDetector(
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PlaylistPage(playlist: _resultAlbums[index], songs: PlaylistSongManager.getSongsForPlaylist(_resultAlbums[index]))))
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 140,
+                        height: 140,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: secondaryColor,
+                              width: 3,
+                            ),
+                            color: secondaryColor,
+                            borderRadius: BorderRadius.circular(20),
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                  _resultAlbums[index].getCoverPath()),
+                              fit: BoxFit.cover,
+                            )),
                       ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      width: 140,
-                      child: Text(
-                        _resultAlbums[index].getName(),
-                        style: const TextStyle(
-                          color: secondaryColor,
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                      Container(
+                        alignment: Alignment.center,
+                        width: 140,
+                        child: Text(
+                          _resultAlbums[index].getName(),
+                          style: const TextStyle(
+                            color: secondaryColor,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 );
               },
             ),
@@ -251,12 +260,16 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
               ),
             ],
           ),
-          const SizedBox(height: 15,),
+          const SizedBox(
+            height: 15,
+          ),
           SizedBox(
             height: 160,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              separatorBuilder: (context, index) => const SizedBox(width: 25,),
+              separatorBuilder: (context, index) => const SizedBox(
+                width: 25,
+              ),
               padding: const EdgeInsets.only(left: 25, right: 25),
               itemCount: _resultPlaylists.length,
               itemBuilder: (context, index) {
@@ -267,16 +280,16 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                       width: 140,
                       height: 140,
                       decoration: BoxDecoration(
-                        color: secondaryColor,
-                        border: Border.all(
                           color: secondaryColor,
-                          width: 3,
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          image: AssetImage(_resultPlaylists[index].getCoverPath()),
-                        )
-                      ),
+                          border: Border.all(
+                            color: secondaryColor,
+                            width: 3,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage(
+                                _resultPlaylists[index].getCoverPath()),
+                          )),
                     ),
                     Container(
                       width: 140,
@@ -331,21 +344,23 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
               shrinkWrap: true,
               primary: false,
               padding: const EdgeInsets.only(left: 25, right: 25),
-              separatorBuilder: (context, index) => const SizedBox(height: 10,),
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 10,
+              ),
               itemCount: _resultSongs.length,
               itemBuilder: (context, index) {
                 return Container(
-                  height: 50,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                     border: Border.all(color: secondaryColor, width: 2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       SizedBox(
-                        width: 150,
+                        width: 170,
                         child: Text(
                           _resultSongs[index].getName(),
                           overflow: TextOverflow.ellipsis,
@@ -356,11 +371,12 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                           ),
                         ),
                       ),
+                      const SizedBox(width: 10,),
                       SizedBox(
-                        width: 100,
+                        width: 150,
                         child: Text(
-                          ArtistWorksManager
-                              .getArtistsOfSongAsString(_resultSongs[index]),
+                          ArtistWorksManager.getArtistsOfSongAsString(
+                              _resultSongs[index]),
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: secondaryColor,
@@ -369,8 +385,9 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                           ),
                         ),
                       ),
+                      const SizedBox(width: 10,),
                       SizedBox(
-                        width: 50,
+                        width: 40,
                         child: Text(
                           _formatTime(_resultSongs[index].getDuration()),
                           overflow: TextOverflow.ellipsis,
@@ -405,39 +422,37 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 8, 8),
               child: SvgPicture.asset('assets/icons/setting_gold.svg'),
-            )
-        ),
+            )),
       ),
       actions: [
         GestureDetector(
-          onTap: (){},
+          onTap: () {},
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
                 'UserName ',
                 style: TextStyle(
-                    fontFamily: 'NotoSans',
-                    fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.italic,
-                    color: secondaryColor,
+                  fontFamily: 'NotoSans',
+                  fontWeight: FontWeight.w600,
+                  fontStyle: FontStyle.italic,
+                  color: secondaryColor,
                 ),
               ),
-              SvgPicture.asset('assets/icons/share_gold.svg',height: 32, width: 32)
+              SvgPicture.asset('assets/icons/share_gold.svg',
+                  height: 32, width: 32)
             ],
           ),
         ),
         Container(
           width: 20,
         ),
-
       ],
     );
   }
 
   Container _searchField() {
     return Container(
-
         margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: TextField(
           controller: _searchController,
@@ -446,26 +461,13 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
             filled: false,
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                    color: secondaryColor,
-                    width: 2
-                )
-            ),
+                borderSide: const BorderSide(color: secondaryColor, width: 2)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                    color: secondaryColor,
-                    width: 2
-                )
-            ),
+                borderSide: const BorderSide(color: secondaryColor, width: 2)),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                    color: secondaryColor,
-                    width: 2
-                )
-            ),
-
+                borderSide: const BorderSide(color: secondaryColor, width: 2)),
             contentPadding: const EdgeInsets.all(15),
             hintText: 'Search...',
             hintStyle: const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
@@ -487,7 +489,8 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(6, 12, 12, 12),
-                      child: SvgPicture.asset('assets/icons/filter_search_gold.svg'),
+                      child: SvgPicture.asset(
+                          'assets/icons/filter_search_gold.svg'),
                     ),
                   ],
                 ),
