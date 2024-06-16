@@ -138,7 +138,7 @@ class _MainPageState extends State<MainPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PureModePlayerPage(playlist: playlists[index]),
+              builder: (context) => ProModePlayerPage(playlist: playlists[index]),
             ),
           );
         },

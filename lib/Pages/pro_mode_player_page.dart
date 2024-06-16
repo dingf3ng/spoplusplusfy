@@ -1,9 +1,13 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
 import '../Classes/artist.dart';
+
+// TODO: resolve the issue of red screen with similar method as pure mode page
 
 class ProModePlayerPage extends StatefulWidget {
   final Playlist playlist;
@@ -15,9 +19,10 @@ class ProModePlayerPage extends StatefulWidget {
 }
 
 class _PlayerPageState extends State<ProModePlayerPage> {
-  bool isPlaying = true;
-  String songTitle = '';
-  List<Artist> songArtists = [];
+  bool _isPlaying = true;
+  String _songTitle = '';
+  List<Artist> _songArtists = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -29,31 +34,21 @@ class _PlayerPageState extends State<ProModePlayerPage> {
     await PlaylistIterator.setPlaylist(widget.playlist);
     PlaylistIterator.play();
     setState(() {
-      isPlaying = PlaylistIterator.isPlaying();
-      songTitle = PlaylistIterator.getCurrentSong().getName();
-      songArtists = ArtistWorksManager.getArtistsOfSong(PlaylistIterator.getCurrentSong());
+      _isPlaying = PlaylistIterator.isPlaying();
+      _songTitle = PlaylistIterator.getCurrentSong().getName();
+      _songArtists = ArtistWorksManager.getArtistsOfSong(PlaylistIterator.getCurrentSong());
+      _isLoading = false;
     });
   }
 
   void _pauseOrPlay() {
     setState(() {
-      if (isPlaying) {
+      if (_isPlaying) {
         PlaylistIterator.pause();
       } else {
         PlaylistIterator.play();
       }
-      isPlaying = !isPlaying;
-    });
-  }
-
-  Future<void> _separateAndPlayVocal() async {
-    setState(() {
-      isPlaying = false;
-    });
-    // await PlaylistIterator.separateCurrSongVocal();
-    // await PlaylistIterator.switchToPlayCurrSongVocal();
-    setState(() {
-      isPlaying = PlaylistIterator.isPlaying();
+      _isPlaying = !_isPlaying;
     });
   }
 
@@ -75,7 +70,9 @@ class _PlayerPageState extends State<ProModePlayerPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: Column(
+        child: _isLoading ?
+                CircularProgressIndicator()
+            :Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _songTitleName(songTitleStyle),
@@ -95,30 +92,8 @@ class _PlayerPageState extends State<ProModePlayerPage> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  child: Container(
-                    color: goldColour,
-                    child: SvgPicture.asset('assets/icons/bass_guitar_black.svg'),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    color: goldColour,
-                    child: SvgPicture.asset('assets/icons/drum_black.svg'),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: _separateAndPlayVocal,  // Call the method on tap
-                  child: Container(
-                    color: goldColour,
-                    child: SvgPicture.asset('assets/icons/microphone_black.svg'),
-                  ),
-                ),
-              ],
-            ),
+            _musicDecomposeButtons(goldColour),
+            SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -131,9 +106,80 @@ class _PlayerPageState extends State<ProModePlayerPage> {
     );
   }
 
+  Row _musicDecomposeButtons(Color goldColour) {
+    return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  showDialog(context: context, builder:
+                      (context)  => CircularProgressIndicator()
+                  );
+                  setState(() {
+                    _isPlaying = false;
+                  });
+                  await PlaylistIterator.separateCurrSongBass();
+                  Navigator.of(context).pop();
+                  await PlaylistIterator.switchBetweenBassTrackAndSong();
+                },
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: goldColour,
+                  child: SvgPicture.asset('assets/icons/bass_guitar_black.svg', width: 30, height: 30,),
+                ),
+              ),
+              SizedBox(width: 20,),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isPlaying = false;
+                  });
+                  PlaylistIterator.separateCurrSongDrums();
+                  PlaylistIterator.switchBetweenDrumTrackAndSong();
+                },
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: goldColour,
+                  child: SvgPicture.asset('assets/icons/drum_black.svg', width: 30, height: 30,),
+                ),
+              ),
+              SizedBox(width: 20,),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isPlaying = false;
+                  });
+                  PlaylistIterator.separateCurrSongVocals();
+                  PlaylistIterator.switchBetweenVocalTrackAndSong();
+                },
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: goldColour,
+                  child: SvgPicture.asset('assets/icons/microphone_black.svg', width: 30, height: 30,),
+                ),
+              ),
+              SizedBox(width: 20,),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isPlaying = false;
+                  });
+                  PlaylistIterator.separateCurrSongOthers();
+                  PlaylistIterator.switchBetweenOtherTrackAndSong();
+                },
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: goldColour,
+                  child: SvgPicture.asset('assets/icons/more_category_black.svg', width: 30, height: 30,),
+                ),
+              ),
+            ],
+          );
+  }
+
   Text _songTitleName(TextStyle songTitleStyle) {
     return Text(
-      songTitle,
+      _songTitle,
       style: songTitleStyle,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,
@@ -153,7 +199,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
 
   IconButton _playPauseButton() {
     return IconButton(
-      icon: isPlaying
+      icon: _isPlaying
           ? SvgPicture.asset(
         'assets/icons/play_pause_gold.svg',
         width: 100,
@@ -190,8 +236,8 @@ class _PlayerPageState extends State<ProModePlayerPage> {
             } else if (details.delta.dx < -8) {
               PlaylistIterator.playNextSong();
             }
-            songTitle = PlaylistIterator.getCurrentSong().getName();
-            songArtists = ArtistWorksManager.getArtistsOfSong(
+            _songTitle = PlaylistIterator.getCurrentSong().getName();
+            _songArtists = ArtistWorksManager.getArtistsOfSong(
                 PlaylistIterator.getCurrentSong()
             );
           });

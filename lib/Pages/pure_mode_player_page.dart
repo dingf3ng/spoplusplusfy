@@ -41,8 +41,6 @@ class _PlayerPageState extends State<PureModePlayerPage> {
       songArtists = ArtistWorksManager.getArtistsOfSong(PlaylistIterator.getCurrentSong());
       isLoading = false;
     });
-    stopwatch.stop();
-    print("Initialization time: ${stopwatch.elapsedMilliseconds}ms");
   }
 
   void _pauseOrPlay() {

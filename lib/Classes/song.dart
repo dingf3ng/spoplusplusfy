@@ -17,7 +17,7 @@ class Song extends Voice implements Name {
     required super.volume
   }) : super(
             audio: AudioSource.uri(Uri.parse(
-                'assets/songs/${id.toString().padLeft(6, '0').substring(0, 3)}/${id.toString().padLeft(6, '0')}.mp3'))) {
+                'assets/songs/${id.toString().padLeft(3, '0')}/${id.toString().padLeft(6, '0')}.mp3'))) {
     _name = name;
     mutable = isMutable;
   }
@@ -40,5 +40,12 @@ class Song extends Voice implements Name {
   @override
   void setName(String name) {
     return;
+  }
+
+  @override
+  AudioSource getAudioSource() {
+    String idStr = getId().toString().padLeft(6, '0'); // Ensure the ID has 6 digits, padding with leading zeros if necessary
+    String firstThreeDigitsStr = idStr.substring(0, 3); // Extract the first three digits
+    return AudioSource.asset('assets/songs/$firstThreeDigitsStr/$idStr.mp3');
   }
 }

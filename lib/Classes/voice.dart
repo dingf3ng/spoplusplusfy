@@ -37,8 +37,6 @@ abstract class Voice {
   }
 
   AudioSource getAudioSource() {
-    String idStr = _id.toString().padLeft(6, '0'); // Ensure the ID has 6 digits, padding with leading zeros if necessary
-    String firstThreeDigitsStr = idStr.substring(0, 3); // Extract the first three digits
-    return AudioSource.asset('assets/songs/$firstThreeDigitsStr/$idStr.mp3');
+    return _audio;
   }
 }
