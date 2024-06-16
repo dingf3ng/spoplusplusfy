@@ -28,7 +28,7 @@ class Spoplusplusfy extends StatelessWidget {
           cursorColor: Color(0xffFFE8A3),
         )
       ),
-      home: const MainPage(),
+      home: const IntegratedMainPage(),
     );
   }
 }

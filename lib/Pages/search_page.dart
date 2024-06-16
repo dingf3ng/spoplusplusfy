@@ -12,8 +12,8 @@ import 'package:spoplusplusfy/Utilities/search_engine.dart';
 import '../Classes/album.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
-
+  final PageController pageController;
+  SearchPage({super.key, required this.pageController});
   @override
   State<StatefulWidget> createState() {
     return _SearchPageState();
@@ -24,6 +24,7 @@ class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
 
+
   static const Color primaryColor = Color(0x00000000);
   static const Color secondaryColor = Color(0xffFFE8A3);
 
@@ -32,10 +33,22 @@ class _SearchPageState extends State<SearchPage>
   List<CustomizedPlaylist> _resultPlaylists = [];
   List<Song> _resultSongs = [];
 
+  final ScrollController _controller = ScrollController();
+
+  _scrollListener() async {
+    ScrollPosition position = _controller.position;
+    if (_controller.offset == position.maxScrollExtent) {
+      widget.pageController.nextPage(duration: Duration(milliseconds: 200), curve: Curves.linear);
+    } else if (_controller.offset == position.minScrollExtent) {
+      widget.pageController.previousPage(duration: Duration(milliseconds: 200), curve: Curves.linear);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_searchDone);
+    _controller.addListener(_scrollListener);
   }
 
   void _searchDone() {
@@ -53,31 +66,21 @@ class _SearchPageState extends State<SearchPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBodyBehindAppBar: false,
-        backgroundColor: primaryColor,
-        appBar: _appBar(),
-        body: NotificationListener(
-          onNotification: (ScrollNotification notification) {
-            if (notification is ScrollEndNotification) {
-              final ScrollMetrics metrics = notification.metrics;
-              if (metrics.pixels == metrics.maxScrollExtent) {
-                Navigator.pop(context);
-              }
-            }
-            return false;
-          },
-          child: ListView(
-            children: [
-              _searchField(),
-              const SizedBox(height: 40),
-              _artist_showcase(),
-              _album_showcase(),
-              _playlist_showcase(),
-              _song_showcase(),
-              const SizedBox(height: 40),
-            ],
-          ),
-        ));
+      extendBodyBehindAppBar: false,
+      backgroundColor: primaryColor,
+      appBar: _appBar(),
+      body: ListView(
+        children: [
+          _searchField(),
+          const SizedBox(height: 40),
+          _artist_showcase(),
+          _album_showcase(),
+          _playlist_showcase(),
+          _song_showcase(),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
   }
 
   Visibility _artist_showcase() {
@@ -192,8 +195,10 @@ class _SearchPageState extends State<SearchPage>
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                PlaylistPage(playlist: _resultAlbums[index], songs: PlaylistSongManager.getSongsForPlaylist(_resultAlbums[index]))))
+                            builder: (context) => PlaylistPage(
+                                playlist: _resultAlbums[index],
+                                songs: PlaylistSongManager.getSongsForPlaylist(
+                                    _resultAlbums[index]))))
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -339,7 +344,7 @@ class _SearchPageState extends State<SearchPage>
             height: 20,
           ),
           SizedBox(
-            height: 300,
+            height: 350,
             child: ListView.separated(
               shrinkWrap: true,
               primary: false,
@@ -371,7 +376,9 @@ class _SearchPageState extends State<SearchPage>
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       SizedBox(
                         width: 150,
                         child: Text(
@@ -385,7 +392,9 @@ class _SearchPageState extends State<SearchPage>
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       SizedBox(
                         width: 40,
                         child: Text(
@@ -499,7 +508,6 @@ class _SearchPageState extends State<SearchPage>
           ),
         ));
   }
-
 }
 
 String _formatTime(int duration) {

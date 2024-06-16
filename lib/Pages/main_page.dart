@@ -10,35 +10,34 @@ import 'package:tiktoklikescroller/tiktoklikescroller.dart';
 const Color goldColour = Color(0xffFFE8A3);
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final PageController pageController;
+  MainPage({super.key, required this.pageController});
 
   @override
   State<StatefulWidget> createState() {
     return _MainPageState();
   }
-
 }
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 2),
-    vsync: this,
-  );
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.elasticIn,
-  ));
 
-  void _handleCallbackEvent(ScrollDirection direction, ScrollSuccess success,
-      {int? currentIndex}) {
-    print(
-        "Scroll callback received with data: {direction: $direction, success: $success and index: ${currentIndex ?? 'not given'}}");
+  final ScrollController _controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_scrollListener);
   }
 
+  _scrollListener() async {
+    ScrollPosition position = _controller.position;
+    if (_controller.offset == position.maxScrollExtent) {
+      widget.pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
+    } else if (_controller.offset == position.minScrollExtent) {
+      widget.pageController.previousPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
+    }
+  }
   Future<List<Playlist>> _getPlaylists() async {
     List<Playlist> playlists = [];
     for (int i = 0; i < 10; i++) {
@@ -48,30 +47,6 @@ class _MainPageState extends State<MainPage>
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  NotificationListener _navigator(BuildContext context, Widget child, Widget to) =>
-      NotificationListener(
-        onNotification: (notification) {
-          if (notification is ScrollUpdateNotification) {
-            final ScrollMetrics metrics = notification.metrics;
-            if (metrics.pixels == metrics.minScrollExtent) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => to),
-              );
-            }
-            return true;
-          }
-          return false;
-        },
-        child: child,
-      );
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
@@ -79,28 +54,27 @@ class _MainPageState extends State<MainPage>
         backgroundColor: Colors.black,
         elevation: 0,
       ),
-      body: _navigator(context,
-          FutureBuilder<List<Playlist>>(
-            future: _getPlaylists(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No Playlists Available'));
-              } else {
-                List<Playlist> playlists = snapshot.data!;
-                return _buildMainBody(context, playlists);
-              }
-            },
-          ),
-          const SearchPage()),
+      body: FutureBuilder<List<Playlist>>(
+        future: _getPlaylists(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No Playlists Available'));
+          } else {
+            List<Playlist> playlists = snapshot.data!;
+            return _buildMainBody(context, playlists);
+          }
+        },
+      ),
     );
   }
 
   ListView _buildMainBody(BuildContext context, List<Playlist> playlists) {
     return ListView(
+      controller: _controller,
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
       children: [
@@ -185,4 +159,18 @@ class _MainPageState extends State<MainPage>
       itemCount: playlists.length,
     );
   }
+}
+
+class IntegratedMainPage extends StatelessWidget {
+  const IntegratedMainPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final PageController _pageController = PageController();
+    return PageView(controller: _pageController, scrollDirection: Axis.horizontal, children: [
+      MainPage(pageController: _pageController,),
+      SearchPage(pageController: _pageController,),
+    ]);
+  }
+
 }

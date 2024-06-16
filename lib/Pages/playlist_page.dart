@@ -35,13 +35,16 @@ class PlaylistPageState extends State<PlaylistPage> {
           ),
           _PlaylistInfo(),
           const SizedBox(
-            height: 25,
+            height: 50,
           ),
           _SongsList(),
           const SizedBox(
-            height: 25,
+            height: 50,
           ),
           _recommendationList(),
+          const SizedBox(
+            height: 25,
+          ),
         ],
       ),
     );
@@ -208,7 +211,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                     width: 10,
                   ),
                   Text(
-                    '$index',
+                    '${index+1}',
                     style: const TextStyle(
                       color: secondaryColor,
                       fontWeight: FontWeight.w200,
