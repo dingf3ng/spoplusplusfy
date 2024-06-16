@@ -115,7 +115,7 @@ class ArtistWorksManager {
   }
 
   static List<Album> getAlbumsOfArtist(Artist artist) {
-    return _artistAlbumMap[artist]!..removeWhere((x) => !_validSongs.contains(x));
+    return _artistAlbumMap[artist]!..removeWhere((x) => !_validAlbums.contains(x));
   }
 
   static void addSongForArtist(Artist artist, Song song) {

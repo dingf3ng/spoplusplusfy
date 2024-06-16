@@ -41,7 +41,7 @@ class PlaylistPageState extends State<PlaylistPage> {
           const SizedBox(
             height: 25,
           ),
-          _RecommendationList(),
+          _recommendationList(),
         ],
       ),
     );
@@ -272,56 +272,83 @@ class PlaylistPageState extends State<PlaylistPage> {
         itemCount: widget.songs.length);
   }
 
-  Visibility _RecommendationList() {
+  Visibility _recommendationList() {
     Artist pri_artist = ArtistWorksManager.getArtistsOfAlbum(widget.playlist as Album)[0];
     List<Album> rec = ArtistWorksManager.getAlbumsOfArtist(pri_artist);
     return Visibility(
-      visible: true,
-      child: SizedBox(
-        height: 160,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          separatorBuilder: (context, index) => const SizedBox(
-            width: 25,
-          ),
-          padding: const EdgeInsets.only(left: 25, right: 25),
-          itemCount: rec.length,
-          itemBuilder: (context, index) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                      color: secondaryColor,
-                      border: Border.all(
-                        color: secondaryColor,
-                        width: 3,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      image: DecorationImage(
-                        image: AssetImage(
-                            rec[index].getCoverPath()),
-                      )),
-                ),
-                Container(
-                  width: 140,
-                  alignment: Alignment.center,
+      visible: rec.isNotEmpty,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: Container(
+                  width: 400,
                   child: Text(
-                    rec[index].getName(),
+                    'More by ${pri_artist.getName()}',
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: secondaryColor,
-                      overflow: TextOverflow.ellipsis,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                )
-              ],
-            );
-          },
-        ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          SizedBox(
+            height: 160,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => const SizedBox(
+                width: 25,
+              ),
+              padding: const EdgeInsets.only(left: 25, right: 25),
+              itemCount: rec.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                          color: secondaryColor,
+                          border: Border.all(
+                            color: secondaryColor,
+                            width: 3,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                rec[index].getCoverPath()),
+                          )),
+                    ),
+                    Container(
+                      width: 140,
+                      alignment: Alignment.center,
+                      child: Text(
+                        rec[index].getName(),
+                        style: const TextStyle(
+                          color: secondaryColor,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
