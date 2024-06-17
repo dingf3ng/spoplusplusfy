@@ -22,15 +22,13 @@ class Spoplusplusfy extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: const ColorScheme.dark(primary: Colors.black, secondary: Color(0xffFFE8A3)),
-        fontFamily: 'NotoSans',
-        textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: Color(0xffFFE8A3),
-        )
+          colorScheme: const ColorScheme.dark(primary: Colors.black, secondary: Color(0xffFFE8A3)),
+          fontFamily: 'NotoSans',
+          textSelectionTheme: const TextSelectionThemeData(
+            cursorColor: Color(0xffFFE8A3),
+          )
       ),
       home: const IntegratedMainPage(),
     );
   }
 }
-
-
