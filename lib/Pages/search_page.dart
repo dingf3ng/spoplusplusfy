@@ -28,8 +28,8 @@ class _SearchPageState extends State<SearchPage>
   static const Color primaryColor = Color(0x00000000);
   static const Color secondaryColor = Color(0xffFFE8A3);
 
-  static List<Artist> _resultArtists = [];
-  static List<Album> _resultAlbums = [];
+  List<Artist> _resultArtists = [];
+  List<Album> _resultAlbums = [];
   List<CustomizedPlaylist> _resultPlaylists = [];
   List<Song> _resultSongs = [];
 
@@ -473,6 +473,9 @@ class _SearchPageState extends State<SearchPage>
     return Container(
         margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: TextField(
+          onTapOutside: (PointerDownEvent event) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
           controller: _searchController,
           style: const TextStyle(color: secondaryColor),
           decoration: InputDecoration(
