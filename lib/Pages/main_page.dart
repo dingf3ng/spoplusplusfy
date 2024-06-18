@@ -20,22 +20,12 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
 
-  final ScrollController _controller = ScrollController();
-
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_scrollListener);
+
   }
 
-  _scrollListener() async {
-    ScrollPosition position = _controller.position;
-    if (_controller.offset == position.maxScrollExtent) {
-      widget.pageController.nextPage(duration: const Duration(milliseconds: 1000), curve: Curves.elasticInOut);
-    } else if (_controller.offset == position.minScrollExtent) {
-      widget.pageController.previousPage(duration: const Duration(milliseconds: 1000), curve: Curves.elasticInOut);
-    }
-  }
   Future<List<Playlist>> _getPlaylists() async {
     List<Playlist> playlists = [];
     for (int i = 0; i < 10; i++) {
@@ -72,7 +62,6 @@ class _MainPageState extends State<MainPage>
 
   ListView _buildMainBody(BuildContext context, List<Playlist> playlists) {
     return ListView(
-      controller: _controller,
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
       children: [
