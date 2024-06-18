@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:async_button_builder/async_button_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
@@ -23,6 +24,8 @@ class _PlayerPageState extends State<ProModePlayerPage> {
   String _songTitle = '';
   List<Artist> _songArtists = [];
   bool _isLoading = true;
+  bool _isDecomposing = false;
+
 
   @override
   void initState() {
@@ -43,12 +46,14 @@ class _PlayerPageState extends State<ProModePlayerPage> {
 
   void _pauseOrPlay() {
     setState(() {
-      if (_isPlaying) {
-        PlaylistIterator.pause();
-      } else {
-        PlaylistIterator.play();
+      if (!_isDecomposing) {
+        if (_isPlaying) {
+          PlaylistIterator.pause();
+        } else {
+          PlaylistIterator.play();
+        }
+        _isPlaying = !_isPlaying;
       }
-      _isPlaying = !_isPlaying;
     });
   }
 
@@ -67,40 +72,52 @@ class _PlayerPageState extends State<ProModePlayerPage> {
       fontWeight: FontWeight.w500,
     );
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: _isLoading ?
-                const CircularProgressIndicator()
-            :Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _songTitleName(songTitleStyle),
-            _songArtistName(songArtistStyle),
-            Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: _albumCoverWithSwipeDetection(goldColour),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(40.0),
-              child: Text(
-                'lyrics',
-                style: TextStyle(
-                  color: goldColour,
-                  fontSize: 25,
-                  fontStyle: FontStyle.italic,
-                ),
+    return NotificationListener<AsyncButtonNotification>(
+      onNotification: (notification) {
+        return notification.buttonState.when(idle: () => true, loading: () => true, success: () {
+          setState(() {
+            _isDecomposing = false;
+          });
+          return true;
+        }, error: (_, __) {
+          _isDecomposing = false;
+          return true;
+        });
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: _isLoading ? Center(child: CircularProgressIndicator(color: goldColour,))
+          : Center(
+              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                  _songTitleName(songTitleStyle),
+                  _songArtistName(songArtistStyle),
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: _albumCoverWithSwipeDetection(goldColour),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(40.0),
+                    child: Text(
+                      'lyrics',
+                      style: TextStyle(
+                        color: goldColour,
+                        fontSize: 25,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                  _musicDecomposeButtons(goldColour),
+                  SizedBox(height: 20,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _playPauseButton(),
+                    ],
+                  ),
+                            ],
               ),
-            ),
-            _musicDecomposeButtons(goldColour),
-            const SizedBox(height: 20,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _playPauseButton(),
-              ],
-            ),
-          ],
         ),
       ),
     );
@@ -108,73 +125,95 @@ class _PlayerPageState extends State<ProModePlayerPage> {
 
   Row _musicDecomposeButtons(Color goldColour) {
     return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  showDialog(context: context, builder:
-                      (context)  => const CircularProgressIndicator()
-                  );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _asyncButtonBuilder(goldColour, 'assets/icons/bass_guitar_black.svg',
+            PlaylistIterator.separateCurrSongBass, PlaylistIterator.switchBetweenBassTrackAndSong),
+        SizedBox(width: 20,),
+        _asyncButtonBuilder(goldColour, 'assets/icons/drum_black.svg',
+            PlaylistIterator.separateCurrSongDrums, PlaylistIterator.switchBetweenDrumTrackAndSong),
+        SizedBox(width: 20,),
+        _asyncButtonBuilder(goldColour, 'assets/icons/microphone_black.svg',
+            PlaylistIterator.separateCurrSongVocals, PlaylistIterator.switchBetweenVocalTrackAndSong),
+        SizedBox(width: 20,),
+        _asyncButtonBuilder(goldColour, 'assets/icons/more_category_black.svg',
+            PlaylistIterator.separateCurrSongOthers, PlaylistIterator.switchBetweenOtherTrackAndSong),
+      ],
+    );
+  }
+
+  AsyncButtonBuilder _asyncButtonBuilder(Color goldColour, String buttonImagePath, Function separate, Function switchBetweenSongAndTrack,) {
+    return AsyncButtonBuilder(
+        child:   CircleAvatar(
+          radius: 30,
+          backgroundColor: goldColour,
+          child: SvgPicture.asset(
+            buttonImagePath, width: 30,
+            height: 30,),
+        ),
+        onPressed: () async {
+          setState(() {
+            _isPlaying = false;
+            _isDecomposing = true;
+          });
+          await separate();
+          await switchBetweenSongAndTrack();
+        },
+        builder: (context, child, callback, buttonState) {
+          Widget button = buttonState.when(
+              idle: () => TextButton(
+                onPressed: () {if (!_isDecomposing) callback!(); },
+                child: child,
+                style: ButtonStyle(padding: WidgetStateProperty.all(EdgeInsets.zero)),),
+              loading: () => TextButton(
+                onPressed: () {
                   setState(() {
-                    _isPlaying = false;
+                    _isDecomposing = false;
+                    switchBetweenSongAndTrack();
+                    PlaylistIterator.stopDecomposing();
                   });
-                  await PlaylistIterator.separateCurrSongBass();
-                  Navigator.of(context).pop();
-                  await PlaylistIterator.switchBetweenBassTrackAndSong();
                 },
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: goldColour,
-                  child: SvgPicture.asset('assets/icons/bass_guitar_black.svg', width: 30, height: 30,),
-                ),
+                child: SizedBox(height: 40, width: 40, child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Center(
+                      child: SvgPicture.asset('assets/icons/record_paused_gold.svg', height: 20, width: 20,
+                        colorFilter: ColorFilter.mode(goldColour, BlendMode.srcIn),
+                      ),
+                    ),
+                    Center(child: CircularProgressIndicator(color: goldColour,)),
+                  ],
+                ),),
               ),
-              const SizedBox(width: 20,),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isPlaying = false;
-                  });
-                  PlaylistIterator.separateCurrSongDrums();
-                  PlaylistIterator.switchBetweenDrumTrackAndSong();
-                },
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: goldColour,
-                  child: SvgPicture.asset('assets/icons/drum_black.svg', width: 30, height: 30,),
-                ),
-              ),
-              const SizedBox(width: 20,),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isPlaying = false;
-                  });
-                  PlaylistIterator.separateCurrSongVocals();
-                  PlaylistIterator.switchBetweenVocalTrackAndSong();
-                },
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: goldColour,
-                  child: SvgPicture.asset('assets/icons/microphone_black.svg', width: 30, height: 30,),
-                ),
-              ),
-              const SizedBox(width: 20,),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isPlaying = false;
-                  });
-                  PlaylistIterator.separateCurrSongOthers();
-                  PlaylistIterator.switchBetweenOtherTrackAndSong();
-                },
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: goldColour,
-                  child: SvgPicture.asset('assets/icons/more_category_black.svg', width: 30, height: 30,),
-                ),
-              ),
-            ],
-          );
+              success: () {
+                return ElevatedButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      padding: WidgetStateProperty.all(EdgeInsets.zero),
+                      shape: WidgetStateProperty.all(CircleBorder()),
+                      backgroundColor: WidgetStateProperty.all(Colors.black),
+                      foregroundColor: WidgetStateProperty.all(goldColour),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/icons/checkmark_gold.svg', width: 40,
+                      height: 40,));
+              },
+              error: (_, __) {
+                return TextButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.black),
+                    padding: WidgetStateProperty.all(EdgeInsets.zero),
+                    shape: WidgetStateProperty.all(CircleBorder()),
+                    foregroundColor: WidgetStateProperty.all(goldColour),
+                    overlayColor: WidgetStateProperty.all(goldColour),
+                  ),
+
+                  child: SvgPicture.asset('assets/icons/exclaimation_mark_gold.svg', width: 40, height: 40,
+                    colorFilter: ColorFilter.mode(goldColour, BlendMode.srcIn),
+                  ));} );
+          return button;
+        });
   }
 
   Text _songTitleName(TextStyle songTitleStyle) {
@@ -231,9 +270,9 @@ class _PlayerPageState extends State<ProModePlayerPage> {
       child: GestureDetector(
         onPanUpdate: (details) {
           setState(() {
-            if (details.delta.dx > 8) {
+            if (details.delta.dx > 8 && !_isDecomposing) {
               PlaylistIterator.playPreviousSong();
-            } else if (details.delta.dx < -8) {
+            } else if (details.delta.dx < -8 && !_isDecomposing) {
               PlaylistIterator.playNextSong();
             }
             _songTitle = PlaylistIterator.getCurrentSong().getName();

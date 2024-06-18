@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,13 +17,13 @@ class PlaylistIterator {
   static Track? _currentBassTrack;
   static Track? _currentOtherTrack;
   static int songIndex = 0;
-  static bool _isSeparating = false;
+  static http.Client? _client;
+  static bool _isPlayingTrack = false;
 
   static void changeProgressTo(Duration progress) {
     _player.seek(progress);
   }
 
-  static bool isSeparating() => _isSeparating;
 
   static Song getCurrentSong() => _currentSong ?? (throw StateError('No current song'));
 
@@ -43,7 +42,6 @@ class PlaylistIterator {
     ConcatenatingAudioSource sourceForPlayer = ConcatenatingAudioSource(children: playlistSource);
 
     await _player.setAudioSource(sourceForPlayer);
-
 
     _currentSong = _currentList[0];
   }
@@ -92,23 +90,23 @@ class PlaylistIterator {
   }
 
   static Future<void> separateCurrSongVocals() async {
-    _separateCurrSong('vocals');
+    await _separateCurrSong('vocals');
   }
 
   static Future<void> separateCurrSongDrums() async {
-    _separateCurrSong('drums');
+    await _separateCurrSong('drums');
   }
 
   static Future<void> separateCurrSongBass() async {
-    _separateCurrSong('bass');
+    await _separateCurrSong('bass');
   }
 
   static Future<void> separateCurrSongOthers() async {
-    _separateCurrSong('others');
+    await _separateCurrSong('others');
   }
 
   static Future<void> _separateCurrSong(String trackType) async {
-    _isSeparating = true;
+    _client = http.Client();
     _player.pause();
     if (_currentSong == null) {
       throw StateError('No current song');
@@ -131,12 +129,12 @@ class PlaylistIterator {
     }
 
     var songFileBytes = (await rootBundle.load('assets/songs/${_currentSong!.getId().toString().padLeft(6, '0').substring(0, 3)}/${_currentSong!.getId().toString().padLeft(6, '0')}.mp3'))
-                      .buffer.asUint8List();
+        .buffer.asUint8List();
 
     var request = http.MultipartRequest('POST', Uri.parse('http://10.211.55.5:8000/api/decompose/to_$trackType'));
     request.files.add(http.MultipartFile.fromBytes('file', songFileBytes, filename: 'current_song.mp3'));
 
-    var response = await request.send();
+    var response = await _client!.send(request);
 
     if (response.statusCode == 200) {
       var dir = await getTemporaryDirectory();
@@ -159,10 +157,16 @@ class PlaylistIterator {
       } else if (trackType == 'others') {
         _currentOtherTrack = track;
       }
-      _isSeparating = false;
       print('track saved at: ${trackFile.path}');
     } else {
       print('Error: ${response.statusCode}');
+    }
+  }
+
+  static Future<void> stopDecomposing() async {
+    if (_client != null) {
+      _client!.close();
+      print('Decomposing stopped');
     }
   }
 
@@ -187,6 +191,13 @@ class PlaylistIterator {
     Duration currentPosition = _player.position;
 
     // Load and play the vocal track from the same position
+    if (_isPlayingTrack) {
+      _isPlayingTrack = false;
+      await _player.setAudioSource(_currentSong!.getAudioSource());
+      await _player.seek(currentPosition);
+      return;
+    }
+    _isPlayingTrack = true;
     await _player.setAudioSource(track.getAudioSource());
     await _player.seek(currentPosition);
   }
