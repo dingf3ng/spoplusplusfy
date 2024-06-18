@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:spoplusplusfy/Classes/Name.dart';
+import 'package:spoplusplusfy/Classes/name.dart';
 import 'package:spoplusplusfy/Classes/follower_manager.dart';
 
 

@@ -35,7 +35,7 @@ class PlaylistIterator {
     _currentList.clear(); // Clear the list to avoid duplicates
     _clearTracks();
 
-    for (Song song in await PlaylistSongManager.getSongsForPlaylist(playlist)) {
+    for (Song song in PlaylistSongManager.getSongsForPlaylist(playlist)) {
       playlistSource.add(song.getAudioSource());
       _currentList.add(song);
     }

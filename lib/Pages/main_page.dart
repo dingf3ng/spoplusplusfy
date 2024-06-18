@@ -1,18 +1,15 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
-import 'package:spoplusplusfy/Pages/pure_mode_player_page.dart';
-import 'package:tiktoklikescroller/tiktoklikescroller.dart';
 
 const Color goldColour = Color(0xffFFE8A3);
 
 class MainPage extends StatefulWidget {
   final PageController pageController;
-  MainPage({super.key, required this.pageController});
+  const MainPage({super.key, required this.pageController});
 
   @override
   State<StatefulWidget> createState() {
@@ -34,9 +31,9 @@ class _MainPageState extends State<MainPage>
   _scrollListener() async {
     ScrollPosition position = _controller.position;
     if (_controller.offset == position.maxScrollExtent) {
-      widget.pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
+      widget.pageController.nextPage(duration: const Duration(milliseconds: 1000), curve: Curves.elasticInOut);
     } else if (_controller.offset == position.minScrollExtent) {
-      widget.pageController.previousPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
+      widget.pageController.previousPage(duration: const Duration(milliseconds: 1000), curve: Curves.elasticInOut);
     }
   }
   Future<List<Playlist>> _getPlaylists() async {
@@ -167,10 +164,10 @@ class IntegratedMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PageController _pageController = PageController();
-    return PageView(controller: _pageController, scrollDirection: Axis.horizontal, children: [
-      MainPage(pageController: _pageController,),
-      SearchPage(pageController: _pageController,),
+    final PageController pageController = PageController();
+    return PageView(controller: pageController, scrollDirection: Axis.horizontal, children: [
+      MainPage(pageController: pageController,),
+      SearchPage(pageController: pageController,),
     ]);
   }
 

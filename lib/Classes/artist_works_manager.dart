@@ -90,7 +90,7 @@ class ArtistWorksManager {
   }
 
   static List<Artist> getArtistsOfSong(Song song) {
-    if(!_songArtistMap.containsKey(song)) return [Artist(name: 'a', id: 000, gender: Gender.Mysterious, portrait: Image(image: AssetImage(''),))];
+    if(!_songArtistMap.containsKey(song)) return [Artist(name: 'a', id: 000, gender: Gender.Mysterious, portrait: const Image(image: AssetImage(''),))];
     return _songArtistMap[song]!
       ..removeWhere((x) => !_validArtists.contains(x));
   }

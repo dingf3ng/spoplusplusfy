@@ -1,5 +1,5 @@
 import 'dart:core';
-import 'package:spoplusplusfy/Classes/Name.dart';
+import 'package:spoplusplusfy/Classes/name.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
 abstract class Playlist implements Name{

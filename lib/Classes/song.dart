@@ -1,8 +1,7 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/voice.dart';
-
-import 'Name.dart';
+import 'package:spoplusplusfy/Classes/name.dart';
 
 class Song extends Voice implements Name {
   late String _name;

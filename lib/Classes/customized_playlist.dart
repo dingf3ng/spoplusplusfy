@@ -3,6 +3,7 @@ import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
+
 class CustomizedPlaylist extends Playlist {
 
   CustomizedPlaylist({

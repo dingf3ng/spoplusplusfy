@@ -1,11 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
-import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 
 import '../Classes/album.dart';
 import '../Classes/song.dart';
@@ -120,7 +117,7 @@ class PlaylistPageState extends State<PlaylistPage> {
         const SizedBox(
           width: 25,
         ),
-        Container(
+        SizedBox(
           width: 200,
           height: 170,
           child: Column(
@@ -271,13 +268,13 @@ class PlaylistPageState extends State<PlaylistPage> {
                 ],
               ),
             ),
-        separatorBuilder: (context, index) => SizedBox(height: 5,width: 5,),
+        separatorBuilder: (context, index) => const SizedBox(height: 5,width: 5,),
         itemCount: widget.songs.length);
   }
 
   Visibility _recommendationList() {
-    Artist pri_artist = ArtistWorksManager.getArtistsOfAlbum(widget.playlist as Album)[0];
-    List<Album> rec = ArtistWorksManager.getAlbumsOfArtist(pri_artist);
+    Artist priArtist = ArtistWorksManager.getArtistsOfAlbum(widget.playlist as Album)[0];
+    List<Album> rec = ArtistWorksManager.getAlbumsOfArtist(priArtist);
     return Visibility(
       visible: rec.isNotEmpty,
       child: Column(
@@ -287,10 +284,10 @@ class PlaylistPageState extends State<PlaylistPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 25),
-                child: Container(
+                child: SizedBox(
                   width: 400,
                   child: Text(
-                    'More by ${pri_artist.getName()}',
+                    'More by ${priArtist.getName()}',
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: secondaryColor,

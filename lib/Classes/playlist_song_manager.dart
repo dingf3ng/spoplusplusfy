@@ -7,10 +7,10 @@ import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:sqflite/sqflite.dart';
 
 class PlaylistSongManager {
-  static late HashMap<Playlist, List<Song>> _listMap = HashMap();
-  static late HashMap<Song, List<Playlist>> _songMap = HashMap();
-  static late HashSet<Playlist> _allValidPlaylist = HashSet();
-  static late HashSet<Song> _allValidSong = HashSet();
+  static final HashMap<Playlist, List<Song>> _listMap = HashMap();
+  static final HashMap<Song, List<Playlist>> _songMap = HashMap();
+  static final HashSet<Playlist> _allValidPlaylist = HashSet();
+  static final HashSet<Song> _allValidSong = HashSet();
 
   static HashMap<int, Album> Id2Album = HashMap();
   static HashMap<int, Song> Id2Song = HashMap();

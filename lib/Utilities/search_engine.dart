@@ -4,8 +4,8 @@ import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/album.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
+import '../Classes/name.dart';
 
-import '../Classes/Name.dart';
 enum SearchType {artist, album, playlist, song}
 class SearchEngine {
 

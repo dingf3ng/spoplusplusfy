@@ -5,15 +5,15 @@ import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
-import 'package:spoplusplusfy/Pages/main_page.dart';
 import 'package:spoplusplusfy/Pages/playlist_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
 import '../Classes/album.dart';
+import 'artist_page.dart';
 
 class SearchPage extends StatefulWidget {
   final PageController pageController;
-  SearchPage({super.key, required this.pageController});
+  const SearchPage({super.key, required this.pageController});
   @override
   State<StatefulWidget> createState() {
     return _SearchPageState();
@@ -38,9 +38,9 @@ class _SearchPageState extends State<SearchPage>
   _scrollListener() async {
     ScrollPosition position = _controller.position;
     if (_controller.offset == position.maxScrollExtent) {
-      widget.pageController.nextPage(duration: Duration(milliseconds: 200), curve: Curves.linear);
+      widget.pageController.nextPage(duration: const Duration(milliseconds: 200), curve: Curves.linear);
     } else if (_controller.offset == position.minScrollExtent) {
-      widget.pageController.previousPage(duration: Duration(milliseconds: 200), curve: Curves.linear);
+      widget.pageController.previousPage(duration: const Duration(milliseconds: 200), curve: Curves.linear);
     }
   }
 
@@ -117,35 +117,44 @@ class _SearchPageState extends State<SearchPage>
               padding: const EdgeInsets.only(left: 25, right: 25),
               itemCount: _resultArtists.length,
               itemBuilder: (context, index) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      width: 90,
-                      height: 90,
-                      decoration: BoxDecoration(
-                        color: secondaryColor,
-                        border: Border.all(color: secondaryColor, width: 3),
-                        borderRadius: BorderRadius.circular(70),
-                      ),
-                      child: ClipOval(
-                        child: _resultArtists[index].getPortrait(),
-                      ),
-                    ),
-                    Container(
-                      width: 90,
-                      alignment: Alignment.center,
-                      child: Text(
-                        _resultArtists[index].getName(),
-                        style: const TextStyle(
+                return GestureDetector(
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ArtistPage(
+                                artist: _resultArtists[index],))),
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 90,
+                        height: 90,
+                        decoration: BoxDecoration(
                           color: secondaryColor,
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                          border: Border.all(color: secondaryColor, width: 3),
+                          borderRadius: BorderRadius.circular(70),
+                        ),
+                        child: ClipOval(
+                          child: _resultArtists[index].getPortrait(),
                         ),
                       ),
-                    )
-                  ],
+                      Container(
+                        width: 90,
+                        alignment: Alignment.center,
+                        child: Text(
+                          _resultArtists[index].getName(),
+                          style: const TextStyle(
+                            color: secondaryColor,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 );
               },
             ),

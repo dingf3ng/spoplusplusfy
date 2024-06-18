@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:spoplusplusfy/Classes/Name.dart';
+import 'package:spoplusplusfy/Classes/name.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:flutter/material.dart';
 

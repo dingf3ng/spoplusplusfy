@@ -71,7 +71,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
       backgroundColor: Colors.black,
       body: Center(
         child: _isLoading ?
-                CircularProgressIndicator()
+                const CircularProgressIndicator()
             :Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -93,7 +93,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
               ),
             ),
             _musicDecomposeButtons(goldColour),
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -113,7 +113,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
               GestureDetector(
                 onTap: () async {
                   showDialog(context: context, builder:
-                      (context)  => CircularProgressIndicator()
+                      (context)  => const CircularProgressIndicator()
                   );
                   setState(() {
                     _isPlaying = false;
@@ -128,7 +128,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
                   child: SvgPicture.asset('assets/icons/bass_guitar_black.svg', width: 30, height: 30,),
                 ),
               ),
-              SizedBox(width: 20,),
+              const SizedBox(width: 20,),
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -143,7 +143,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
                   child: SvgPicture.asset('assets/icons/drum_black.svg', width: 30, height: 30,),
                 ),
               ),
-              SizedBox(width: 20,),
+              const SizedBox(width: 20,),
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -158,7 +158,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
                   child: SvgPicture.asset('assets/icons/microphone_black.svg', width: 30, height: 30,),
                 ),
               ),
-              SizedBox(width: 20,),
+              const SizedBox(width: 20,),
               GestureDetector(
                 onTap: () {
                   setState(() {
