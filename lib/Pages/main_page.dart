@@ -3,8 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
+import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
-import 'package:spoplusplusfy/Pages/player_page.dart';
+import 'package:spoplusplusfy/Pages/pure_mode_player_page.dart';
 import 'package:tiktoklikescroller/tiktoklikescroller.dart';
 
 const Color goldColour = Color(0xffFFE8A3);
@@ -137,7 +138,7 @@ class _MainPageState extends State<MainPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PlayerPage(playlist: playlists[index]),
+              builder: (context) => ProModePlayerPage(playlist: playlists[index]),
             ),
           );
         },

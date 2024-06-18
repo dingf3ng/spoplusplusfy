@@ -9,16 +9,17 @@ import '../Classes/artist_works_manager.dart';
 import '../Classes/playlist.dart';
 import '../Classes/playlist_iterator.dart';
 
-class PlayerPage extends StatefulWidget {
+
+class PureModePlayerPage extends StatefulWidget {
   final Playlist playlist;
 
-  const PlayerPage({super.key, required this.playlist});
+  const PureModePlayerPage({super.key, required this.playlist});
 
   @override
   _PlayerPageState createState() => _PlayerPageState();
 }
 
-class _PlayerPageState extends State<PlayerPage> {
+class _PlayerPageState extends State<PureModePlayerPage> {
   bool isPlaying = true;
   String songTitle = '';
   List<Artist> songArtists = [];
@@ -40,8 +41,6 @@ class _PlayerPageState extends State<PlayerPage> {
       songArtists = ArtistWorksManager.getArtistsOfSong(PlaylistIterator.getCurrentSong());
       isLoading = false;
     });
-    stopwatch.stop();
-    print("Initialization time: ${stopwatch.elapsedMilliseconds}ms");
   }
 
   void _pauseOrPlay() {
