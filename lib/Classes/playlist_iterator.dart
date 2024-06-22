@@ -24,8 +24,8 @@ class PlaylistIterator {
     _player.seek(progress);
   }
 
-
-  static Song getCurrentSong() => _currentSong ?? (throw StateError('No current song'));
+  static Song getCurrentSong() =>
+      _currentSong ?? (throw StateError('No current song'));
 
   static bool isPlaying() => _player.playing;
 
@@ -39,7 +39,8 @@ class PlaylistIterator {
       _currentList.add(song);
     }
 
-    ConcatenatingAudioSource sourceForPlayer = ConcatenatingAudioSource(children: playlistSource);
+    ConcatenatingAudioSource sourceForPlayer =
+        ConcatenatingAudioSource(children: playlistSource);
 
     await _player.setAudioSource(sourceForPlayer);
 
@@ -128,11 +129,15 @@ class PlaylistIterator {
       return;
     }
 
-    var songFileBytes = (await rootBundle.load('assets/songs/${_currentSong!.getId().toString().padLeft(6, '0').substring(0, 3)}/${_currentSong!.getId().toString().padLeft(6, '0')}.mp3'))
-        .buffer.asUint8List();
+    var songFileBytes = (await rootBundle.load(
+            'assets/songs/${_currentSong!.getId().toString().padLeft(6, '0').substring(0, 3)}/${_currentSong!.getId().toString().padLeft(6, '0')}.mp3'))
+        .buffer
+        .asUint8List();
 
-    var request = http.MultipartRequest('POST', Uri.parse('http://10.211.55.5:8000/api/decompose/to_$trackType'));
-    request.files.add(http.MultipartFile.fromBytes('file', songFileBytes, filename: 'current_song.mp3'));
+    var request = http.MultipartRequest('POST',
+        Uri.parse('http://10.211.55.5:8000/api/decompose/to_$trackType'));
+    request.files.add(http.MultipartFile.fromBytes('file', songFileBytes,
+        filename: 'current_song.mp3'));
 
     var response = await _client!.send(request);
 

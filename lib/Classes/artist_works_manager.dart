@@ -80,13 +80,13 @@ class ArtistWorksManager {
       Artist artist = Name2Artist[relationship['artist_name']]!;
       Song song = Id2Song[relationship['song_id']]!;
       Album album = Id2Album[relationship['album_id']]!;
-      _artistAlbumMap.update(artist, (list) => added.contains(album) ? list : list..add(album), ifAbsent: () => [album]);
+
+      if(!added.contains(album)) _artistAlbumMap.update(artist, (list) => list..add(album) , ifAbsent: () => [album]);
       _artistSongMap.update(artist, (list) => list..add(song), ifAbsent: () => [song]);
       _songArtistMap.update(song, (list) => list..add(artist), ifAbsent: () => [artist]);
       if(!added.contains(album)) _albumArtistMap.update(album, (list) => list..add(artist), ifAbsent: () => [artist]);
       added.add(album);
     }
-
   }
 
   static List<Artist> getArtistsOfSong(Song song) {
@@ -111,10 +111,12 @@ class ArtistWorksManager {
   }
 
   static List<Song> getSongsOfArtist(Artist artist) {
+    if(_artistSongMap[artist] == null) return [];
     return _artistSongMap[artist]!..removeWhere((x) => !_validSongs.contains(x));
   }
 
   static List<Album> getAlbumsOfArtist(Artist artist) {
+    if(_artistAlbumMap[artist] == null) return [];
     return _artistAlbumMap[artist]!..removeWhere((x) => !_validAlbums.contains(x));
   }
 
