@@ -1,9 +1,11 @@
 
 import 'dart:collection';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:spoplusplusfy/Classes/album.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
+import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
@@ -87,6 +89,11 @@ class ArtistWorksManager {
       if(!added.contains(album)) _albumArtistMap.update(album, (list) => list..add(artist), ifAbsent: () => [artist]);
       added.add(album);
     }
+  }
+
+  static Playlist getRandomPlaylist() {
+    final randomIndex = Random().nextInt(_validAlbums.length);
+    return _validAlbums.elementAt(randomIndex);
   }
 
   static List<Artist> getArtistsOfSong(Song song) {

@@ -7,6 +7,7 @@ import 'package:spoplusplusfy/Classes/name.dart';
 import 'package:http/http.dart' as http;
 
 class Song extends Voice implements Name {
+  static http.Client? _client;
   late String _name;
   Playlist? belongingPlaylist;
   late bool mutable;
@@ -46,14 +47,21 @@ class Song extends Voice implements Name {
 
   @override
   Future<AudioSource> getAudioSource() async{
+    _client = http.Client();
     String idStr = getId().toString().padLeft(6, '0'); // Ensure the ID has 6 digits, padding with leading zeros if necessary
     String firstThreeDigitsStr = idStr.substring(0, 3); // Extract the first three digits
-    print('here................');
-    final response = await http.get(
-        Uri.parse('http://http://192.168.2.169:8000/get_song/$firstThreeDigitsStr/$idStr'));
-    print('here................');
-    final data = json.decode(response.body);
-    final url = data['file_url'];
-    return AudioSource.uri(url);
+    final response = await http.post(
+        Uri.parse('http://192.168.2.169:8000/api/get_song/$firstThreeDigitsStr/$idStr'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final url = data['file_url'];
+      if (url != null) {
+        return AudioSource.uri(Uri.parse(url));
+      } else {
+        throw Exception('File URL is null');
+      }
+    } else {
+      throw Exception('Failed to load song, status code: ${response.statusCode}');
+    }
   }
 }

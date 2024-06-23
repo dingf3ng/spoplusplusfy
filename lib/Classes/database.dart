@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -84,19 +85,6 @@ class DatabaseHelper {
   /// Returns a [Playlist] object.
   /// Throws an exception if no playlists are available.
   Future<Playlist> getRandomPlaylist() async {
-    final db = await database;
-    final List<Map<String, dynamic>> playlists = await db!.query('updated_album_database');
-    if (playlists.isEmpty) {
-      throw Exception('No playlists available');
-    }
-    final randomIndex = Random().nextInt(playlists.length);
-    final playlistData = playlists[randomIndex];
-    return Album(
-      name: playlistData['name'] ?? 'Untitled',
-      playlistCoverPath: playlistData['cover_url']??'assets/images/playlist_cover.jpg',
-      id: playlistData['album_id'] ?? 000,
-      timeLength: playlistData['duration'] ?? 0,
-      mutable: false,
-    );
+    return ArtistWorksManager.getRandomPlaylist();
   }
 }

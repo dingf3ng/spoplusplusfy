@@ -33,7 +33,6 @@ class PlaylistIterator {
     List<AudioSource> playlistSource = [];
     _currentList.clear(); // Clear the list to avoid duplicates
     _clearTracks();
-    print('here................');
     for (Song song in PlaylistSongManager.getSongsForPlaylist(playlist)) {
       playlistSource.add(await song.getAudioSource());
       _currentList.add(song);
