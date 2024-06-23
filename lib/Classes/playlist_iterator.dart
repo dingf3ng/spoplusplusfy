@@ -33,9 +33,9 @@ class PlaylistIterator {
     List<AudioSource> playlistSource = [];
     _currentList.clear(); // Clear the list to avoid duplicates
     _clearTracks();
-
+    print('here................');
     for (Song song in PlaylistSongManager.getSongsForPlaylist(playlist)) {
-      playlistSource.add(song.getAudioSource());
+      playlistSource.add(await song.getAudioSource());
       _currentList.add(song);
     }
 
@@ -198,12 +198,12 @@ class PlaylistIterator {
     // Load and play the vocal track from the same position
     if (_isPlayingTrack) {
       _isPlayingTrack = false;
-      await _player.setAudioSource(_currentSong!.getAudioSource());
+      await _player.setAudioSource(await _currentSong!.getAudioSource());
       await _player.seek(currentPosition);
       return;
     }
     _isPlayingTrack = true;
-    await _player.setAudioSource(track.getAudioSource());
+    await _player.setAudioSource(await track.getAudioSource());
     await _player.seek(currentPosition);
   }
 }

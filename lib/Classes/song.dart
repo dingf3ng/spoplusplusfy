@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:just_audio/just_audio.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/voice.dart';
 import 'package:spoplusplusfy/Classes/name.dart';
+import 'package:http/http.dart' as http;
 
 class Song extends Voice implements Name {
   late String _name;
@@ -42,9 +45,15 @@ class Song extends Voice implements Name {
   }
 
   @override
-  AudioSource getAudioSource() {
+  Future<AudioSource> getAudioSource() async{
     String idStr = getId().toString().padLeft(6, '0'); // Ensure the ID has 6 digits, padding with leading zeros if necessary
     String firstThreeDigitsStr = idStr.substring(0, 3); // Extract the first three digits
-    return AudioSource.asset('assets/songs/$firstThreeDigitsStr/$idStr.mp3');
+    print('here................');
+    final response = await http.get(
+        Uri.parse('http://http://192.168.2.169:8000/get_song/$firstThreeDigitsStr/$idStr'));
+    print('here................');
+    final data = json.decode(response.body);
+    final url = data['file_url'];
+    return AudioSource.uri(url);
   }
 }
