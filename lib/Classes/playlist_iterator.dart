@@ -8,6 +8,8 @@ import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Classes/track.dart';
 import 'package:http/http.dart' as http;
 
+const fhlIP = '10.211.55.5:8000';
+const dfIP = '192.168.2.169:8000';
 class PlaylistIterator {
   static final AudioPlayer _player = AudioPlayer();
   static final List<Song> _currentList = [];
@@ -37,12 +39,9 @@ class PlaylistIterator {
       playlistSource.add(await song.getAudioSource());
       _currentList.add(song);
     }
-
     ConcatenatingAudioSource sourceForPlayer =
         ConcatenatingAudioSource(children: playlistSource);
-
     await _player.setAudioSource(sourceForPlayer);
-
     _currentSong = _currentList[0];
   }
 
@@ -134,7 +133,7 @@ class PlaylistIterator {
         .asUint8List();
 
     var request = http.MultipartRequest('POST',
-        Uri.parse('http://10.211.55.5:8000/api/decompose/to_$trackType'));
+        Uri.parse('http://$dfIP/api/decompose/to_$trackType'));
     request.files.add(http.MultipartFile.fromBytes('file', songFileBytes,
         filename: 'current_song.mp3'));
 

@@ -3,9 +3,11 @@ import 'dart:core';
 import 'package:async_button_builder/async_button_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spoplusplusfy/Classes/album.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
+import 'package:spoplusplusfy/Pages/main_page.dart';
 import '../Classes/artist.dart';
 
 // TODO: resolve the issue of red screen with similar method as pure mode page
@@ -109,7 +111,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
                     ),
                   ),
                   _musicDecomposeButtons(goldColour),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 50,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -236,20 +238,29 @@ class _PlayerPageState extends State<ProModePlayerPage> {
     );
   }
 
-  IconButton _playPauseButton() {
-    return IconButton(
-      icon: _isPlaying
-          ? SvgPicture.asset(
-        'assets/icons/play_pause_gold.svg',
-        width: 100,
-        height: 100,
-      )
-          : SvgPicture.asset(
-        'assets/icons/music_play_gold.svg',
-        width: 100,
-        height: 100,
+  SizedBox _playPauseButton() {
+    return SizedBox(
+      width: 110,
+      height: 110,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: const CircleBorder(),
+          padding: EdgeInsets.all(20),
+          backgroundColor: goldColour,
+        ),
+        onPressed: _pauseOrPlay,
+        child: _isPlaying
+            ? SvgPicture.asset(
+          'assets/icons/music_pause_black.svg',
+          width: 100,
+          height: 100,
+        )
+            : SvgPicture.asset(
+          'assets/icons/music_play_black.svg',
+          width: 100,
+          height: 100,
+        ),
       ),
-      onPressed: _pauseOrPlay,
     );
   }
 
@@ -259,8 +270,8 @@ class _PlayerPageState extends State<ProModePlayerPage> {
       height: 300,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        image: const DecorationImage(
-          image: AssetImage('assets/images/playlist_cover.jpg'),
+        image: DecorationImage(
+          image:  NetworkImage(widget.playlist.getCoverPath(), scale: 0.1),
         ),
         border: Border.all(
           color: goldColour,

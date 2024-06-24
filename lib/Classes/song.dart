@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/voice.dart';
 import 'package:spoplusplusfy/Classes/name.dart';
@@ -49,17 +51,16 @@ class Song extends Voice implements Name {
   Future<AudioSource> getAudioSource() async{
     _client = http.Client();
     String idStr = getId().toString().padLeft(6, '0'); // Ensure the ID has 6 digits, padding with leading zeros if necessary
-    String firstThreeDigitsStr = idStr.substring(0, 3); // Extract the first three digits
+    String index = idStr.substring(0, 3); // Extract the first three digits
     final response = await http.post(
-        Uri.parse('http://192.168.2.169:8000/api/get_song/$firstThreeDigitsStr/$idStr'));
+        Uri.parse('http://192.168.2.169:8000/api/get_song/$index/$idStr'));
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final url = data['file_url'];
-      if (url != null) {
-        return AudioSource.uri(Uri.parse(url));
-      } else {
-        throw Exception('File URL is null');
-      }
+      final bytes = response.bodyBytes;
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/$index$idStr.mp3');
+      await file.writeAsBytes(bytes);
+      print('now');
+      return AudioSource.uri(Uri.file(file.path));
     } else {
       throw Exception('Failed to load song, status code: ${response.statusCode}');
     }
