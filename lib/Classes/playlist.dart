@@ -2,7 +2,7 @@ import 'dart:core';
 import 'package:spoplusplusfy/Classes/name.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
-abstract class Playlist implements Name{
+abstract class Playlist implements Name {
   String _name;
   late final String _playlistCoverImagePath;
   late final int _id;
@@ -20,7 +20,6 @@ abstract class Playlist implements Name{
         _id = id,
         _timeLength = timeLength ?? 0,
         _mutable = mutable;
-
 
   int getHashCode() {
     return _id.hashCode;

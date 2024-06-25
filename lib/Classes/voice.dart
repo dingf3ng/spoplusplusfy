@@ -9,13 +9,12 @@ abstract class Voice {
   late final int _duration;
   int _volume;
 
-  Voice({
-    required AudioSource audio,
-    required int id,
-    required int duration,
-    required int volume
-  }) :
-        _audio = audio,
+  Voice(
+      {required AudioSource audio,
+      required int id,
+      required int duration,
+      required int volume})
+      : _audio = audio,
         _id = id,
         _duration = duration,
         _volume = volume;
@@ -36,7 +35,7 @@ abstract class Voice {
     return _duration;
   }
 
-  Future<AudioSource> getAudioSource() async{
+  Future<AudioSource> getAudioSource() async {
     return _audio;
   }
 }

@@ -71,10 +71,7 @@ flutter:
     - assets/icons/
     - assets/database/spo++fy_database.db
     - assets/images/
-    - assets/songs/000/
-    - assets/songs/001/
-    - assets/songs/002/
-    - assets/songs/003/
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

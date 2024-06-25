@@ -3,7 +3,6 @@ import 'dart:core';
 import 'package:async_button_builder/async_button_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spoplusplusfy/Classes/album.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
@@ -28,7 +27,6 @@ class _PlayerPageState extends State<ProModePlayerPage> {
   bool _isLoading = true;
   bool _isDecomposing = false;
 
-
   @override
   void initState() {
     super.initState();
@@ -41,7 +39,8 @@ class _PlayerPageState extends State<ProModePlayerPage> {
     setState(() {
       _isPlaying = PlaylistIterator.isPlaying();
       _songTitle = PlaylistIterator.getCurrentSong().getName();
-      _songArtists = ArtistWorksManager.getArtistsOfSong(PlaylistIterator.getCurrentSong());
+      _songArtists = ArtistWorksManager.getArtistsOfSong(
+          PlaylistIterator.getCurrentSong());
       _isLoading = false;
     });
   }
@@ -76,51 +75,61 @@ class _PlayerPageState extends State<ProModePlayerPage> {
 
     return NotificationListener<AsyncButtonNotification>(
       onNotification: (notification) {
-        return notification.buttonState.when(idle: () => true, loading: () => true, success: () {
-          setState(() {
-            _isDecomposing = false;
-          });
-          return true;
-        }, error: (_, __) {
-          _isDecomposing = false;
-          return true;
-        });
+        return notification.buttonState.when(
+            idle: () => true,
+            loading: () => true,
+            success: () {
+              setState(() {
+                _isDecomposing = false;
+              });
+              return true;
+            },
+            error: (_, __) {
+              _isDecomposing = false;
+              return true;
+            });
       },
       child: Scaffold(
         backgroundColor: Colors.black,
-        body: _isLoading ? Center(child: CircularProgressIndicator(color: goldColour,))
-          : Center(
-              child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                  _songTitleName(songTitleStyle),
-                  _songArtistName(songArtistStyle),
-                  Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: _albumCoverWithSwipeDetection(goldColour),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(40.0),
-                    child: Text(
-                      'lyrics',
-                      style: TextStyle(
-                        color: goldColour,
-                        fontSize: 25,
-                        fontStyle: FontStyle.italic,
+        body: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(
+                color: goldColour,
+              ))
+            : Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _songTitleName(songTitleStyle),
+                    _songArtistName(songArtistStyle),
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: _albumCoverWithSwipeDetection(goldColour),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(40.0),
+                      child: Text(
+                        'lyrics',
+                        style: TextStyle(
+                          color: goldColour,
+                          fontSize: 25,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ),
-                  ),
-                  _musicDecomposeButtons(goldColour),
-                  SizedBox(height: 50,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _playPauseButton(),
-                    ],
-                  ),
-                            ],
+                    _musicDecomposeButtons(goldColour),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _playPauseButton(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-        ),
       ),
     );
   }
@@ -129,29 +138,54 @@ class _PlayerPageState extends State<ProModePlayerPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _asyncButtonBuilder(goldColour, 'assets/icons/bass_guitar_black.svg',
-            PlaylistIterator.separateCurrSongBass, PlaylistIterator.switchBetweenBassTrackAndSong),
-        SizedBox(width: 20,),
-        _asyncButtonBuilder(goldColour, 'assets/icons/drum_black.svg',
-            PlaylistIterator.separateCurrSongDrums, PlaylistIterator.switchBetweenDrumTrackAndSong),
-        SizedBox(width: 20,),
-        _asyncButtonBuilder(goldColour, 'assets/icons/microphone_black.svg',
-            PlaylistIterator.separateCurrSongVocals, PlaylistIterator.switchBetweenVocalTrackAndSong),
-        SizedBox(width: 20,),
-        _asyncButtonBuilder(goldColour, 'assets/icons/more_category_black.svg',
-            PlaylistIterator.separateCurrSongOthers, PlaylistIterator.switchBetweenOtherTrackAndSong),
+        _asyncButtonBuilder(
+            goldColour,
+            'assets/icons/bass_guitar_black.svg',
+            PlaylistIterator.separateCurrSongBass,
+            PlaylistIterator.switchBetweenBassTrackAndSong),
+        const SizedBox(
+          width: 20,
+        ),
+        _asyncButtonBuilder(
+            goldColour,
+            'assets/icons/drum_black.svg',
+            PlaylistIterator.separateCurrSongDrums,
+            PlaylistIterator.switchBetweenDrumTrackAndSong),
+        const SizedBox(
+          width: 20,
+        ),
+        _asyncButtonBuilder(
+            goldColour,
+            'assets/icons/microphone_black.svg',
+            PlaylistIterator.separateCurrSongVocals,
+            PlaylistIterator.switchBetweenVocalTrackAndSong),
+        const SizedBox(
+          width: 20,
+        ),
+        _asyncButtonBuilder(
+            goldColour,
+            'assets/icons/more_category_black.svg',
+            PlaylistIterator.separateCurrSongOthers,
+            PlaylistIterator.switchBetweenOtherTrackAndSong),
       ],
     );
   }
 
-  AsyncButtonBuilder _asyncButtonBuilder(Color goldColour, String buttonImagePath, Function separate, Function switchBetweenSongAndTrack,) {
+  AsyncButtonBuilder _asyncButtonBuilder(
+    Color goldColour,
+    String buttonImagePath,
+    Function separate,
+    Function switchBetweenSongAndTrack,
+  ) {
     return AsyncButtonBuilder(
-        child:   CircleAvatar(
+        child: CircleAvatar(
           radius: 30,
           backgroundColor: goldColour,
           child: SvgPicture.asset(
-            buttonImagePath, width: 30,
-            height: 30,),
+            buttonImagePath,
+            width: 30,
+            height: 30,
+          ),
         ),
         onPressed: () async {
           setState(() {
@@ -164,56 +198,77 @@ class _PlayerPageState extends State<ProModePlayerPage> {
         builder: (context, child, callback, buttonState) {
           Widget button = buttonState.when(
               idle: () => TextButton(
-                onPressed: () {if (!_isDecomposing) callback!(); },
-                child: child,
-                style: ButtonStyle(padding: WidgetStateProperty.all(EdgeInsets.zero)),),
+                    onPressed: () {
+                      if (!_isDecomposing) callback!();
+                    },
+                    style: ButtonStyle(
+                        padding: WidgetStateProperty.all(EdgeInsets.zero)),
+                    child: child,
+                  ),
               loading: () => TextButton(
-                onPressed: () {
-                  setState(() {
-                    _isDecomposing = false;
-                    switchBetweenSongAndTrack();
-                    PlaylistIterator.stopDecomposing();
-                  });
-                },
-                child: SizedBox(height: 40, width: 40, child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Center(
-                      child: SvgPicture.asset('assets/icons/record_paused_gold.svg', height: 20, width: 20,
-                        colorFilter: ColorFilter.mode(goldColour, BlendMode.srcIn),
+                    onPressed: () {
+                      setState(() {
+                        _isDecomposing = false;
+                        switchBetweenSongAndTrack();
+                        PlaylistIterator.stopDecomposing();
+                      });
+                    },
+                    child: SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Center(
+                            child: SvgPicture.asset(
+                              'assets/icons/record_paused_gold.svg',
+                              height: 20,
+                              width: 20,
+                              colorFilter:
+                                  ColorFilter.mode(goldColour, BlendMode.srcIn),
+                            ),
+                          ),
+                          Center(
+                              child: CircularProgressIndicator(
+                            color: goldColour,
+                          )),
+                        ],
                       ),
                     ),
-                    Center(child: CircularProgressIndicator(color: goldColour,)),
-                  ],
-                ),),
-              ),
+                  ),
               success: () {
                 return ElevatedButton(
                     onPressed: () {},
                     style: ButtonStyle(
                       padding: WidgetStateProperty.all(EdgeInsets.zero),
-                      shape: WidgetStateProperty.all(CircleBorder()),
+                      shape: WidgetStateProperty.all(const CircleBorder()),
                       backgroundColor: WidgetStateProperty.all(Colors.black),
                       foregroundColor: WidgetStateProperty.all(goldColour),
                     ),
                     child: SvgPicture.asset(
-                      'assets/icons/checkmark_gold.svg', width: 40,
-                      height: 40,));
+                      'assets/icons/checkmark_gold.svg',
+                      width: 40,
+                      height: 40,
+                    ));
               },
               error: (_, __) {
                 return TextButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(Colors.black),
-                    padding: WidgetStateProperty.all(EdgeInsets.zero),
-                    shape: WidgetStateProperty.all(CircleBorder()),
-                    foregroundColor: WidgetStateProperty.all(goldColour),
-                    overlayColor: WidgetStateProperty.all(goldColour),
-                  ),
-
-                  child: SvgPicture.asset('assets/icons/exclaimation_mark_gold.svg', width: 40, height: 40,
-                    colorFilter: ColorFilter.mode(goldColour, BlendMode.srcIn),
-                  ));} );
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.black),
+                      padding: WidgetStateProperty.all(EdgeInsets.zero),
+                      shape: WidgetStateProperty.all(const CircleBorder()),
+                      foregroundColor: WidgetStateProperty.all(goldColour),
+                      overlayColor: WidgetStateProperty.all(goldColour),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/icons/exclaimation_mark_gold.svg',
+                      width: 40,
+                      height: 40,
+                      colorFilter:
+                          ColorFilter.mode(goldColour, BlendMode.srcIn),
+                    ));
+              });
           return button;
         });
   }
@@ -230,8 +285,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
   Text _songArtistName(TextStyle songArtistStyle) {
     return Text(
       ArtistWorksManager.getArtistsOfSongAsString(
-          PlaylistIterator.getCurrentSong()
-      ),
+          PlaylistIterator.getCurrentSong()),
       style: songArtistStyle,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,
@@ -245,21 +299,21 @@ class _PlayerPageState extends State<ProModePlayerPage> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape: const CircleBorder(),
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           backgroundColor: goldColour,
         ),
         onPressed: _pauseOrPlay,
         child: _isPlaying
             ? SvgPicture.asset(
-          'assets/icons/music_pause_black.svg',
-          width: 100,
-          height: 100,
-        )
+                'assets/icons/music_pause_black.svg',
+                width: 100,
+                height: 100,
+              )
             : SvgPicture.asset(
-          'assets/icons/music_play_black.svg',
-          width: 100,
-          height: 100,
-        ),
+                'assets/icons/music_play_black.svg',
+                width: 100,
+                height: 100,
+              ),
       ),
     );
   }
@@ -271,7 +325,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         image: DecorationImage(
-          image:  NetworkImage(widget.playlist.getCoverPath(), scale: 0.1),
+          image: NetworkImage(widget.playlist.getCoverPath(), scale: 0.1),
         ),
         border: Border.all(
           color: goldColour,
@@ -288,8 +342,7 @@ class _PlayerPageState extends State<ProModePlayerPage> {
             }
             _songTitle = PlaylistIterator.getCurrentSong().getName();
             _songArtists = ArtistWorksManager.getArtistsOfSong(
-                PlaylistIterator.getCurrentSong()
-            );
+                PlaylistIterator.getCurrentSong());
           });
         },
       ),

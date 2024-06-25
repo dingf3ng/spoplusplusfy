@@ -13,7 +13,9 @@ import 'artist_page.dart';
 
 class SearchPage extends StatefulWidget {
   final PageController pageController;
+
   const SearchPage({super.key, required this.pageController});
+
   @override
   State<StatefulWidget> createState() {
     return _SearchPageState();
@@ -24,23 +26,24 @@ class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
 
-
   static const Color primaryColor = Color(0x00000000);
   static const Color secondaryColor = Color(0xffFFE8A3);
 
-  List<Artist> _resultArtists = [];
-  List<Album> _resultAlbums = [];
-  List<CustomizedPlaylist> _resultPlaylists = [];
-  List<Song> _resultSongs = [];
+  final List<Artist> _resultArtists = [];
+  final List<Album> _resultAlbums = [];
+  final List<CustomizedPlaylist> _resultPlaylists = [];
+  final List<Song> _resultSongs = [];
 
   final ScrollController _controller = ScrollController();
 
   _scrollListener() async {
     ScrollPosition position = _controller.position;
     if (_controller.offset == position.maxScrollExtent) {
-      widget.pageController.nextPage(duration: const Duration(milliseconds: 200), curve: Curves.linear);
+      widget.pageController.nextPage(
+          duration: const Duration(milliseconds: 200), curve: Curves.linear);
     } else if (_controller.offset == position.minScrollExtent) {
-      widget.pageController.previousPage(duration: const Duration(milliseconds: 200), curve: Curves.linear);
+      widget.pageController.previousPage(
+          duration: const Duration(milliseconds: 200), curve: Curves.linear);
     }
   }
 
@@ -54,12 +57,16 @@ class _SearchPageState extends State<SearchPage>
   void _searchDone() {
     String query = _searchController.text;
     setState(() {
-      _resultArtists =
-          SearchEngine.search<Artist>(query, SearchType.artist).cast();
-      _resultAlbums = SearchEngine.search<Album>(query, SearchType.album);
-      _resultPlaylists =
-          SearchEngine.search<CustomizedPlaylist>(query, SearchType.playlist);
-      _resultSongs = SearchEngine.search(query, SearchType.song);
+      _resultArtists.clear();
+      _resultAlbums.clear();
+      _resultPlaylists.clear();
+      _resultSongs.clear();
+      _resultArtists
+          .addAll(SearchEngine.search<Artist>(query, SearchType.artist).cast());
+      _resultAlbums.addAll(SearchEngine.search<Album>(query, SearchType.album));
+      _resultPlaylists.addAll(
+          SearchEngine.search<CustomizedPlaylist>(query, SearchType.playlist));
+      _resultSongs.addAll(SearchEngine.search(query, SearchType.song));
     });
   }
 
@@ -73,37 +80,22 @@ class _SearchPageState extends State<SearchPage>
         children: [
           _searchField(),
           const SizedBox(height: 40),
-          _artist_showcase(),
-          _album_showcase(),
-          _playlist_showcase(),
-          _song_showcase(),
+          _artistShowcase(),
+          _albumShowcase(),
+          _playlistShowcase(),
+          _songShowcase(),
           const SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  Visibility _artist_showcase() {
+  Visibility _artistShowcase() {
     return Visibility(
       visible: _resultArtists.isNotEmpty,
       child: Column(
         children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 25),
-                child: Text(
-                  'Artists',
-                  style: TextStyle(
-                    color: secondaryColor,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          _showcaseHeadline('Artists'),
           const SizedBox(
             height: 15,
           ),
@@ -123,7 +115,8 @@ class _SearchPageState extends State<SearchPage>
                         context,
                         MaterialPageRoute(
                             builder: (context) => ArtistPage(
-                                artist: _resultArtists[index],))),
+                                  artist: _resultArtists[index],
+                                ))),
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -165,27 +158,12 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
-  Visibility _album_showcase() {
+  Visibility _albumShowcase() {
     return Visibility(
       visible: _resultAlbums.isNotEmpty,
       child: Column(
         children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 25),
-                child: Text(
-                  'Albums',
-                  style: TextStyle(
-                    color: secondaryColor,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          _showcaseHeadline('Albums'),
           const SizedBox(
             height: 15,
           ),
@@ -253,29 +231,14 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
-  Visibility _playlist_showcase() {
+  Visibility _playlistShowcase() {
     return Visibility(
       visible: _resultPlaylists.isNotEmpty,
       child: Column(
         children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 25),
-                child: Text(
-                  'Playlists',
-                  style: TextStyle(
-                    color: secondaryColor,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          _showcaseHeadline('Playlists'),
           const SizedBox(
-            height: 15,
+            height: 20,
           ),
           SizedBox(
             height: 160,
@@ -329,26 +292,12 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
-  Visibility _song_showcase() {
+  Visibility _songShowcase() {
     return Visibility(
       visible: _resultSongs.isNotEmpty,
       child: Column(
         children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 25),
-                child: Text(
-                  'Songs',
-                  style: TextStyle(
-                      color: secondaryColor,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          ),
+          _showcaseHeadline('Songs'),
           Container(
             height: 20,
           ),
@@ -424,6 +373,21 @@ class _SearchPageState extends State<SearchPage>
           )
         ],
       ),
+    );
+  }
+
+  Row _showcaseHeadline(String arg) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 25),
+          child: Text(
+            arg,
+            style: _headlineTextStyle(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -519,6 +483,14 @@ class _SearchPageState extends State<SearchPage>
             ),
           ),
         ));
+  }
+
+  TextStyle _headlineTextStyle() {
+    return const TextStyle(
+      color: secondaryColor,
+      fontWeight: FontWeight.w600,
+      fontSize: 12,
+    );
   }
 }
 

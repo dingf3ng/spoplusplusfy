@@ -1,17 +1,12 @@
-
 import 'package:flutter/material.dart';
-import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
-import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
+import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Pages/main_page.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ArtistWorksManager.init();
-  await PlaylistSongManager.init();
+  await DatabaseHelper.initializeFrontendData();
   runApp(const Spoplusplusfy());
 }
-
 
 class Spoplusplusfy extends StatelessWidget {
   const Spoplusplusfy({super.key});
@@ -22,12 +17,12 @@ class Spoplusplusfy extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          colorScheme: const ColorScheme.dark(primary: Colors.black, secondary: Color(0xffFFE8A3)),
+          colorScheme: const ColorScheme.dark(
+              primary: Colors.black, secondary: Color(0xffFFE8A3)),
           fontFamily: 'NotoSans',
           textSelectionTheme: const TextSelectionThemeData(
             cursorColor: Color(0xffFFE8A3),
-          )
-      ),
+          )),
       home: const IntegratedMainPage(),
     );
   }

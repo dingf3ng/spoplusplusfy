@@ -1,13 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:spoplusplusfy/Classes/name.dart';
 import 'package:spoplusplusfy/Classes/follower_manager.dart';
 
-
-enum Gender {Male, Female, Mysterious}
+enum Gender { Male, Female, Mysterious }
 
 abstract class Person implements Name {
-
   String _name;
   late final int _id;
   Gender _gender;
@@ -20,11 +17,11 @@ abstract class Person implements Name {
     required Gender gender,
     required Image portrait,
     int? age,
-  }) : _name = name,
-      _id = id,
-      _gender = gender,
-      _portrait = portrait,
-      _age = age;
+  })  : _name = name,
+        _id = id,
+        _gender = gender,
+        _portrait = portrait,
+        _age = age;
 
   @override
   void setName(String s) {

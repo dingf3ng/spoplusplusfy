@@ -30,7 +30,9 @@ class ArtistPageState extends State<ArtistPage> {
       body: Column(
         children: [
           _buildNavigationBar(),
-          const SizedBox(height: 25,),
+          const SizedBox(
+            height: 25,
+          ),
           _pageView(),
         ],
       ),
@@ -292,8 +294,7 @@ class ArtistPageState extends State<ArtistPage> {
                             color: secondaryColor,
                             borderRadius: BorderRadius.circular(20),
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  albums[index].getCoverPath()),
+                              image: NetworkImage(albums[index].getCoverPath()),
                               fit: BoxFit.cover,
                             )),
                       ),
@@ -351,14 +352,14 @@ class ArtistPageState extends State<ArtistPage> {
             crossAxisCount: 2,
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
-
           ),
           itemBuilder: (context, index) => GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProModePlayerPage(playlist: playlists[index]),
+                  builder: (context) =>
+                      ProModePlayerPage(playlist: playlists[index]),
                 ),
               );
             },
@@ -407,6 +408,4 @@ class ArtistPageState extends State<ArtistPage> {
       ],
     );
   }
-
 }
-

@@ -9,6 +9,7 @@ const Color goldColour = Color(0xffFFE8A3);
 
 class MainPage extends StatefulWidget {
   final PageController pageController;
+
   const MainPage({super.key, required this.pageController});
 
   @override
@@ -19,11 +20,9 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
-
   @override
   void initState() {
     super.initState();
-
   }
 
   Future<List<Playlist>> _getPlaylists() async {
@@ -99,7 +98,8 @@ class _MainPageState extends State<MainPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProModePlayerPage(playlist: playlists[index]),
+              builder: (context) =>
+                  ProModePlayerPage(playlist: playlists[index]),
             ),
           );
         },
@@ -154,10 +154,16 @@ class IntegratedMainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PageController pageController = PageController();
-    return PageView(controller: pageController, scrollDirection: Axis.horizontal, children: [
-      MainPage(pageController: pageController,),
-      SearchPage(pageController: pageController,),
-    ]);
+    return PageView(
+        controller: pageController,
+        scrollDirection: Axis.horizontal,
+        children: [
+          MainPage(
+            pageController: pageController,
+          ),
+          SearchPage(
+            pageController: pageController,
+          ),
+        ]);
   }
-
 }

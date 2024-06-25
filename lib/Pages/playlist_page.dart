@@ -208,7 +208,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                     width: 10,
                   ),
                   Text(
-                    '${index+1}',
+                    '${index + 1}',
                     style: const TextStyle(
                       color: secondaryColor,
                       fontWeight: FontWeight.w200,
@@ -268,12 +268,16 @@ class PlaylistPageState extends State<PlaylistPage> {
                 ],
               ),
             ),
-        separatorBuilder: (context, index) => const SizedBox(height: 5,width: 5,),
+        separatorBuilder: (context, index) => const SizedBox(
+              height: 5,
+              width: 5,
+            ),
         itemCount: widget.songs.length);
   }
 
   Visibility _recommendationList() {
-    Artist priArtist = ArtistWorksManager.getArtistsOfAlbum(widget.playlist as Album)[0];
+    Artist priArtist =
+        ArtistWorksManager.getArtistsOfAlbum(widget.playlist as Album)[0];
     List<Album> rec = ArtistWorksManager.getAlbumsOfArtist(priArtist);
     return Visibility(
       visible: rec.isNotEmpty,
@@ -326,8 +330,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                           ),
                           borderRadius: BorderRadius.circular(20),
                           image: DecorationImage(
-                            image: NetworkImage(
-                                rec[index].getCoverPath()),
+                            image: NetworkImage(rec[index].getCoverPath()),
                           )),
                     ),
                     Container(
@@ -357,6 +360,6 @@ class PlaylistPageState extends State<PlaylistPage> {
 String _formatTime(int duration) {
   int h = duration ~/ 3600;
   int m = (duration - h * 3600) ~/ 60;
-  String s = (duration - h * 3600 - m * 60).toString().padLeft(2,'0');
+  String s = (duration - h * 3600 - m * 60).toString().padLeft(2, '0');
   return h != 0 ? '$h:$m:0$s' : '$m:$s';
 }

@@ -1,11 +1,8 @@
-
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
-
 class CustomizedPlaylist extends Playlist {
-
   CustomizedPlaylist({
     required super.name,
     required super.playlistCoverPath,
@@ -24,7 +21,4 @@ class CustomizedPlaylist extends Playlist {
   void delete() {
     PlaylistSongManager.deletePlaylist(this);
   }
-
-
-
 }
