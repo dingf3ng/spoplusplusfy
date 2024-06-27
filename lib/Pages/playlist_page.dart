@@ -30,11 +30,11 @@ class PlaylistPageState extends State<PlaylistPage> {
           const SizedBox(
             height: 10,
           ),
-          _PlaylistInfo(),
+          _playlistInfo(),
           const SizedBox(
             height: 50,
           ),
-          _SongsList(),
+          _songsList(),
           const SizedBox(
             height: 50,
           ),
@@ -92,7 +92,7 @@ class PlaylistPageState extends State<PlaylistPage> {
     );
   }
 
-  Row _PlaylistInfo() {
+  Row _playlistInfo() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -188,7 +188,7 @@ class PlaylistPageState extends State<PlaylistPage> {
     );
   }
 
-  ListView _SongsList() {
+  ListView _songsList() {
     return ListView.separated(
         shrinkWrap: true,
         primary: true,

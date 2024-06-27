@@ -54,14 +54,12 @@ class DatabaseHelper {
   }
 
   static Future<void> initializeFrontendData() async {
-    print('in 1');
     await database;
     await _loadFromDatabase();
   }
 
   static Future<void> _loadFromDatabase() async {
     // read data from db
-    print('in 2');
     // read album
     final List<Map<String, Object?>>? albumMaps =
         await _database?.query('updated_album_database');
@@ -114,7 +112,6 @@ class DatabaseHelper {
     List<Map<String, Object?>>? relationships,
     List<Map<String, Object?>>? songs2Albums,
   ) async {
-    print('in 3');
     //Init AWM
     await ArtistWorksManager.init(
         albums, songs, artists, id2Album, id2Song, name2Artist, relationships);

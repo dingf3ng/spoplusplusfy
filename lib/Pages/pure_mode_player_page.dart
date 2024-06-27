@@ -12,10 +12,10 @@ class PureModePlayerPage extends StatefulWidget {
   const PureModePlayerPage({super.key, required this.playlist});
 
   @override
-  _PlayerPageState createState() => _PlayerPageState();
+  PlayerPageState createState() => PlayerPageState();
 }
 
-class _PlayerPageState extends State<PureModePlayerPage> {
+class PlayerPageState extends State<PureModePlayerPage> {
   bool isPlaying = true;
   String songTitle = '';
   List<Artist> songArtists = [];

@@ -17,10 +17,10 @@ class ProModePlayerPage extends StatefulWidget {
   const ProModePlayerPage({super.key, required this.playlist});
 
   @override
-  _PlayerPageState createState() => _PlayerPageState();
+  PlayerPageState createState() => PlayerPageState();
 }
 
-class _PlayerPageState extends State<ProModePlayerPage> {
+class PlayerPageState extends State<ProModePlayerPage> {
   bool _isPlaying = true;
   String _songTitle = '';
   List<Artist> _songArtists = [];

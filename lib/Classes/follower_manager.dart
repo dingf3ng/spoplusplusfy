@@ -42,7 +42,7 @@ class FollowerManager {
     _followingMap.update(object, (list) => list..remove(subject));
   }
 
-  static void deletePerson(Person) {
-    _validPerson.remove(Person);
+  static void deletePerson(Person person) {
+    _validPerson.remove(person);
   }
 }

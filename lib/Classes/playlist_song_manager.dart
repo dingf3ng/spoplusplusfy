@@ -18,6 +18,8 @@ class PlaylistSongManager {
     HashMap<int, Song> id2Song,
     List<Map<String, Object?>>? songs2Albums,
   ) async {
+    _validPlaylist.addAll(albums);
+    _validSong.addAll(songs);
     for (Map<String, Object?> relationship in songs2Albums!) {
       int? songId = int.parse(relationship['field1'] as String);
       int? albumId = int.parse(relationship['field5'] as String);

@@ -134,7 +134,7 @@ class ArtistPageState extends State<ArtistPage> {
   ListView _workPage() {
     return ListView(
       children: [
-        _recomend_showcase(),
+        _recommendShowcase(),
         _buildGridAlbums(ArtistWorksManager.getAlbumsOfArtist(widget.artist)),
       ],
     );
@@ -235,7 +235,7 @@ class ArtistPageState extends State<ArtistPage> {
     );
   }
 
-  Visibility _recomend_showcase() {
+  Visibility _recommendShowcase() {
     List<Album> albums = ArtistWorksManager.getAlbumsOfArtist(widget.artist);
     return Visibility(
       visible: albums.isNotEmpty,

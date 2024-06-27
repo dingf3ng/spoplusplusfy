@@ -40,6 +40,7 @@ class PlaylistIterator {
       playlistSource.add(await song.getAudioSource());
       _currentList.add(song);
     }
+    print(playlistSource.length);
     ConcatenatingAudioSource sourceForPlayer =
         ConcatenatingAudioSource(children: playlistSource);
     await _player.setAudioSource(sourceForPlayer);
