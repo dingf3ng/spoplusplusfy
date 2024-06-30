@@ -8,6 +8,9 @@ import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Classes/track.dart';
 import 'package:http/http.dart' as http;
 
+const fhlIP = '10.211.55.5:8000';
+const dfIP = '192.168.2.169:8000';
+
 class PlaylistIterator {
   static final AudioPlayer _player = AudioPlayer();
   static final List<Song> _currentList = [];
@@ -33,17 +36,14 @@ class PlaylistIterator {
     List<AudioSource> playlistSource = [];
     _currentList.clear(); // Clear the list to avoid duplicates
     _clearTracks();
-
     for (Song song in PlaylistSongManager.getSongsForPlaylist(playlist)) {
-      playlistSource.add(song.getAudioSource());
+      playlistSource.add(await song.getAudioSource());
       _currentList.add(song);
     }
-
+    print(playlistSource.length);
     ConcatenatingAudioSource sourceForPlayer =
         ConcatenatingAudioSource(children: playlistSource);
-
     await _player.setAudioSource(sourceForPlayer);
-
     _currentSong = _currentList[0];
   }
 
@@ -134,8 +134,8 @@ class PlaylistIterator {
         .buffer
         .asUint8List();
 
-    var request = http.MultipartRequest('POST',
-        Uri.parse('http://10.211.55.5:8000/api/decompose/to_$trackType'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('http://$fhlIP/api/decompose/to_$trackType'));
     request.files.add(http.MultipartFile.fromBytes('file', songFileBytes,
         filename: 'current_song.mp3'));
 
@@ -198,12 +198,12 @@ class PlaylistIterator {
     // Load and play the vocal track from the same position
     if (_isPlayingTrack) {
       _isPlayingTrack = false;
-      await _player.setAudioSource(_currentSong!.getAudioSource());
+      await _player.setAudioSource(await _currentSong!.getAudioSource());
       await _player.seek(currentPosition);
       return;
     }
     _isPlayingTrack = true;
-    await _player.setAudioSource(track.getAudioSource());
+    await _player.setAudioSource(await track.getAudioSource());
     await _player.seek(currentPosition);
   }
 }

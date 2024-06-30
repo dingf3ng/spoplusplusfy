@@ -36,7 +36,7 @@ abstract class Voice {
     return _duration;
   }
 
-  AudioSource getAudioSource() {
+  Future<AudioSource> getAudioSource() async {
     return _audio;
   }
 }
