@@ -135,7 +135,7 @@ class PlaylistIterator {
         .asUint8List();
 
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://$dfIP/api/decompose/to_$trackType'));
+        'POST', Uri.parse('http://$fhlIP/api/decompose/to_$trackType'));
     request.files.add(http.MultipartFile.fromBytes('file', songFileBytes,
         filename: 'current_song.mp3'));
 

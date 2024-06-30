@@ -56,7 +56,7 @@ class Song extends Voice implements Name {
     String idStr = getId().toString().padLeft(6, '0'); // Ensure the ID has 6 digits, padding with leading zeros if necessary
     String index = idStr.substring(0, 3); // Extract the first three digits
     final response = await http.post(
-        Uri.parse('http://$local/api/get_song/$index/$idStr'));
+        Uri.parse('http://$fhlIP/api/get_song/$index/$idStr'));
     print('herer');
     if (response.statusCode == 200) {
       final bytes = response.bodyBytes;

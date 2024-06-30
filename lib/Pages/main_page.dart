@@ -1,15 +1,21 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:path/path.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
+import 'package:spoplusplusfy/Pages/pure_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
+import 'package:spoplusplusfy/Pages/social_mode_player_page.dart';
 
 const Color goldColour = Color(0xffFFE8A3);
 
+enum Mode {PureMode, SocialMode, ProMode}
+
 class MainPage extends StatefulWidget {
   final PageController pageController;
-
   const MainPage({super.key, required this.pageController});
 
   @override
@@ -20,13 +26,17 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
+  Mode selectedMode = Mode.PureMode;
+  List<Playlist> playlists = [];
+
   @override
   void initState() {
     super.initState();
   }
 
   Future<List<Playlist>> _getPlaylists() async {
-    List<Playlist> playlists = [];
+    if (playlists.isNotEmpty) return playlists;
+
     for (int i = 0; i < 10; i++) {
       playlists.add(await DatabaseHelper().getRandomPlaylist());
     }
@@ -60,19 +70,53 @@ class _MainPageState extends State<MainPage>
   }
 
   ListView _buildMainBody(BuildContext context, List<Playlist> playlists) {
+    List<DropdownMenuItem<Mode>> list = [
+      DropdownMenuItem(
+        value: Mode.PureMode,
+        child: Text('Pure Mode'),
+      ),
+      DropdownMenuItem(
+        value: Mode.ProMode,
+        child: Text('Pro Mode'),
+      ),
+      DropdownMenuItem(
+        value: Mode.SocialMode,
+        child: Text('Social Mode'),
+      ),
+    ];
+
     return ListView(
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
       children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 30.0),
-          child: Text(
-            '    Welcome,\n    Here Are The Music For\n    You',
-            style: TextStyle(
-              fontSize: 30,
-              color: goldColour,
-              fontFamily: 'Noto-Sans',
-            ),
+        Container(
+          alignment: Alignment.topRight,
+          height: 30,
+          width: 100,
+          child: DropdownButton<Mode>(
+            value: selectedMode, // Use selectedMode
+            items: list,
+            onChanged: (Mode? newValue) {
+              setState(() {
+                selectedMode = newValue!;
+              });
+            },
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.02),
+          child: Row(
+            children: [
+              Padding(padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.03)),
+              Text(
+                'Welcome,\nHere Are The Music For\nYou',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: goldColour,
+                  fontFamily: 'Noto-Sans',
+                ),
+              ),
+            ],
           ),
         ),
         Padding(
@@ -98,8 +142,17 @@ class _MainPageState extends State<MainPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ProModePlayerPage(playlist: playlists[index]),
+              builder: (context) {
+                // switch (selectedMode) {
+                //   case Mode.PureMode:
+                //     return PureModePlayerPage(playlist: playlists[index]);
+                //   case Mode.ProMode:
+                //     return ProModePlayerPage(playlist: playlists[index]);
+                //   case Mode.SocialMode:
+                //     return SocialModePlayerPage();
+                // }
+                return PureModePlayerPage(playlist: playlists[index]);
+              },
             ),
           );
         },
@@ -155,15 +208,12 @@ class IntegratedMainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final PageController pageController = PageController();
     return PageView(
-        controller: pageController,
-        scrollDirection: Axis.horizontal,
-        children: [
-          MainPage(
-            pageController: pageController,
-          ),
-          SearchPage(
-            pageController: pageController,
-          ),
-        ]);
+      controller: pageController,
+      scrollDirection: Axis.horizontal,
+      children: [
+        MainPage(pageController: pageController),
+        SearchPage(pageController: pageController),
+      ],
+    );
   }
 }
