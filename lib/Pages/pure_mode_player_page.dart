@@ -71,7 +71,7 @@ class _PlayerPageState extends State<PureModePlayerPage> {
       backgroundColor: Colors.black,
       body: Center(
         child: isLoading
-            ? const CircularProgressIndicator()
+            ? const CircularProgressIndicator(color: goldColour,)
             : Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

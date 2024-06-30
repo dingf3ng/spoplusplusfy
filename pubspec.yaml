@@ -42,6 +42,9 @@ dependencies:
   path_provider: ^2.0.11
   tiktoklikescroller: ^0.2.6
   async_button_builder: ^3.0.0+1
+  video_player: any
+  stacked: any
+  chewie: any
 
   path: any
 dev_dependencies:
