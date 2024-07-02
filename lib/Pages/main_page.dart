@@ -34,6 +34,7 @@ class _MainPageState extends State<MainPage>
     for (int i = 0; i < 10; i++) {
       Playlist playlist = await DatabaseHelper().getRandomPlaylist();
       playlists.add(playlist);
+      _failed[i] = false;
     }
     return playlists;
   }
