@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
@@ -20,6 +22,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
+  final HashMap<int, bool> _failed = HashMap();
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +33,7 @@ class _MainPageState extends State<MainPage>
     List<Playlist> playlists = [];
     for (int i = 0; i < 10; i++) {
       playlists.add(await DatabaseHelper().getRandomPlaylist());
+      _failed[i] = false;
     }
     return playlists;
   }
@@ -93,56 +98,80 @@ class _MainPageState extends State<MainPage>
         mainAxisSpacing: 30,
         childAspectRatio: 0.80,
       ),
-      itemBuilder: (context, index) => GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  ProModePlayerPage(playlist: playlists[index]),
-            ),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
+      itemBuilder: (context, index) {
+        try {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ProModePlayerPage(playlist: playlists[index]),
+                ),
+              );
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: 170,
-                  height: 170,
-                  decoration: BoxDecoration(
-                    border: Border.all(
+                Column(
+                  children: [
+                    Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width / 2.5,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .width / 2.5,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: goldColour,
+                          width: 3,
+                        ),
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(30),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                            playlists[index].getCoverPath(),
+                          ),
+                        ),
+                      ),
+                      child: Visibility(
+                        visible: _failed[index]!,
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Image.asset('assets/icons/album_gold.png',
+                              fit: BoxFit.cover),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Text(
+                    playlists[index].getName(),
+                    style: const TextStyle(
                       color: goldColour,
-                      width: 3,
+                      fontFamily: 'Noto-Sans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    color: goldColour,
-                    borderRadius: BorderRadius.circular(30),
-                    image: DecorationImage(
-                      image: NetworkImage(playlists[index].getCoverPath(),
-                          scale: 0.1),
-                      fit: BoxFit.cover,
-                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Text(
-                playlists[index].getName(),
-                style: const TextStyle(
-                  color: goldColour,
-                  fontFamily: 'Noto-Sans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
+          );
+        } catch (e) {
+          print('rorororrrr');
+          setState(() {
+            _failed[index] = true;
+          });
+        }
+      },
       itemCount: playlists.length,
     );
   }

@@ -42,6 +42,7 @@ dependencies:
   path_provider: ^2.0.11
   tiktoklikescroller: ^0.2.6
   async_button_builder: ^3.0.0+1
+  newton_particles: ^0.1.8
 
   path: any
 dev_dependencies:
