@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
@@ -20,6 +22,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
+  final HashMap<int, bool> _failed = HashMap();
+
   @override
   void initState() {
     super.initState();
@@ -28,10 +32,31 @@ class _MainPageState extends State<MainPage>
   Future<List<Playlist>> _getPlaylists() async {
     List<Playlist> playlists = [];
     for (int i = 0; i < 10; i++) {
-      playlists.add(await DatabaseHelper().getRandomPlaylist());
+      Playlist playlist = await DatabaseHelper().getRandomPlaylist();
+      playlists.add(playlist);
     }
     return playlists;
   }
+
+  //TODO: Test following code after fetch the covers onto our server
+  /**
+   * Future<List<Playlist>> _getPlaylists() async {
+      List<Playlist> playlists = [];
+      for (int i = 0; i < 10; i++) {
+      Playlist playlist = await DatabaseHelper().getRandomPlaylist();
+      playlists.add(playlist);
+      try {
+      final image = NetworkImage(playlist.getCoverPath());
+      await precacheImage(image, context);
+      } catch (e) {
+      setState(() {
+      _failed[i] = true;
+      });
+      };
+      }
+      return playlists;
+      }
+   */
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +108,7 @@ class _MainPageState extends State<MainPage>
     );
   }
 
+
   GridView _buildGridAlbums(List<Playlist> playlists) {
     return GridView.builder(
       shrinkWrap: true,
@@ -93,56 +119,77 @@ class _MainPageState extends State<MainPage>
         mainAxisSpacing: 30,
         childAspectRatio: 0.80,
       ),
-      itemBuilder: (context, index) => GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  ProModePlayerPage(playlist: playlists[index]),
-            ),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
-              children: [
-                Container(
-                  width: 170,
-                  height: 170,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: goldColour,
-                      width: 3,
-                    ),
-                    color: goldColour,
-                    borderRadius: BorderRadius.circular(30),
-                    image: DecorationImage(
-                      image: NetworkImage(playlists[index].getCoverPath(),
-                          scale: 0.1),
-                      fit: BoxFit.cover,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ProModePlayerPage(playlist: playlists[index]),
+              ),
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Stack(
+                children: [
+                  Visibility(
+                    visible: !_failed[index]!,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      height: MediaQuery.of(context).size.width / 2.5,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: goldColour,
+                          width: 3,
+                        ),
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(30),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: Image.network(
+                            playlists[index].getCoverPath(),
+                            errorBuilder: (context, error, stackTrace) {
+                              print('herer');
+                              setState(() {
+                                _failed[index] = true;
+                              });
+                              return Container();
+                            },
+                          ).image,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Text(
-                playlists[index].getName(),
-                style: const TextStyle(
-                  color: goldColour,
-                  fontFamily: 'Noto-Sans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                overflow: TextOverflow.ellipsis,
+                  Visibility(
+                    visible: _failed[index]!,
+                    child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Image.asset('assets/icons/album_gold.png',
+                          fit: BoxFit.cover),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Text(
+                  playlists[index].getName(),
+                  style: const TextStyle(
+                    color: goldColour,
+                    fontFamily: 'Noto-Sans',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
       itemCount: playlists.length,
     );
   }
