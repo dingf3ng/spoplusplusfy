@@ -323,7 +323,7 @@ class _SearchPageState extends State<SearchPage>
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       SizedBox(
-                        width: 170,
+                        width: 100,
                         child: Text(
                           _resultSongs[index].getName(),
                           overflow: TextOverflow.ellipsis,

@@ -13,10 +13,11 @@ class Album extends Playlist {
   });
 
   factory Album.fromMap(Map<String, Object?> map) {
+    int id = map['album_id'] as int;
     return Album(
       name: map['name'] as String,
-      playlistCoverPath: map['cover_url'] as String,
-      id: map['album_id'] as int,
+      playlistCoverPath: 'http://$fhlIP/api/get_album_cover/' + id.toString().padLeft(6, '0'),
+      id: id,
       mutable: false,
     );
   }

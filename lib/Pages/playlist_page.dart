@@ -100,8 +100,8 @@ class PlaylistPageState extends State<PlaylistPage> {
           width: 25,
         ),
         Container(
-          width: 170,
-          height: 170,
+          width: 100,
+          height: 100,
           decoration: BoxDecoration(
               border: Border.all(
                 color: secondaryColor,
@@ -215,15 +215,12 @@ class PlaylistPageState extends State<PlaylistPage> {
                       fontSize: 30,
                     ),
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: 270,
+                        width: 230,
                         child: Text(
                           widget.songs[index].getName(),
                           overflow: TextOverflow.ellipsis,
@@ -289,7 +286,7 @@ class PlaylistPageState extends State<PlaylistPage> {
               Padding(
                 padding: const EdgeInsets.only(left: 25),
                 child: SizedBox(
-                  width: 400,
+                  width: 350,
                   child: Text(
                     'More by ${priArtist.getName()}',
                     overflow: TextOverflow.ellipsis,

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
+import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
@@ -38,7 +39,7 @@ class _MainPageState extends State<MainPage>
     if (playlists.isNotEmpty) return playlists;
 
     for (int i = 0; i < 10; i++) {
-      playlists.add(await DatabaseHelper().getRandomPlaylist());
+      playlists.add(await ArtistWorksManager.getRandomPlaylist());
     }
     return playlists;
   }
@@ -135,7 +136,7 @@ class _MainPageState extends State<MainPage>
         crossAxisCount: 2,
         crossAxisSpacing: 30,
         mainAxisSpacing: 30,
-        childAspectRatio: 0.80,
+        childAspectRatio: 0.70,
       ),
       itemBuilder: (context, index) => GestureDetector(
         onTap: () {
@@ -143,15 +144,14 @@ class _MainPageState extends State<MainPage>
             context,
             MaterialPageRoute(
               builder: (context) {
-                // switch (selectedMode) {
-                //   case Mode.PureMode:
-                //     return PureModePlayerPage(playlist: playlists[index]);
-                //   case Mode.ProMode:
-                //     return ProModePlayerPage(playlist: playlists[index]);
-                //   case Mode.SocialMode:
-                //     return SocialModePlayerPage();
-                // }
-                return PureModePlayerPage(playlist: playlists[index]);
+                switch (selectedMode) {
+                  case Mode.PureMode:
+                    return PureModePlayerPage(playlist: playlists[index]);
+                  case Mode.ProMode:
+                    return ProModePlayerPage(playlist: playlists[index]);
+                  case Mode.SocialMode:
+                    return SocialModePlayerPage();
+                }
               },
             ),
           );
@@ -181,7 +181,7 @@ class _MainPageState extends State<MainPage>
               ],
             ),
             Padding(
-              padding: const EdgeInsets.all(5.0),
+              padding: EdgeInsets.all(5),
               child: Text(
                 playlists[index].getName(),
                 style: const TextStyle(

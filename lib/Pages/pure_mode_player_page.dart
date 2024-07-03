@@ -94,8 +94,8 @@ class PlayerPageState extends State<PureModePlayerPage> {
                       height: 300,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        image: const DecorationImage(
-                          image: AssetImage('assets/images/playlist_cover.jpg'),
+                        image: DecorationImage(
+                          image: Image.network(widget.playlist.getCoverPath(),).image,
                         ),
                         border: Border.all(
                           color: goldColour,

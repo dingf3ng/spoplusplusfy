@@ -8,7 +8,7 @@ import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Classes/track.dart';
 import 'package:http/http.dart' as http;
 
-const fhlIP = '10.211.55.5:8000';
+const fhlIP = '192.168.1.1:8000';
 const dfIP = '192.168.2.169:8000';
 
 class PlaylistIterator {
@@ -129,15 +129,9 @@ class PlaylistIterator {
       return;
     }
 
-    var songFileBytes = (await rootBundle.load(
-            'assets/songs/${_currentSong!.getId().toString().padLeft(6, '0').substring(0, 3)}/${_currentSong!.getId().toString().padLeft(6, '0')}.mp3'))
-        .buffer
-        .asUint8List();
 
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://$fhlIP/api/decompose/to_$trackType'));
-    request.files.add(http.MultipartFile.fromBytes('file', songFileBytes,
-        filename: 'current_song.mp3'));
+        'POST', Uri.parse('http://$fhlIP/api/decompose/to_$trackType/${_currentSong!.getId().toString().padLeft(6, '0')}'));
 
     var response = await _client!.send(request);
 
