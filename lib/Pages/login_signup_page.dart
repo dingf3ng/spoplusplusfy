@@ -23,8 +23,8 @@ class SignupPage extends StatefulWidget {
 
 class SignupPageState extends State<SignupPage> {
   int _selectedIdx = 0;
-  int _finishedCnt = 0;
-  int _progressTo = 1;
+  final int _finishedCnt = 0;
+  final int _progressTo = 1;
   bool _buttonPressed = false;
   bool _goodEmail = false;
   bool _goodUsername = false;
@@ -32,8 +32,8 @@ class SignupPageState extends State<SignupPage> {
   bool _goodConfirm = false;
   bool _goodCode = false;
   bool _goodBio = false;
-  bool _addedPage2 = false;
-  bool _addedPage3 = false;
+  final bool _addedPage2 = false;
+  final bool _addedPage3 = false;
   String _usernamePrompt = 'What should we call you?';
   String _passwordPrompt = 'Password should be 8-16 digits long';
   String _passwordConfirmPrompt = 'Please enter again your password';
@@ -50,7 +50,6 @@ class SignupPageState extends State<SignupPage> {
       TextEditingController();
   final TextEditingController _bioController = TextEditingController();
 
-  List<MyNavigationDestination> _availableDestinations = [];
   final PageController _controller = PageController();
   late Timer _emailTimer;
   int _countdownDuration = 60;
@@ -68,7 +67,6 @@ class SignupPageState extends State<SignupPage> {
     _passwordConfirmController.addListener(_testPasswordConfirm);
     _bioController.addListener(_testBio);
   }
-
 
   void _testEmail() {
     String query = _emailController.text;
@@ -159,7 +157,7 @@ class SignupPageState extends State<SignupPage> {
     _navigationBar = _buildNavigationBar();
     return PageView(
       controller: _controller,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: [_emailPage(), _userPage(), _personalInfoPage()],
     );
   }
@@ -174,13 +172,13 @@ class SignupPageState extends State<SignupPage> {
               style: FilledButton.styleFrom(backgroundColor: secondaryColor),
               onPressed: () {
                 _selectedIdx = 0;
-                _controller.animateToPage(_selectedIdx,
+                _controller.animateToPage(_selectedIdx + 1,
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
               child: const Text(
-                'Works',
+                'Username & Password',
                 style: TextStyle(
                     fontStyle: FontStyle.italic, fontWeight: FontWeight.w600),
               ),
@@ -191,13 +189,13 @@ class SignupPageState extends State<SignupPage> {
               ),
               onPressed: () {
                 _selectedIdx = 0;
-                _controller.animateToPage(_selectedIdx,
+                _controller.animateToPage(_selectedIdx + 1,
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
               child: const Text(
-                'Posts',
+                'Username & Password',
                 style: TextStyle(
                     color: secondaryColor,
                     fontStyle: FontStyle.italic,
@@ -210,13 +208,13 @@ class SignupPageState extends State<SignupPage> {
               style: FilledButton.styleFrom(backgroundColor: secondaryColor),
               onPressed: () {
                 _selectedIdx = 1;
-                _controller.animateToPage(_selectedIdx,
+                _controller.animateToPage(_selectedIdx + 1,
                     duration: const Duration(milliseconds: 200),
-                    curve: Curves.bounceInOut);
+                    curve: Curves.ease);
                 setState(() {});
               },
               child: const Text(
-                'Posts',
+    'Personal Information',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
@@ -226,12 +224,12 @@ class SignupPageState extends State<SignupPage> {
               ),
               onPressed: () {
                 _selectedIdx = 1;
-                _controller.animateToPage(_selectedIdx,
+                _controller.animateToPage(_selectedIdx + 1,
                     duration: const Duration(milliseconds: 200),
-                    curve: Curves.bounceInOut);
+                    curve: Curves.ease);
                 setState(() {});
               },
-              child: const Text('Works',
+              child: const Text('Personal Information',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: secondaryColor,
@@ -404,16 +402,18 @@ class SignupPageState extends State<SignupPage> {
     return Scaffold(
       body: Stack(
         children: [
-          Newton(activeEffects: [
-            RainEffect(
-              particleConfiguration: ParticleConfiguration(
-                shape: CircleShape(),
-                size: const Size(5, 5),
-                color: const SingleParticleColor(color: effectColor),
-              ),
-              effectConfiguration: const EffectConfiguration(),
-            )
-          ],),
+          Newton(
+            activeEffects: [
+              RainEffect(
+                particleConfiguration: ParticleConfiguration(
+                  shape: CircleShape(),
+                  size: const Size(5, 5),
+                  color: const SingleParticleColor(color: effectColor),
+                ),
+                effectConfiguration: const EffectConfiguration(),
+              )
+            ],
+          ),
           Column(
             children: [
               SizedBox(
@@ -445,23 +445,45 @@ class SignupPageState extends State<SignupPage> {
               SizedBox(
                 height: MediaQuery.of(context).size.height / 10,
               ),
-              Visibility(
-                  visible: _goodPassword && _goodConfirm && _goodUsername,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      OutlinedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          fixedSize: Size(65, 65),
-                          padding: EdgeInsets.all(10),
-                          side: const BorderSide(width: 2.0, color: secondaryColor),
-                        ),
-                        child:
-                            SvgPicture.asset('assets/icons/right_arrow_gold.svg'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  OutlinedButton(
+                    onPressed: () {
+                      _controller.previousPage(
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.ease);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      fixedSize: const Size(65, 65),
+                      padding: const EdgeInsets.all(10),
+                      side: const BorderSide(width: 2.0, color: secondaryColor),
+                    ),
+                    child: SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
+                  ),
+                  Visibility(
+                    visible: _goodUsername && _goodPassword && _goodConfirm,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        _controller.nextPage(
+                            duration: const Duration(milliseconds: 600),
+                            curve: Curves.ease);
+                        setState(() {
+                          _selectedIdx ++;
+                        });
+                      },
+                      style: OutlinedButton.styleFrom(
+                        fixedSize: const Size(65, 65),
+                        padding: const EdgeInsets.all(10),
+                        side:
+                            const BorderSide(width: 2.0, color: secondaryColor),
                       ),
-                    ],
-                  )),
+                      child:
+                          SvgPicture.asset('assets/icons/right_arrow_gold.svg'),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ],
@@ -473,16 +495,18 @@ class SignupPageState extends State<SignupPage> {
     return Scaffold(
       body: Stack(
         children: [
-          Newton(activeEffects: [
-            RainEffect(
-              particleConfiguration: ParticleConfiguration(
-                shape: CircleShape(),
-                size: const Size(5, 5),
-                color: const SingleParticleColor(color: effectColor),
-              ),
-              effectConfiguration: const EffectConfiguration(),
-            )
-          ],),
+          Newton(
+            activeEffects: [
+              RainEffect(
+                particleConfiguration: ParticleConfiguration(
+                  shape: CircleShape(),
+                  size: const Size(5, 5),
+                  color: const SingleParticleColor(color: effectColor),
+                ),
+                effectConfiguration: const EffectConfiguration(),
+              )
+            ],
+          ),
           Column(
             children: [
               SizedBox(
@@ -520,13 +544,15 @@ class SignupPageState extends State<SignupPage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   SizedBox(
-                    width: 325,
+                    width: MediaQuery.of(context).size.width * 2 / 3,
                     child: _typingField('Email', _goodEmail, _emailPrompt,
                         _emailController, 'assets/icons/email_gold.svg'),
                   ),
                   TextButton(
                     onPressed: () {
-                      _emailTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+                      if (!_goodEmail) return;
+                      _emailTimer =
+                          Timer.periodic(const Duration(seconds: 1), (timer) {
                         setState(() {
                           _buttonText = '$_countdownDuration s';
                           _countdownDuration--;
@@ -575,15 +601,18 @@ class SignupPageState extends State<SignupPage> {
                     children: [
                       OutlinedButton(
                         onPressed: () {
-                          _controller.nextPage(duration: Duration(microseconds: 600), curve: Curves.ease);
+                          _controller.nextPage(
+                              duration: const Duration(milliseconds: 600),
+                              curve: Curves.ease);
                         },
                         style: OutlinedButton.styleFrom(
-                          fixedSize: Size(65, 65),
-                          padding: EdgeInsets.all(10),
-                          side: const BorderSide(width: 2.0, color: secondaryColor),
+                          fixedSize: const Size(65, 65),
+                          padding: const EdgeInsets.all(10),
+                          side: const BorderSide(
+                              width: 2.0, color: secondaryColor),
                         ),
-                        child:
-                        SvgPicture.asset('assets/icons/right_arrow_gold.svg'),
+                        child: SvgPicture.asset(
+                            'assets/icons/right_arrow_gold.svg'),
                       ),
                     ],
                   )),
@@ -598,16 +627,18 @@ class SignupPageState extends State<SignupPage> {
     return Scaffold(
       body: Stack(
         children: [
-          Newton(activeEffects: [
-            RainEffect(
-              particleConfiguration: ParticleConfiguration(
-                shape: CircleShape(),
-                size: const Size(5, 5),
-                color: const SingleParticleColor(color: effectColor),
-              ),
-              effectConfiguration: const EffectConfiguration(),
-            )
-          ],),
+          Newton(
+            activeEffects: [
+              RainEffect(
+                particleConfiguration: ParticleConfiguration(
+                  shape: CircleShape(),
+                  size: const Size(5, 5),
+                  color: const SingleParticleColor(color: effectColor),
+                ),
+                effectConfiguration: const EffectConfiguration(),
+              )
+            ],
+          ),
           Column(
             children: [
               SizedBox(
@@ -619,6 +650,48 @@ class SignupPageState extends State<SignupPage> {
               ),
               _multilineField('Bio', _goodBio, _bioPrompt, _bioController,
                   'assets/icons/people_gold.svg'),
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  OutlinedButton(
+                    onPressed: () {
+                      _controller.previousPage(
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.ease);
+                      setState(() {
+                        _selectedIdx --;
+                      });
+                    },
+                    style: OutlinedButton.styleFrom(
+                      fixedSize: const Size(65, 65),
+                      padding: const EdgeInsets.all(10),
+                      side: const BorderSide(width: 2.0, color: secondaryColor),
+                    ),
+                    child: SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
+                  ),
+                  Visibility(
+                    visible: _goodBio,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        _controller.nextPage(
+                            duration: const Duration(milliseconds: 600),
+                            curve: Curves.ease);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        fixedSize: const Size(65, 65),
+                        padding: const EdgeInsets.all(10),
+                        side:
+                        const BorderSide(width: 2.0, color: secondaryColor),
+                      ),
+                      child:
+                      SvgPicture.asset('assets/icons/right_arrow_gold.svg'),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ],
@@ -627,34 +700,3 @@ class SignupPageState extends State<SignupPage> {
   }
 }
 
-class MyNavigationDestination extends NavigationDestination {
-  final bool selected;
-  final bool finished;
-
-  const MyNavigationDestination(
-      {super.key,
-      required super.icon,
-      required super.label,
-      required this.selected,
-      required this.finished});
-
-  MyNavigationDestination select() {
-    return MyNavigationDestination(
-        icon: icon, label: label, selected: true, finished: finished);
-  }
-
-  MyNavigationDestination unselect() {
-    return MyNavigationDestination(
-        icon: icon, label: label, selected: false, finished: finished);
-  }
-
-  MyNavigationDestination finish() {
-    return MyNavigationDestination(
-        icon: icon, label: label, selected: selected, finished: true);
-  }
-
-  MyNavigationDestination unfinish() {
-    return MyNavigationDestination(
-        icon: icon, label: label, selected: selected, finished: false);
-  }
-}

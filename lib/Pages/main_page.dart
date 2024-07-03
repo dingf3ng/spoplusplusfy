@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
@@ -39,25 +38,6 @@ class _MainPageState extends State<MainPage>
     return playlists;
   }
 
-  //TODO: Test following code after fetch the covers onto our server
-  /**
-   * Future<List<Playlist>> _getPlaylists() async {
-      List<Playlist> playlists = [];
-      for (int i = 0; i < 10; i++) {
-      Playlist playlist = await DatabaseHelper().getRandomPlaylist();
-      playlists.add(playlist);
-      try {
-      final image = NetworkImage(playlist.getCoverPath());
-      await precacheImage(image, context);
-      } catch (e) {
-      setState(() {
-      _failed[i] = true;
-      });
-      };
-      }
-      return playlists;
-      }
-   */
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +133,6 @@ class _MainPageState extends State<MainPage>
                           image: Image.network(
                             playlists[index].getCoverPath(),
                             errorBuilder: (context, error, stackTrace) {
-                              print('herer');
                               setState(() {
                                 _failed[index] = true;
                               });
