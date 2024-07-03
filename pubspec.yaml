@@ -44,6 +44,7 @@ dependencies:
   async_button_builder: ^3.0.0+1
   video_player: any
   stacked: any
+  newton_particles: any
   chewie: any
 
   path: any
