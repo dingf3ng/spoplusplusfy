@@ -9,7 +9,7 @@ import '../Classes/video.dart';
 class SingleVideoPage extends StatefulWidget {
   final Video video;
 
-  SingleVideoPage({required this.video});
+  const SingleVideoPage({super.key, required this.video});
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
@@ -72,9 +72,9 @@ class _VideoPlayerWidgetState extends State<SingleVideoPage> {
                 child: Column(
                   children: [
                     _likeButton(),
-                    SizedBox(height: 60,),
+                    const SizedBox(height: 60,),
                     _commentButton(),
-                    SizedBox(height: 60,),
+                    const SizedBox(height: 60,),
                     _shareButton(),
                   ],
                 ),
@@ -83,20 +83,20 @@ class _VideoPlayerWidgetState extends State<SingleVideoPage> {
                 bottom: 20,
                   child: Row(
                 children: [
-                  SizedBox(width: 30,),
+                  const SizedBox(width: 30,),
                   CircleAvatar(backgroundImage: Image.asset('assets/images/pf.jpg').image, radius: 40,),
-                  SizedBox(width: 30,),
-                  Text('Name', style: TextStyle(color: goldColour, fontFamily: 'NotoSans', fontSize: 40),),
-                  SizedBox(width: 30,),
+                  const SizedBox(width: 30,),
+                  const Text('Name', style: TextStyle(color: goldColour, fontFamily: 'NotoSans', fontSize: 40),),
+                  const SizedBox(width: 30,),
                   Container(width: 90, height: 50, decoration: BoxDecoration(color: goldColour, borderRadius: BorderRadius.circular(3.0)),
-                    child: Center(child: Text('follow', style: TextStyle(fontSize: 20),)),
+                    child: const Center(child: Text('follow', style: TextStyle(fontSize: 20),)),
                   ),
                 ],
                   ),)
             ],
           );
         } else {
-          return Center(child: CircularProgressIndicator(color: goldColour,));
+          return const Center(child: CircularProgressIndicator(color: goldColour,));
         }
       },
     );
@@ -112,7 +112,7 @@ class _VideoPlayerWidgetState extends State<SingleVideoPage> {
           return SizedBox(
             width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.75,
-          child: Text('Nobody has commented yet. Leave a comment below!',
+          child: const Text('Nobody has commented yet. Leave a comment below!',
             style: TextStyle(fontSize: 35),
             textAlign: TextAlign.center,),);
         });

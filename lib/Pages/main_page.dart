@@ -1,10 +1,6 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:path/path.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
-import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/pure_mode_player_page.dart';
@@ -39,7 +35,7 @@ class _MainPageState extends State<MainPage>
     if (playlists.isNotEmpty) return playlists;
 
     for (int i = 0; i < 10; i++) {
-      playlists.add(await ArtistWorksManager.getRandomPlaylist());
+      playlists.add(ArtistWorksManager.getRandomPlaylist());
     }
     return playlists;
   }
@@ -72,15 +68,15 @@ class _MainPageState extends State<MainPage>
 
   ListView _buildMainBody(BuildContext context, List<Playlist> playlists) {
     List<DropdownMenuItem<Mode>> list = [
-      DropdownMenuItem(
+      const DropdownMenuItem(
         value: Mode.PureMode,
         child: Text('Pure Mode'),
       ),
-      DropdownMenuItem(
+      const DropdownMenuItem(
         value: Mode.ProMode,
         child: Text('Pro Mode'),
       ),
-      DropdownMenuItem(
+      const DropdownMenuItem(
         value: Mode.SocialMode,
         child: Text('Social Mode'),
       ),
@@ -109,7 +105,7 @@ class _MainPageState extends State<MainPage>
           child: Row(
             children: [
               Padding(padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.03)),
-              Text(
+              const Text(
                 'Welcome,\nHere Are The Music For\nYou',
                 style: TextStyle(
                   fontSize: 30,
@@ -181,7 +177,7 @@ class _MainPageState extends State<MainPage>
               ],
             ),
             Padding(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               child: Text(
                 playlists[index].getName(),
                 style: const TextStyle(

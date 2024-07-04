@@ -793,7 +793,7 @@ class SignupPageState extends State<SignupPage>
             colors: const [secondaryColor, Colors.grey],
           ),
           Center(
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width / 3,
               height: MediaQuery.of(context).size.width / 3,
               child: IconButton(
