@@ -171,10 +171,28 @@ class _MainPageState extends State<MainPage>
                     ),
                     color: goldColour,
                     borderRadius: BorderRadius.circular(30),
-                    image: DecorationImage(
-                      image: NetworkImage(playlists[index].getCoverPath(),
-                          scale: 0.1),
-                      fit: BoxFit.cover,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Positioned.fill(
+                          child: Center(
+                            child: SizedBox(
+                              width: 50.0,  // Set the width of the loading sign
+                              height: 50.0, // Set the height of the loading sign
+                              child: Image.asset('assets/images/loading_sign.gif'),
+                            ),
+                          ),
+                        ), Image(
+                          image: NetworkImage(playlists[index].getCoverPath(), scale: 0.1),
+                          errorBuilder: (context, obj, st) {
+                            return Image.asset('assets/images/playlist_cover.jpg');
+                          },
+                          fit: BoxFit.cover,
+                        ),
+                      ],
                     ),
                   ),
                 ),
