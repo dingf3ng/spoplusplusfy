@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:newton_particles/newton_particles.dart';
@@ -14,6 +16,9 @@ const String passwordPattern = r'^.{8,32}$';
 //TODO: temp verification code
 const String temp_code = '123456';
 
+const String goldPlay = 'assets/icons/music_play_gold.svg';
+const String blackPlay = 'assets/icons/music_play_black.svg';
+
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -21,7 +26,8 @@ class SignupPage extends StatefulWidget {
   State<StatefulWidget> createState() => SignupPageState();
 }
 
-class SignupPageState extends State<SignupPage> {
+class SignupPageState extends State<SignupPage>
+    with SingleTickerProviderStateMixin {
   int _selectedIdx = 0;
   final int _finishedCnt = 0;
   final int _progressTo = 1;
@@ -57,6 +63,13 @@ class SignupPageState extends State<SignupPage> {
   static const Color secondaryColor = Color(0xffFFE8A3);
   static const Color effectColor = Color.fromRGBO(0xff, 0xe8, 0xa3, 0.6);
 
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  late double _screenDiagonal;
+  String iconPlay = goldPlay;
+
+  final ConfettiController _confettiController = ConfettiController();
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +79,28 @@ class SignupPageState extends State<SignupPage> {
     _passwordController.addListener(_testPassword);
     _passwordConfirmController.addListener(_testPasswordConfirm);
     _bioController.addListener(_testBio);
+
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          Navigator.of(context).pop();
+        }
+      });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final size = MediaQuery.of(context).size;
+      _screenDiagonal =
+          sqrt(size.width * size.width + size.height * size.height);
+      setState(() {
+        _animation = Tween<double>(begin: 0, end: _screenDiagonal)
+            .animate(CurvedAnimation(
+          parent: _animationController,
+          curve: Curves.ease,
+        ));
+      });
+    });
   }
 
   void _testEmail() {
@@ -157,8 +192,11 @@ class SignupPageState extends State<SignupPage> {
     _navigationBar = _buildNavigationBar();
     return PageView(
       controller: _controller,
+      onPageChanged: (index) {
+        if (index == 3) _confettiController.play();
+      },
       physics: const NeverScrollableScrollPhysics(),
-      children: [_emailPage(), _userPage(), _personalInfoPage()],
+      children: [_emailPage(), _userPage(), _personalInfoPage(), _finalPage()],
     );
   }
 
@@ -214,7 +252,7 @@ class SignupPageState extends State<SignupPage> {
                 setState(() {});
               },
               child: const Text(
-    'Personal Information',
+                'Personal Information',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
@@ -462,14 +500,18 @@ class SignupPageState extends State<SignupPage> {
                     child: SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
                   ),
                   Visibility(
-                    visible: _goodUsername && _goodPassword && _goodConfirm,
+                    visible: _goodUsername &&
+                        _goodPassword &&
+                        _goodConfirm &&
+                        _goodEmail &&
+                        _goodCode,
                     child: OutlinedButton(
                       onPressed: () {
                         _controller.nextPage(
                             duration: const Duration(milliseconds: 600),
                             curve: Curves.ease);
                         setState(() {
-                          _selectedIdx ++;
+                          _selectedIdx++;
                         });
                       },
                       style: OutlinedButton.styleFrom(
@@ -512,7 +554,24 @@ class SignupPageState extends State<SignupPage> {
               SizedBox(
                 height: MediaQuery.of(context).size.height / 7,
               ),
-              _navigationBar,
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 25,
+                  ),
+                  Text(
+                    'Register you account',
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: secondaryColor,
+                        fontSize: 20,
+                        decorationColor: secondaryColor,
+                        fontWeight: FontWeight.w600,
+                        fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 30,
               ),
@@ -662,7 +721,7 @@ class SignupPageState extends State<SignupPage> {
                           duration: const Duration(milliseconds: 600),
                           curve: Curves.ease);
                       setState(() {
-                        _selectedIdx --;
+                        _selectedIdx--;
                       });
                     },
                     style: OutlinedButton.styleFrom(
@@ -684,10 +743,10 @@ class SignupPageState extends State<SignupPage> {
                         fixedSize: const Size(65, 65),
                         padding: const EdgeInsets.all(10),
                         side:
-                        const BorderSide(width: 2.0, color: secondaryColor),
+                            const BorderSide(width: 2.0, color: secondaryColor),
                       ),
                       child:
-                      SvgPicture.asset('assets/icons/right_arrow_gold.svg'),
+                          SvgPicture.asset('assets/icons/right_arrow_gold.svg'),
                     ),
                   ),
                 ],
@@ -698,5 +757,86 @@ class SignupPageState extends State<SignupPage> {
       ),
     );
   }
+
+  Scaffold _finalPage() {
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return CustomPaint(
+                painter:
+                    WavePainter(_animation.value, MediaQuery.of(context).size),
+              );
+            },
+          ),
+          Newton(
+            activeEffects: [
+              RainEffect(
+                particleConfiguration: ParticleConfiguration(
+                  shape: CircleShape(),
+                  size: const Size(5, 5),
+                  color: const SingleParticleColor(color: effectColor),
+                ),
+                effectConfiguration: const EffectConfiguration(),
+              )
+            ],
+          ),
+          ConfettiWidget(
+            confettiController: _confettiController,
+            gravity: 0.01,
+            shouldLoop: true,
+            blastDirection: -pi/2,
+            blastDirectionality: BlastDirectionality.explosive,
+            colors: const [secondaryColor, Colors.grey],
+          ),
+          Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width / 3,
+              height: MediaQuery.of(context).size.width / 3,
+              child: IconButton(
+                iconSize: _animation.value / 10,
+                onPressed: () {
+                  setState(() {
+                    iconPlay = blackPlay;
+                  });
+                  _animationController.forward();
+                },
+                splashColor: primaryColor,
+                icon: SvgPicture.asset(
+                  iconPlay,
+                  width: MediaQuery.of(context).size.width / 5,
+                  height: MediaQuery.of(context).size.width / 5,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
+class WavePainter extends CustomPainter {
+  final double radius;
+  final Size size;
+
+  WavePainter(this.radius, this.size);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = SignupPageState.secondaryColor
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(
+        Offset(this.size.width / 2, this.size.height / 2), radius, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}

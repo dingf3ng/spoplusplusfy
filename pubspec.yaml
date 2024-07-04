@@ -46,6 +46,7 @@ dependencies:
   stacked: any
   newton_particles: any
   chewie: any
+  confetti: 0.7.0
 
   path: any
 dev_dependencies:
