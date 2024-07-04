@@ -5,6 +5,7 @@ import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:spoplusplusfy/Pages/login_signup_page.dart';
 import 'package:spoplusplusfy/Pages/playlist_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
@@ -408,7 +409,28 @@ class _SearchPageState extends State<SearchPage>
       ),
       actions: [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const SignupPage(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(0.0, -1.0);
+                    const end = Offset.zero;
+                    const curve = Curves.ease;
+                    var tween = Tween(begin: begin, end: end)
+                        .chain(CurveTween(curve: curve));
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  },
+                  transitionDuration: const Duration(seconds: 1)
+                  ),
+            );
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -421,7 +443,7 @@ class _SearchPageState extends State<SearchPage>
                   color: secondaryColor,
                 ),
               ),
-              SvgPicture.asset('assets/icons/share_gold.svg',
+              SvgPicture.asset('assets/icons/user_gold.svg',
                   height: 32, width: 32)
             ],
           ),
@@ -441,7 +463,7 @@ class _SearchPageState extends State<SearchPage>
             FocusManager.instance.primaryFocus?.unfocus();
           },
           controller: _searchController,
-          style: const TextStyle(color: secondaryColor),
+          style: const TextStyle(color: secondaryColor, decorationThickness: 0),
           decoration: InputDecoration(
             filled: false,
             border: OutlineInputBorder(

@@ -72,7 +72,7 @@ class ArtistPageState extends State<ArtistPage> {
                 setState(() {});
               },
               child: const Text(
-                'Works',
+                'Posts',
                 style: TextStyle(
                     color: secondaryColor,
                     fontStyle: FontStyle.italic,
