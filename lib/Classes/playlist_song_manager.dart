@@ -16,19 +16,14 @@ class PlaylistSongManager {
     List<Song> songs,
     HashMap<int, Album> id2Album,
     HashMap<int, Song> id2Song,
-    List<Map<String, Object?>>? songs2Albums,
+    Map<Song, Album> songs2Albums,
   ) async {
     _validPlaylist.addAll(albums);
     _validSong.addAll(songs);
-    for (Map<String, Object?> relationship in songs2Albums!) {
-      int? songId = int.parse(relationship['field1'] as String);
-      int? albumId = int.parse(relationship['field5'] as String);
-      if (!id2Album.containsKey(albumId)) continue;
-      _listMap.update(id2Album[albumId]!, (list) => list..add(id2Song[songId]!),
-          ifAbsent: () => [id2Song[songId]!]);
-      _songMap.update(id2Song[songId]!, (list) => list..add(id2Album[albumId]!),
-          ifAbsent: () => [id2Album[albumId]!]);
-    }
+    songs2Albums.forEach((song, album) {
+      _listMap.update(album, (list) => list..add(song), ifAbsent: () => [song]);
+      _songMap.update(song, (list) => list..add(album), ifAbsent: () => [album]);
+    });
   }
 
   static List<Song> getSongsForPlaylist(Playlist playlist) {
@@ -66,7 +61,7 @@ class PlaylistSongManager {
     }
     _validPlaylist.remove(playlist);
     _listMap.remove(playlist);
-    //TO DO: remove in database
+    //TODO: remove in database
   }
 
   static List<Playlist> getPlaylistsForSong(Song song) {

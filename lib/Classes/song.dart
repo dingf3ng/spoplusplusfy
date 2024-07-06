@@ -57,13 +57,11 @@ class Song extends Voice implements Name {
     String index = idStr.substring(0, 3); // Extract the first three digits
     final response = await http.post(
         Uri.parse('http://$fhlIP/api/get_song/$index/$idStr'));
-    print('herer');
     if (response.statusCode == 200) {
       final bytes = response.bodyBytes;
       final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/$index$idStr.mp3');
       await file.writeAsBytes(bytes);
-      print('now');
       return AudioSource.uri(Uri.file(file.path));
     } else {
       throw Exception('Failed to load song, status code: ${response.statusCode}');

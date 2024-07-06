@@ -26,7 +26,9 @@ class ArtistWorksManager {
     HashMap<int, Album> id2Album,
     HashMap<int, Song> id2Song,
     HashMap<String, Artist> name2Artist,
-    List<Map<String, Object?>>? relationships,
+    List<dynamic>? relationships,
+      Map<int, String> songId2ArtistName,
+      Map<Song, Album> songs2albums,
   ) async {
     // add valid instances
     _validAlbums.addAll(albums);
@@ -35,10 +37,11 @@ class ArtistWorksManager {
 
     // construct relationships
     HashSet<Album> added = HashSet();
-    for (Map<String, Object?> relationship in relationships!) {
-      Artist artist = name2Artist[relationship['artist_name']]!;
-      Song song = id2Song[relationship['song_id']]!;
-      Album album = id2Album[relationship['album_id']]!;
+    for (Song song in songs) {
+      Artist artist = name2Artist[songId2ArtistName[song.getId()]]??
+          Artist(name: 'unknown', id: 0, gender: Gender.Mysterious,
+              portrait: Image.asset('assets/images/artist_portrait.jpg'));
+      Album album = songs2albums[song]!;
 
       if (!added.contains(album)) {
         _artistAlbumMap.update(artist, (list) => list..add(album),
