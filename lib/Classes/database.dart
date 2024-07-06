@@ -99,7 +99,7 @@ class DatabaseHelper {
 
     // call _initManager method to initialize the data managers
     await _initManagers(albums, songs, artists, id2Album, id2Song, name2Artist,
-        songMaps, songs2Albums);
+        songMaps, songMaps);
   }
 
   static Future<void> _initManagers(

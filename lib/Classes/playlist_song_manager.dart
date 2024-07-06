@@ -21,8 +21,8 @@ class PlaylistSongManager {
     _validPlaylist.addAll(albums);
     _validSong.addAll(songs);
     for (Map<String, Object?> relationship in songs2Albums!) {
-      int? songId = int.parse(relationship['field1'] as String);
-      int? albumId = int.parse(relationship['field5'] as String);
+      int? songId = relationship['song_id'] as int;
+      int? albumId = relationship['album_id'] as int;
       if (!id2Album.containsKey(albumId)) continue;
       _listMap.update(id2Album[albumId]!, (list) => list..add(id2Song[songId]!),
           ifAbsent: () => [id2Song[songId]!]);
