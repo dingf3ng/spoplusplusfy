@@ -12,6 +12,7 @@ import 'package:spoplusplusfy/Utilities/search_engine.dart';
 import '../Classes/album.dart';
 import 'artist_page.dart';
 
+
 class SearchPage extends StatefulWidget {
   final PageController pageController;
 
@@ -29,6 +30,9 @@ class _SearchPageState extends State<SearchPage>
 
   static const Color primaryColor = Color(0x00000000);
   static const Color secondaryColor = Color(0xffFFE8A3);
+
+  late double _width;
+  late double _height;
 
   final List<Artist> _resultArtists = [];
   final List<Album> _resultAlbums = [];
@@ -53,6 +57,13 @@ class _SearchPageState extends State<SearchPage>
     super.initState();
     _searchController.addListener(_searchDone);
     _controller.addListener(_scrollListener);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final size = MediaQuery
+          .of(context)
+          .size;
+      _width = size.width;
+      _height = size.height;
+    });
   }
 
   void _searchDone() {
@@ -308,38 +319,42 @@ class _SearchPageState extends State<SearchPage>
               shrinkWrap: true,
               primary: false,
               padding: const EdgeInsets.only(left: 25, right: 25),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 10,
+              separatorBuilder: (context, index) =>  SizedBox(
+                height: _height / 100,
               ),
               itemCount: _resultSongs.length,
               itemBuilder: (context, index) {
                 return Container(
-                  height: 40,
+                  height: _height / 20,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                     border: Border.all(color: secondaryColor, width: 2),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      SizedBox(
-                        width: 100,
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 150,
+                        alignment: Alignment.centerLeft,
                         child: Text(
                           _resultSongs[index].getName(),
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: secondaryColor,
                             fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                            fontSize: 13,
                           ),
                         ),
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 20,
                       ),
                       SizedBox(
-                        width: 150,
+                        width: 120,
                         child: Text(
                           ArtistWorksManager.getArtistsOfSongAsString(
                               _resultSongs[index]),
@@ -347,12 +362,12 @@ class _SearchPageState extends State<SearchPage>
                           style: const TextStyle(
                             color: secondaryColor,
                             fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                            fontSize: 13,
                           ),
                         ),
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 20,
                       ),
                       SizedBox(
                         width: 40,
@@ -365,7 +380,10 @@ class _SearchPageState extends State<SearchPage>
                             fontSize: 12,
                           ),
                         ),
-                      )
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
                     ],
                   ),
                 );
@@ -414,7 +432,7 @@ class _SearchPageState extends State<SearchPage>
               context,
               PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) =>
-                      const SignupPage(),
+                      LoginPage(),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
                     const begin = Offset(0.0, -1.0);
@@ -427,7 +445,8 @@ class _SearchPageState extends State<SearchPage>
                       child: child,
                     );
                   },
-                  transitionDuration: const Duration(seconds: 1)
+                  transitionDuration: const Duration(seconds: 1),
+                  reverseTransitionDuration: const Duration(milliseconds: 600),
                   ),
             );
           },
@@ -511,7 +530,7 @@ class _SearchPageState extends State<SearchPage>
     return const TextStyle(
       color: secondaryColor,
       fontWeight: FontWeight.w600,
-      fontSize: 12,
+      fontSize: 27,
     );
   }
 }
@@ -519,6 +538,6 @@ class _SearchPageState extends State<SearchPage>
 String _formatTime(int duration) {
   int h = duration ~/ 3600;
   int m = (duration - h * 3600) ~/ 60;
-  int s = (duration - h * 3600 - m * 60);
-  return h != 0 ? '$h:$m:$s' : '$m:$s';
+  String s = (duration - h * 3600 - m * 60).toString().padLeft(2, '0');
+  return h != 0 ? '$h:$m:0$s' : '$m:$s';
 }

@@ -72,10 +72,9 @@ class ArtistPageState extends State<ArtistPage> {
                 setState(() {});
               },
               child: const Text(
-                'Posts',
+                'Works',
                 style: TextStyle(
                     color: secondaryColor,
-                    fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w600),
               ),
             ),
@@ -92,7 +91,7 @@ class ArtistPageState extends State<ArtistPage> {
               },
               child: const Text(
                 'Posts',
-                style: TextStyle(fontWeight: FontWeight.w600),
+                style: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
               ),
             ),
             icon: OutlinedButton(
@@ -106,7 +105,7 @@ class ArtistPageState extends State<ArtistPage> {
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
-              child: const Text('Works',
+              child: const Text('Posts',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: secondaryColor,
