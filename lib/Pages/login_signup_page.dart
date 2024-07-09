@@ -842,6 +842,9 @@ class LoginPageState extends State<LoginPage>
   late double _width;
   late double _height;
 
+  bool _goodEmailFormat = false;
+  bool _goodPasswordFormat = false;
+
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _psController = TextEditingController();
 
@@ -849,10 +852,26 @@ class LoginPageState extends State<LoginPage>
   @override
   void initState() {
     super.initState();
+    _idController.addListener(_checkEmailFormat);
+    _psController.addListener(_checkPasswordFormat);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final size = MediaQuery.of(context).size;
       _width = size.width;
       _height = size.height;
+    });
+  }
+
+  void _checkEmailFormat() {
+    String query = _idController.text;
+    setState(() {
+      _goodEmailFormat = RegExp(emailPattern).hasMatch(query);
+    });
+  }
+
+  void _checkPasswordFormat() {
+    String query = _psController.text;
+    setState(() {
+      _goodPasswordFormat = RegExp(passwordPattern).hasMatch(query);
     });
   }
 
@@ -926,7 +945,7 @@ class LoginPageState extends State<LoginPage>
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 30,
                   ),
-                  _EmailTypingField(),
+                  _emailTypingField(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 25,
                   ),
@@ -935,7 +954,7 @@ class LoginPageState extends State<LoginPage>
                     height: MediaQuery.of(context).size.height / 7,
                   ),
                   Visibility(
-                      visible: true,
+                      visible: _goodEmailFormat && _goodPasswordFormat,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -963,7 +982,7 @@ class LoginPageState extends State<LoginPage>
     );
   }
 
-  Column _EmailTypingField() {
+  Column _emailTypingField() {
     return Column(
       children: [
         const Row(
@@ -1048,7 +1067,7 @@ class LoginPageState extends State<LoginPage>
               onTapOutside: (PointerDownEvent event) {
                 FocusManager.instance.primaryFocus?.unfocus();
               },
-              controller: _idController,
+              controller: _psController,
               style: const TextStyle(
                   color: secondaryColor, decorationThickness: 0),
               decoration: InputDecoration(

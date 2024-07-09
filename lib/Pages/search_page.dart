@@ -432,7 +432,7 @@ class _SearchPageState extends State<SearchPage>
               context,
               PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) =>
-                      LoginPage(),
+                      const LoginPage(),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
                     const begin = Offset(0.0, -1.0);
