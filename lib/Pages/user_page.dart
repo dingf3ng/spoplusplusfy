@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/normal_user.dart';
 
-class UserPage extends StatefulWidget{
+class UserPage extends StatefulWidget {
   final NormalUser user;
   final bool isSelf;
+
   const UserPage({super.key, required this.user, required this.isSelf});
 
   @override
   State<StatefulWidget> createState() => UserPageState();
-  
 }
 
 class UserPageState extends State<UserPage> {
@@ -20,7 +21,64 @@ class UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: _infoBar(),
+      body: Column(
+        children: [
+          _buildNavigationBar(),
+          _pageView(),
+          Container(
+            height: MediaQuery.of(context).size.height / 10,
+            padding: const EdgeInsets.all(10),
+            child: OutlinedButton(
+              onPressed: () {},
+              style: OutlinedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  side: const BorderSide(color: secondaryColor, width: 5)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: SvgPicture.asset('assets/icons/plus_sign_gold.svg'),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  SizedBox _pageView() {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 423 / 700,
+      child: PageView(
+        controller: _controller,
+        onPageChanged: (index) => {
+          _selectedIdx = index,
+          setState(() {}),
+        },
+        children: [_workPage(), _postPage()],
+      ),
+    );
+  }
+
+  ListView _workPage() {
+    return ListView(
+      children: const [],
+    );
+  }
+
+  ListView _postPage() {
+    return ListView(
+      children: [
+        Container(
+          color: Colors.blue,
+          height: 500,
+        ),
+        Container(
+          color: Colors.green,
+          height: 250,
+        ),
+      ],
+    );
   }
 
   NavigationBar _buildNavigationBar() {
@@ -32,7 +90,9 @@ class UserPageState extends State<UserPage> {
       destinations: [
         NavigationDestination(
             selectedIcon: FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: secondaryColor),
+              style: FilledButton.styleFrom(
+                  backgroundColor: secondaryColor,
+                  minimumSize: Size(width * 2 / 7, 20)),
               onPressed: () {
                 _selectedIdx = 0;
                 _controller.animateToPage(_selectedIdx,
@@ -48,7 +108,11 @@ class UserPageState extends State<UserPage> {
             ),
             icon: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(width: 2.0, color: secondaryColor),
+                side: const BorderSide(
+                  width: 2.0,
+                  color: secondaryColor,
+                ),
+                minimumSize: Size(width * 2 / 7, 20),
               ),
               onPressed: () {
                 _selectedIdx = 0;
@@ -60,14 +124,16 @@ class UserPageState extends State<UserPage> {
               child: const Text(
                 'Liked',
                 style: TextStyle(
-                    color: secondaryColor,
-                    fontWeight: FontWeight.w600),
+                    color: secondaryColor, fontWeight: FontWeight.w600),
               ),
             ),
-            label: ''),
+            label: ''
+        ),
         NavigationDestination(
             selectedIcon: FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: secondaryColor),
+              style: FilledButton.styleFrom(
+                  backgroundColor: secondaryColor,
+                  minimumSize: Size(width * 2 / 7, 20)),
               onPressed: () {
                 _selectedIdx = 1;
                 _controller.animateToPage(_selectedIdx,
@@ -77,13 +143,14 @@ class UserPageState extends State<UserPage> {
               },
               child: const Text(
                 'Creations',
-                style: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+                style: TextStyle(
+                    fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
               ),
             ),
             icon: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(width: 2.0, color: secondaryColor),
-              ),
+                  side: const BorderSide(width: 2.0, color: secondaryColor),
+                  minimumSize: Size(width * 2 / 7, 20)),
               onPressed: () {
                 _selectedIdx = 1;
                 _controller.animateToPage(_selectedIdx,
@@ -91,8 +158,7 @@ class UserPageState extends State<UserPage> {
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
-              child: const Text(
-                  'Creations',
+              child: const Text('Creations',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: secondaryColor,
@@ -111,7 +177,9 @@ class UserPageState extends State<UserPage> {
       backgroundColor: primaryColor,
       leading: Row(
         children: [
-          SizedBox(width: 25,),
+          const SizedBox(
+            width: 25,
+          ),
           Container(
             height: width / 3,
             width: width / 3,
@@ -129,7 +197,9 @@ class UserPageState extends State<UserPage> {
               ),
             ),
           ),
-          SizedBox(width: 25,),
+          const SizedBox(
+            width: 25,
+          ),
         ],
       ),
       leadingWidth: width / 2,
@@ -160,10 +230,10 @@ class UserPageState extends State<UserPage> {
                   TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                        WidgetStateProperty.all(secondaryColor),
+                        widget.isSelf ?WidgetStateProperty.all(primaryColor) : WidgetStateProperty.all(secondaryColor),
                       ),
                       onPressed: () => {},
-                      child: const Text('Follow')),
+                      child: widget.isSelf ? SvgPicture.asset('assets/icons/edit_profile_gold.svg') : const Text('Follow')),
                   const SizedBox(
                     width: 10,
                   ),
@@ -192,5 +262,4 @@ class UserPageState extends State<UserPage> {
       ],
     );
   }
-  
 }

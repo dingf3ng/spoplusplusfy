@@ -171,7 +171,7 @@ class ArtistPageState extends State<ArtistPage> {
       backgroundColor: primaryColor,
       leading: Row(
         children: [
-          SizedBox(width: 25,),
+          const SizedBox(width: 25,),
           Container(
             height: width / 3,
             width: width / 3,
@@ -189,7 +189,7 @@ class ArtistPageState extends State<ArtistPage> {
               ),
             ),
           ),
-          SizedBox(width: 25,),
+          const SizedBox(width: 25,),
         ],
       ),
       leadingWidth: width / 2,

@@ -45,7 +45,7 @@ class _MainPageState extends State<MainPage>
     for (int i = 0; i < 10; i++) {
       playlists.add(ArtistWorksManager.getRandomPlaylist());
     }
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     return playlists;
   }
 
