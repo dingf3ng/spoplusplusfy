@@ -57,7 +57,8 @@ class ArtistWorksManager {
   }
 
   static Playlist getRandomPlaylist() {
-    final randomIndex = Random().nextInt(_validAlbums.length);
+    final randomSeed = Random().nextInt(1000000);
+    final randomIndex = Random(randomSeed).nextInt(_validAlbums.length);
     return _validAlbums.elementAt(randomIndex);
   }
 

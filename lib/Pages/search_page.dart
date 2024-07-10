@@ -31,9 +31,6 @@ class _SearchPageState extends State<SearchPage>
   static const Color primaryColor = Color(0x00000000);
   static const Color secondaryColor = Color(0xffFFE8A3);
 
-  late double _width;
-  late double _height;
-
   final List<Artist> _resultArtists = [];
   final List<Album> _resultAlbums = [];
   final List<CustomizedPlaylist> _resultPlaylists = [];
@@ -57,13 +54,6 @@ class _SearchPageState extends State<SearchPage>
     super.initState();
     _searchController.addListener(_searchDone);
     _controller.addListener(_scrollListener);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final size = MediaQuery
-          .of(context)
-          .size;
-      _width = size.width;
-      _height = size.height;
-    });
   }
 
   void _searchDone() {
@@ -103,6 +93,8 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Visibility _artistShowcase() {
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
     return Visibility(
       visible: _resultArtists.isNotEmpty,
       child: Column(
@@ -112,7 +104,7 @@ class _SearchPageState extends State<SearchPage>
             height: 15,
           ),
           SizedBox(
-            height: 120,
+            height: _width * 2 / 9  + 30,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) => const SizedBox(
@@ -134,8 +126,8 @@ class _SearchPageState extends State<SearchPage>
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
-                        width: 90,
-                        height: 90,
+                        width: _width * 2 / 9,
+                        height: _width * 2 / 9,
                         decoration: BoxDecoration(
                           color: secondaryColor,
                           border: Border.all(color: secondaryColor, width: 3),
@@ -146,7 +138,7 @@ class _SearchPageState extends State<SearchPage>
                         ),
                       ),
                       Container(
-                        width: 90,
+                        width: _width * 2 / 9,
                         alignment: Alignment.center,
                         child: Text(
                           _resultArtists[index].getName(),
@@ -171,6 +163,8 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Visibility _albumShowcase() {
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
     return Visibility(
       visible: _resultAlbums.isNotEmpty,
       child: Column(
@@ -180,7 +174,7 @@ class _SearchPageState extends State<SearchPage>
             height: 15,
           ),
           SizedBox(
-            height: 160,
+            height: _width / 3 + 30,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) => const SizedBox(
@@ -203,8 +197,8 @@ class _SearchPageState extends State<SearchPage>
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
-                        width: 140,
-                        height: 140,
+                        width: _width / 3,
+                        height: _width / 3,
                         decoration: BoxDecoration(
                             border: Border.all(
                               color: secondaryColor,
@@ -220,7 +214,7 @@ class _SearchPageState extends State<SearchPage>
                       ),
                       Container(
                         alignment: Alignment.center,
-                        width: 140,
+                        width: _width / 3,
                         child: Text(
                           _resultAlbums[index].getName(),
                           style: const TextStyle(
@@ -244,6 +238,8 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Visibility _playlistShowcase() {
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
     return Visibility(
       visible: _resultPlaylists.isNotEmpty,
       child: Column(
@@ -253,7 +249,7 @@ class _SearchPageState extends State<SearchPage>
             height: 20,
           ),
           SizedBox(
-            height: 160,
+            height: _width / 3 + 30,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) => const SizedBox(
@@ -266,8 +262,8 @@ class _SearchPageState extends State<SearchPage>
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                      width: 140,
-                      height: 140,
+                      width: _width / 3,
+                      height: _width / 3,
                       decoration: BoxDecoration(
                           color: secondaryColor,
                           border: Border.all(
@@ -281,7 +277,7 @@ class _SearchPageState extends State<SearchPage>
                           )),
                     ),
                     Container(
-                      width: 140,
+                      width: _width / 3,
                       alignment: Alignment.center,
                       child: Text(
                         _resultPlaylists[index].getName(),
@@ -305,6 +301,8 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Visibility _songShowcase() {
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
     return Visibility(
       visible: _resultSongs.isNotEmpty,
       child: Column(
@@ -314,7 +312,7 @@ class _SearchPageState extends State<SearchPage>
             height: 20,
           ),
           SizedBox(
-            height: 350,
+            height: _height / 3,
             child: ListView.separated(
               shrinkWrap: true,
               primary: false,
@@ -338,7 +336,7 @@ class _SearchPageState extends State<SearchPage>
                         width: 20,
                       ),
                       Container(
-                        width: 150,
+                        width: _width * 4 / 11,
                         alignment: Alignment.centerLeft,
                         child: Text(
                           _resultSongs[index].getName(),
@@ -354,7 +352,7 @@ class _SearchPageState extends State<SearchPage>
                         width: 20,
                       ),
                       SizedBox(
-                        width: 120,
+                        width: _width * 2 / 9,
                         child: Text(
                           ArtistWorksManager.getArtistsOfSongAsString(
                               _resultSongs[index]),
@@ -370,7 +368,7 @@ class _SearchPageState extends State<SearchPage>
                         width: 20,
                       ),
                       SizedBox(
-                        width: 40,
+                        width: _width * 1/15,
                         child: Text(
                           _formatTime(_resultSongs[index].getDuration()),
                           overflow: TextOverflow.ellipsis,
@@ -475,6 +473,8 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Container _searchField() {
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
     return Container(
         margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: TextField(
@@ -502,11 +502,22 @@ class _SearchPageState extends State<SearchPage>
               child: SvgPicture.asset('assets/icons/search_gold.svg'),
             ),
             suffixIcon: SizedBox(
-              width: 100,
+              width: _width / 4,
               child: IntrinsicHeight(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    const VerticalDivider(
+                      color: Color(0xffFFE8A3),
+                      thickness: 2,
+                      indent: 10,
+                      endIndent: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(6, 12,0, 12),
+                      child: SvgPicture.asset(
+                          'assets/icons/ear_gold.svg'),
+                    ),
                     const VerticalDivider(
                       color: Color(0xffFFE8A3),
                       thickness: 2,
