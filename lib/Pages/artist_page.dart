@@ -24,6 +24,13 @@ class ArtistPageState extends State<ArtistPage> {
   static const Color secondaryColor = Color(0xffFFE8A3);
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final size = MediaQuery.of(context).size;
+    });
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _infoBar(),
@@ -40,8 +47,10 @@ class ArtistPageState extends State<ArtistPage> {
   }
 
   NavigationBar _buildNavigationBar() {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return NavigationBar(
-      height: 20,
+      height: height / 50,
       selectedIndex: _selectedIdx,
       destinations: [
         NavigationDestination(
@@ -72,10 +81,9 @@ class ArtistPageState extends State<ArtistPage> {
                 setState(() {});
               },
               child: const Text(
-                'Posts',
+                'Works',
                 style: TextStyle(
                     color: secondaryColor,
-                    fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w600),
               ),
             ),
@@ -92,7 +100,7 @@ class ArtistPageState extends State<ArtistPage> {
               },
               child: const Text(
                 'Posts',
-                style: TextStyle(fontWeight: FontWeight.w600),
+                style: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
               ),
             ),
             icon: OutlinedButton(
@@ -106,7 +114,7 @@ class ArtistPageState extends State<ArtistPage> {
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
-              child: const Text('Works',
+              child: const Text('Posts',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: secondaryColor,
@@ -156,29 +164,39 @@ class ArtistPageState extends State<ArtistPage> {
   }
 
   AppBar _infoBar() {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     return AppBar(
-      toolbarHeight: 250,
+      toolbarHeight: height / 4,
       backgroundColor: primaryColor,
-      leading: Padding(
-        padding: const EdgeInsets.fromLTRB(25, 60, 0, 40),
-        child: Container(
-          width: 100,
-          height: 90,
-          decoration: BoxDecoration(
-            color: secondaryColor,
-            border: Border.all(color: secondaryColor, width: 3),
-            borderRadius: BorderRadius.circular(150),
+      leading: Row(
+        children: [
+          const SizedBox(width: 25,),
+          Container(
+            height: width / 3,
+            width: width / 3,
+            alignment: Alignment.center,
+            child: Container(
+              width: width / 3,
+              height: width / 3,
+              decoration: BoxDecoration(
+                color: secondaryColor,
+                border: Border.all(color: secondaryColor, width: 3),
+                borderRadius: BorderRadius.circular(width / 3),
+              ),
+              child: ClipOval(
+                child: widget.artist.getPortrait(),
+              ),
+            ),
           ),
-          child: ClipOval(
-            child: widget.artist.getPortrait(),
-          ),
-        ),
+          const SizedBox(width: 25,),
+        ],
       ),
-      leadingWidth: 170,
+      leadingWidth: width / 2,
       actions: [
         SizedBox(
-          width: 230,
-          height: 250,
+          width: width / 2,
+          height: width / 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -261,7 +279,7 @@ class ArtistPageState extends State<ArtistPage> {
             height: 15,
           ),
           SizedBox(
-            height: 160,
+            height: MediaQuery.of(context).size.width / 2.5,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) => const SizedBox(
@@ -284,8 +302,8 @@ class ArtistPageState extends State<ArtistPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
-                        width: 140,
-                        height: 140,
+                        width: MediaQuery.of(context).size.width / 3,
+                        height: MediaQuery.of(context).size.width / 3,
                         decoration: BoxDecoration(
                             border: Border.all(
                               color: secondaryColor,
@@ -300,13 +318,13 @@ class ArtistPageState extends State<ArtistPage> {
                       ),
                       Container(
                         alignment: Alignment.center,
-                        width: 140,
+                        width: MediaQuery.of(context).size.width / 3,
                         child: Text(
                           albums[index].getName(),
                           style: const TextStyle(
                             color: secondaryColor,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: 12,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -369,8 +387,8 @@ class ArtistPageState extends State<ArtistPage> {
                 Column(
                   children: [
                     Container(
-                      width: 170,
-                      height: 170,
+                      width: MediaQuery.of(context).size.width / 3,
+                      height: MediaQuery.of(context).size.width / 3,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: secondaryColor,
@@ -387,14 +405,15 @@ class ArtistPageState extends State<ArtistPage> {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30, top: 5),
+                Container(
+                  width: MediaQuery.of(context).size.width / 3,
+                  alignment: Alignment.center,
                   child: Text(
                     playlists[index].getName(),
                     style: const TextStyle(
                       color: secondaryColor,
                       fontFamily: 'Noto-Sans',
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
                     overflow: TextOverflow.ellipsis,

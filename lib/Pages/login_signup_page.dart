@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:newton_particles/newton_particles.dart';
@@ -14,6 +14,13 @@ const String passwordPattern = r'^.{8,32}$';
 //TODO: temp verification code
 const String temp_code = '123456';
 
+const String goldPlay = 'assets/icons/music_play_gold.svg';
+const String blackPlay = 'assets/icons/music_play_black.svg';
+
+const Color primaryColor = Color(0x00000000);
+const Color secondaryColor = Color(0xffFFE8A3);
+const Color effectColor = Color.fromRGBO(0xff, 0xe8, 0xa3, 0.6);
+
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -21,7 +28,8 @@ class SignupPage extends StatefulWidget {
   State<StatefulWidget> createState() => SignupPageState();
 }
 
-class SignupPageState extends State<SignupPage> {
+class SignupPageState extends State<SignupPage>
+    with SingleTickerProviderStateMixin {
   int _selectedIdx = 0;
   final int _finishedCnt = 0;
   final int _progressTo = 1;
@@ -53,9 +61,11 @@ class SignupPageState extends State<SignupPage> {
   final PageController _controller = PageController();
   late Timer _emailTimer;
   int _countdownDuration = 60;
-  static const Color primaryColor = Color(0x00000000);
-  static const Color secondaryColor = Color(0xffFFE8A3);
-  static const Color effectColor = Color.fromRGBO(0xff, 0xe8, 0xa3, 0.6);
+
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  late double _screenDiagonal;
+  String iconPlay = goldPlay;
 
   @override
   void initState() {
@@ -66,6 +76,28 @@ class SignupPageState extends State<SignupPage> {
     _passwordController.addListener(_testPassword);
     _passwordConfirmController.addListener(_testPasswordConfirm);
     _bioController.addListener(_testBio);
+
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          Navigator.of(context).pop();
+        }
+      });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final size = MediaQuery.of(context).size;
+      _screenDiagonal =
+          sqrt(size.width * size.width + size.height * size.height);
+      setState(() {
+        _animation = Tween<double>(begin: 0, end: _screenDiagonal)
+            .animate(CurvedAnimation(
+          parent: _animationController,
+          curve: Curves.ease,
+        ));
+      });
+    });
   }
 
   void _testEmail() {
@@ -158,7 +190,7 @@ class SignupPageState extends State<SignupPage> {
     return PageView(
       controller: _controller,
       physics: const NeverScrollableScrollPhysics(),
-      children: [_emailPage(), _userPage(), _personalInfoPage()],
+      children: [_emailPage(), _userPage(), _personalInfoPage(), _finalPage()],
     );
   }
 
@@ -214,7 +246,7 @@ class SignupPageState extends State<SignupPage> {
                 setState(() {});
               },
               child: const Text(
-    'Personal Information',
+                'Personal Information',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
@@ -400,77 +432,63 @@ class SignupPageState extends State<SignupPage> {
 
   Scaffold _userPage() {
     return Scaffold(
-      body: Stack(
-        children: [
-          Newton(
-            activeEffects: [
-              RainEffect(
-                particleConfiguration: ParticleConfiguration(
-                  shape: CircleShape(),
-                  size: const Size(5, 5),
-                  color: const SingleParticleColor(color: effectColor),
-                ),
-                effectConfiguration: const EffectConfiguration(),
-              )
-            ],
-          ),
-          Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 7,
-              ),
-              _navigationBar,
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 20,
-              ),
-              _typingField('Username', _goodUsername, _usernamePrompt,
-                  _usernameController, 'assets/icons/user_gold.svg'),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 30,
-              ),
-              _typingField('Password', _goodPassword, _passwordPrompt,
-                  _passwordController, 'assets/icons/key_gold.svg'),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 30,
-              ),
-              Visibility(
-                visible: _goodPassword,
-                child: _typingField(
-                    'Confirm Password',
-                    _goodConfirm,
-                    _passwordConfirmPrompt,
-                    _passwordConfirmController,
-                    'assets/icons/key_gold.svg'),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      _controller.previousPage(
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.ease);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      fixedSize: const Size(65, 65),
-                      padding: const EdgeInsets.all(10),
-                      side: const BorderSide(width: 2.0, color: secondaryColor),
+      body: ListView(children: [
+        Stack(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Newton(
+                activeEffects: [
+                  RainEffect(
+                    particleConfiguration: ParticleConfiguration(
+                      shape: CircleShape(),
+                      size: const Size(5, 5),
+                      color: const SingleParticleColor(color: effectColor),
                     ),
-                    child: SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
-                  ),
-                  Visibility(
-                    visible: _goodUsername && _goodPassword && _goodConfirm,
-                    child: OutlinedButton(
+                    effectConfiguration: const EffectConfiguration(),
+                  )
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 7,
+                ),
+                _navigationBar,
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 20,
+                ),
+                _typingField('Username', _goodUsername, _usernamePrompt,
+                    _usernameController, 'assets/icons/user_gold.svg'),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 30,
+                ),
+                _typingField('Password', _goodPassword, _passwordPrompt,
+                    _passwordController, 'assets/icons/key_gold.svg'),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 30,
+                ),
+                Visibility(
+                  visible: _goodPassword,
+                  child: _typingField(
+                      'Confirm Password',
+                      _goodConfirm,
+                      _passwordConfirmPrompt,
+                      _passwordConfirmController,
+                      'assets/icons/key_gold.svg'),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    OutlinedButton(
                       onPressed: () {
-                        _controller.nextPage(
+                        _controller.previousPage(
                             duration: const Duration(milliseconds: 600),
                             curve: Curves.ease);
-                        setState(() {
-                          _selectedIdx ++;
-                        });
                       },
                       style: OutlinedButton.styleFrom(
                         fixedSize: const Size(65, 65),
@@ -479,131 +497,22 @@ class SignupPageState extends State<SignupPage> {
                             const BorderSide(width: 2.0, color: secondaryColor),
                       ),
                       child:
-                          SvgPicture.asset('assets/icons/right_arrow_gold.svg'),
+                          SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Scaffold _emailPage() {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Newton(
-            activeEffects: [
-              RainEffect(
-                particleConfiguration: ParticleConfiguration(
-                  shape: CircleShape(),
-                  size: const Size(5, 5),
-                  color: const SingleParticleColor(color: effectColor),
-                ),
-                effectConfiguration: const EffectConfiguration(),
-              )
-            ],
-          ),
-          Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 7,
-              ),
-              _navigationBar,
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 30,
-              ),
-              const Row(
-                children: [
-                  SizedBox(
-                    width: 25,
-                  ),
-                  Flexible(
-                      child: Text(
-                    'Welcome to Spo++fy',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: secondaryColor,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 55,
-                        fontStyle: FontStyle.italic),
-                  )),
-                  SizedBox(
-                    width: 25,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 2 / 3,
-                    child: _typingField('Email', _goodEmail, _emailPrompt,
-                        _emailController, 'assets/icons/email_gold.svg'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      if (!_goodEmail) return;
-                      _emailTimer =
-                          Timer.periodic(const Duration(seconds: 1), (timer) {
-                        setState(() {
-                          _buttonText = '$_countdownDuration s';
-                          _countdownDuration--;
-                          _buttonPressed = true;
-                        });
-                        if (_countdownDuration < 0) {
-                          _countdownDuration = 60;
-                          _buttonText = 'Send code';
-                          timer.cancel();
-                        }
-                      });
-                    },
-                    style: TextButton.styleFrom(
-                        backgroundColor: secondaryColor,
-                        minimumSize: const Size(85, 50)),
-                    child: Text(
-                      _buttonText,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w800, fontSize: 15),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 25,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 30,
-              ),
-              Visibility(
-                visible: _buttonPressed,
-                child: _typingField(
-                    'Verification Code',
-                    _goodCode,
-                    _emailVerificationPrompt,
-                    _verificationController,
-                    'assets/icons/verify_gold.svg'),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 10,
-              ),
-              Visibility(
-                  visible: _goodEmail && _goodCode,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      OutlinedButton(
+                    Visibility(
+                      visible: _goodUsername &&
+                          _goodPassword &&
+                          _goodConfirm &&
+                          _goodEmail &&
+                          _goodCode,
+                      child: OutlinedButton(
                         onPressed: () {
                           _controller.nextPage(
                               duration: const Duration(milliseconds: 600),
                               curve: Curves.ease);
+                          setState(() {
+                            _selectedIdx++;
+                          });
                         },
                         style: OutlinedButton.styleFrom(
                           fixedSize: const Size(65, 65),
@@ -614,18 +523,262 @@ class SignupPageState extends State<SignupPage> {
                         child: SvgPicture.asset(
                             'assets/icons/right_arrow_gold.svg'),
                       ),
-                    ],
-                  )),
-            ],
-          ),
-        ],
-      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ]),
+    );
+  }
+
+  Scaffold _emailPage() {
+    return Scaffold(
+      body: ListView(children: [
+        Stack(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Newton(
+                activeEffects: [
+                  RainEffect(
+                    particleConfiguration: ParticleConfiguration(
+                      shape: CircleShape(),
+                      size: const Size(5, 5),
+                      color: const SingleParticleColor(color: effectColor),
+                    ),
+                    effectConfiguration: const EffectConfiguration(),
+                  )
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 7,
+                ),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 25,
+                    ),
+                    Text(
+                      'Register you account',
+                      style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: secondaryColor,
+                          fontSize: 20,
+                          decorationColor: secondaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 30,
+                ),
+                const Row(
+                  children: [
+                    SizedBox(
+                      width: 25,
+                    ),
+                    Flexible(
+                        child: Text(
+                      'Welcome to Spo++fy',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: secondaryColor,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 55,
+                          fontStyle: FontStyle.italic),
+                    )),
+                    SizedBox(
+                      width: 25,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 2 / 3,
+                      child: _typingField('Email', _goodEmail, _emailPrompt,
+                          _emailController, 'assets/icons/email_gold.svg'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (!_goodEmail) return;
+                        _emailTimer =
+                            Timer.periodic(const Duration(seconds: 1), (timer) {
+                          setState(() {
+                            _buttonText = '$_countdownDuration s';
+                            _countdownDuration--;
+                            _buttonPressed = true;
+                          });
+                          if (_countdownDuration < 0) {
+                            _countdownDuration = 60;
+                            _buttonText = 'Send code';
+                            timer.cancel();
+                          }
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: secondaryColor,
+                          minimumSize: const Size(85, 50)),
+                      child: Text(
+                        _buttonText,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w800, fontSize: 15),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 25,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 30,
+                ),
+                Visibility(
+                  visible: _buttonPressed,
+                  child: _typingField(
+                      'Verification Code',
+                      _goodCode,
+                      _emailVerificationPrompt,
+                      _verificationController,
+                      'assets/icons/verify_gold.svg'),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 10,
+                ),
+                Visibility(
+                    visible: _goodEmail && _goodCode,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            _controller.nextPage(
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.ease);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            fixedSize: const Size(65, 65),
+                            padding: const EdgeInsets.all(10),
+                            side: const BorderSide(
+                                width: 2.0, color: secondaryColor),
+                          ),
+                          child: SvgPicture.asset(
+                              'assets/icons/right_arrow_gold.svg'),
+                        ),
+                      ],
+                    )),
+              ],
+            ),
+          ],
+        ),
+      ]),
     );
   }
 
   Scaffold _personalInfoPage() {
     return Scaffold(
+      body: ListView(children: [
+        Stack(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Newton(
+                activeEffects: [
+                  RainEffect(
+                    particleConfiguration: ParticleConfiguration(
+                      shape: CircleShape(),
+                      size: const Size(5, 5),
+                      color: const SingleParticleColor(color: effectColor),
+                    ),
+                    effectConfiguration: const EffectConfiguration(),
+                  )
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 7,
+                ),
+                _navigationBar,
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 20,
+                ),
+                _multilineField('Bio', _goodBio, _bioPrompt, _bioController,
+                    'assets/icons/people_gold.svg'),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
+                        _controller.previousPage(
+                            duration: const Duration(milliseconds: 600),
+                            curve: Curves.ease);
+                        setState(() {
+                          _selectedIdx--;
+                        });
+                      },
+                      style: OutlinedButton.styleFrom(
+                        fixedSize: const Size(65, 65),
+                        padding: const EdgeInsets.all(10),
+                        side:
+                            const BorderSide(width: 2.0, color: secondaryColor),
+                      ),
+                      child:
+                          SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
+                    ),
+                    Visibility(
+                      visible: _goodBio,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          _controller.nextPage(
+                              duration: const Duration(milliseconds: 600),
+                              curve: Curves.ease);
+                          setState(() {
+                            _selectedIdx--;
+                          });
+                        },
+                        style: OutlinedButton.styleFrom(
+                          fixedSize: const Size(65, 65),
+                          padding: const EdgeInsets.all(10),
+                          side: const BorderSide(
+                              width: 2.0, color: secondaryColor),
+                        ),
+                        child: SvgPicture.asset(
+                            'assets/icons/right_arrow_gold.svg'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ]),
+    );
+  }
+
+  Scaffold _finalPage() {
+    return Scaffold(
+      backgroundColor: Colors.black,
       body: Stack(
+        alignment: Alignment.center,
         children: [
           Newton(
             activeEffects: [
@@ -639,60 +792,37 @@ class SignupPageState extends State<SignupPage> {
               )
             ],
           ),
-          Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 7,
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return SizedBox.expand(
+                child: CustomPaint(
+                  painter: WavePainter(
+                      _animation.value, MediaQuery.of(context).size, context),
+                ),
+              );
+            },
+          ),
+          Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width / 3,
+              height: MediaQuery.of(context).size.width / 3,
+              child: IconButton(
+                iconSize: _animation.value / 10,
+                onPressed: () {
+                  setState(() {
+                    iconPlay = blackPlay;
+                  });
+                  _animationController.forward();
+                },
+                splashColor: primaryColor,
+                icon: SvgPicture.asset(
+                  iconPlay,
+                  width: MediaQuery.of(context).size.width / 5,
+                  height: MediaQuery.of(context).size.width / 5,
+                ),
               ),
-              _navigationBar,
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 20,
-              ),
-              _multilineField('Bio', _goodBio, _bioPrompt, _bioController,
-                  'assets/icons/people_gold.svg'),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      _controller.previousPage(
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.ease);
-                      setState(() {
-                        _selectedIdx --;
-                      });
-                    },
-                    style: OutlinedButton.styleFrom(
-                      fixedSize: const Size(65, 65),
-                      padding: const EdgeInsets.all(10),
-                      side: const BorderSide(width: 2.0, color: secondaryColor),
-                    ),
-                    child: SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
-                  ),
-                  Visibility(
-                    visible: _goodBio,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        _controller.nextPage(
-                            duration: const Duration(milliseconds: 600),
-                            curve: Curves.ease);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        fixedSize: const Size(65, 65),
-                        padding: const EdgeInsets.all(10),
-                        side:
-                        const BorderSide(width: 2.0, color: secondaryColor),
-                      ),
-                      child:
-                      SvgPicture.asset('assets/icons/right_arrow_gold.svg'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
         ],
       ),
@@ -700,3 +830,297 @@ class SignupPageState extends State<SignupPage> {
   }
 }
 
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<StatefulWidget> createState() => LoginPageState();
+}
+
+class LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
+  late double _width;
+  late double _height;
+
+  bool _goodEmailFormat = false;
+  bool _goodPasswordFormat = false;
+
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _psController = TextEditingController();
+
+  @override
+  @override
+  void initState() {
+    super.initState();
+    _idController.addListener(_checkEmailFormat);
+    _psController.addListener(_checkPasswordFormat);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final size = MediaQuery.of(context).size;
+      _width = size.width;
+      _height = size.height;
+    });
+  }
+
+  void _checkEmailFormat() {
+    String query = _idController.text;
+    setState(() {
+      _goodEmailFormat = RegExp(emailPattern).hasMatch(query);
+    });
+  }
+
+  void _checkPasswordFormat() {
+    String query = _psController.text;
+    setState(() {
+      _goodPasswordFormat = RegExp(passwordPattern).hasMatch(query);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: ListView(
+        children: [
+          Stack(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: Newton(
+                  activeEffects: [
+                    RainEffect(
+                      particleConfiguration: ParticleConfiguration(
+                        shape: CircleShape(),
+                        size: const Size(5, 5),
+                        color: const SingleParticleColor(color: effectColor),
+                      ),
+                      effectConfiguration: const EffectConfiguration(),
+                    )
+                  ],
+                ),
+              ),
+              Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height / 10,),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 25,
+                      ),
+                      Text(
+                        'Login',
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: secondaryColor,
+                            fontSize: 20,
+                            decorationColor: secondaryColor,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 30,
+                  ),
+                  const Row(
+                    children: [
+                      SizedBox(
+                        width: 25,
+                      ),
+                      Flexible(
+                          child: Text(
+                            'Welcome Back!',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: secondaryColor,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 55,
+                                fontStyle: FontStyle.italic),
+                          )),
+                      SizedBox(
+                        width: 25,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 30,
+                  ),
+                  _emailTypingField(),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 25,
+                  ),
+                  _passWordTypingField(),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 7,
+                  ),
+                  Visibility(
+                      visible: _goodEmailFormat && _goodPasswordFormat,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              fixedSize: const Size(65, 65),
+                              padding: const EdgeInsets.all(10),
+                              side: const BorderSide(
+                                  width: 2.0, color: secondaryColor),
+                            ),
+                            child: SvgPicture.asset(
+                                'assets/icons/right_arrow_gold.svg'),
+                          ),
+                        ],
+                      )),
+                ],
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Column _emailTypingField() {
+    return Column(
+      children: [
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 25),
+              child: Text('Email',
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  )),
+            ),
+          ]),
+            Container(
+                height: 50,
+                margin: const EdgeInsets.only(
+                  top: 10,
+                  left: 20,
+                  right: 20,
+                ),
+                child: TextField(
+                  onTapOutside: (PointerDownEvent event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
+                  controller: _idController,
+                  style: const TextStyle(
+                      color: secondaryColor, decorationThickness: 0),
+                  decoration: InputDecoration(
+                    filled: false,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide:
+                        const BorderSide(color: secondaryColor, width: 2)),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide:
+                        const BorderSide(color: secondaryColor, width: 2)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide:
+                        const BorderSide(color: secondaryColor, width: 2)),
+                    contentPadding: const EdgeInsets.all(15),
+                    labelText: 'Enter Your Email',
+                    labelStyle:
+                    const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: SvgPicture.asset('assets/icons/user_gold.svg'),
+                    ),
+                  ),
+                )),
+          ],
+        );
+  }
+
+  Column _passWordTypingField() {
+    return Column(
+      children: [
+        const Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 25),
+                child: Text('Password',
+                    style: TextStyle(
+                      color: secondaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                    )),
+              ),
+            ]),
+        Container(
+            height: 50,
+            margin: const EdgeInsets.only(
+              top: 10,
+              left: 20,
+              right: 20,
+            ),
+            child: TextField(
+              onTapOutside: (PointerDownEvent event) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+              controller: _psController,
+              style: const TextStyle(
+                  color: secondaryColor, decorationThickness: 0),
+              decoration: InputDecoration(
+                filled: false,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                    const BorderSide(color: secondaryColor, width: 2)),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                    const BorderSide(color: secondaryColor, width: 2)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                    const BorderSide(color: secondaryColor, width: 2)),
+                contentPadding: const EdgeInsets.all(15),
+                labelText: 'Enter your Password',
+                labelStyle:
+                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: SvgPicture.asset('assets/icons/user_gold.svg'),
+                ),
+              ),
+            )),
+      ],
+    );
+  }
+}
+
+class WavePainter extends CustomPainter {
+  final double radius;
+  final Size size;
+  final BuildContext context;
+
+  WavePainter(this.radius, this.size, this.context);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = secondaryColor
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(
+        Offset(MediaQuery.of(context).size.width / 2,
+            MediaQuery.of(context).size.height / 2),
+        radius,
+        paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}

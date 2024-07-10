@@ -1,10 +1,6 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:path/path.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
-import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/pure_mode_player_page.dart';
@@ -37,10 +33,19 @@ class _MainPageState extends State<MainPage>
 
   Future<List<Playlist>> _getPlaylists() async {
     if (playlists.isNotEmpty) return playlists;
-
+    playlists.clear();
     for (int i = 0; i < 10; i++) {
-      playlists.add(await ArtistWorksManager.getRandomPlaylist());
+      playlists.add(ArtistWorksManager.getRandomPlaylist());
     }
+    return playlists;
+  }
+
+  Future<List<Playlist>> _slowUpdatePlaylists() async {
+    playlists.clear();
+    for (int i = 0; i < 10; i++) {
+      playlists.add(ArtistWorksManager.getRandomPlaylist());
+    }
+    await Future.delayed(const Duration(seconds: 1));
     return playlists;
   }
 
@@ -62,25 +67,37 @@ class _MainPageState extends State<MainPage>
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No Playlists Available'));
           } else {
-            List<Playlist> playlists = snapshot.data!;
-            return _buildMainBody(context, playlists);
+            return RefreshIndicator(
+              backgroundColor: goldColour,
+              onRefresh: _pullRefresh,
+                child: _buildMainBody(context),
+            );
           }
         },
       ),
     );
   }
 
-  ListView _buildMainBody(BuildContext context, List<Playlist> playlists) {
+  Future<void> _pullRefresh() async {
+    var newPlaylists = await _slowUpdatePlaylists();
+    print('object');
+    print(playlists.first.getName());
+    setState(()  {
+      playlists = newPlaylists;
+    });
+  }
+
+  ListView _buildMainBody(BuildContext context) {
     List<DropdownMenuItem<Mode>> list = [
-      DropdownMenuItem(
+      const DropdownMenuItem(
         value: Mode.PureMode,
         child: Text('Pure Mode'),
       ),
-      DropdownMenuItem(
+      const DropdownMenuItem(
         value: Mode.ProMode,
         child: Text('Pro Mode'),
       ),
-      DropdownMenuItem(
+      const DropdownMenuItem(
         value: Mode.SocialMode,
         child: Text('Social Mode'),
       ),
@@ -106,15 +123,19 @@ class _MainPageState extends State<MainPage>
         ),
         Padding(
           padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.02),
-          child: Row(
+          child: const Row(
             children: [
-              Padding(padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.03)),
-              Text(
-                'Welcome,\nHere Are The Music For\nYou',
-                style: TextStyle(
-                  fontSize: 30,
-                  color: goldColour,
-                  fontFamily: 'Noto-Sans',
+              Flexible(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 30, right: 30),
+                  child: Text(
+                    'Welcome,\nHere Are The Music For You',
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: goldColour,
+                      fontFamily: 'Noto-Sans',
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -135,8 +156,7 @@ class _MainPageState extends State<MainPage>
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 30,
-        mainAxisSpacing: 30,
-        childAspectRatio: 0.70,
+        childAspectRatio: 0.75,
       ),
       itemBuilder: (context, index) => GestureDetector(
         onTap: () {
@@ -162,8 +182,8 @@ class _MainPageState extends State<MainPage>
             Column(
               children: [
                 Container(
-                  width: 170,
-                  height: 170,
+                  width: MediaQuery.of(context).size.width * 3 / 8,
+                  height: MediaQuery.of(context).size.width * 3 / 8,
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: goldColour,
@@ -199,7 +219,7 @@ class _MainPageState extends State<MainPage>
               ],
             ),
             Padding(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               child: Text(
                 playlists[index].getName(),
                 style: const TextStyle(
