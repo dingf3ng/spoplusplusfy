@@ -9,10 +9,11 @@ import 'package:spoplusplusfy/Pages/social_mode_player_page.dart';
 
 const Color goldColour = Color(0xffFFE8A3);
 
-enum Mode {PureMode, SocialMode, ProMode}
+enum Mode { PureMode, SocialMode, ProMode }
 
 class MainPage extends StatefulWidget {
   final PageController pageController;
+
   const MainPage({super.key, required this.pageController});
 
   @override
@@ -22,14 +23,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   Mode selectedMode = Mode.PureMode;
   List<Playlist> playlists = [];
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   Future<List<Playlist>> _getPlaylists() async {
     if (playlists.isNotEmpty) return playlists;
@@ -51,43 +47,43 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
       ),
-      body: FutureBuilder<List<Playlist>>(
-        future: _getPlaylists(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No Playlists Available'));
-          } else {
-            return RefreshIndicator(
-              backgroundColor: goldColour,
-              onRefresh: _pullRefresh,
-                child: _buildMainBody(context),
-            );
-          }
-        },
+      body: RefreshIndicator(
+        onRefresh: _pullRefresh,
+        backgroundColor: goldColour,
+        child: ListView(
+          shrinkWrap: true,
+          physics: const BouncingScrollPhysics(),
+          children: [
+            _buildModeSelector(),
+            _buildTitle(),
+            FutureBuilder<List<Playlist>>(
+              future: _getPlaylists(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No Playlists Available'));
+                } else {
+                  return _buildGridAlbums();
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Future<void> _pullRefresh() async {
-    var newPlaylists = await _slowUpdatePlaylists();
-    print('object');
-    print(playlists.first.getName());
-    setState(()  {
-      playlists = newPlaylists;
-    });
-  }
-
-  ListView _buildMainBody(BuildContext context) {
+  Widget _buildModeSelector() {
     List<DropdownMenuItem<Mode>> list = [
       const DropdownMenuItem(
         value: Mode.PureMode,
@@ -102,138 +98,168 @@ class _MainPageState extends State<MainPage>
         child: Text('Social Mode'),
       ),
     ];
+    return Container(
+      alignment: Alignment.topRight,
+      height: 30,
+      width: 100,
+      child: DropdownButton<Mode>(
+        value: selectedMode, // Use selectedMode
+        items: list,
+        onChanged: (Mode? newValue) {
+          setState(() {
+            selectedMode = newValue!;
+          });
+        },
+      ),
+    );
+  }
 
-    return ListView(
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      children: [
-        Container(
-          alignment: Alignment.topRight,
-          height: 30,
-          width: 100,
-          child: DropdownButton<Mode>(
-            value: selectedMode, // Use selectedMode
-            items: list,
-            onChanged: (Mode? newValue) {
-              setState(() {
-                selectedMode = newValue!;
-              });
-            },
+  Widget _buildTitle() {
+    return Padding(
+      padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.02),
+      child: const Row(
+        children: [
+          Flexible(
+            child: Padding(
+              padding: EdgeInsets.only(left: 30, right: 30),
+              child: Text(
+                'Welcome,\nHere Are The Music For You',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: goldColour,
+                  fontFamily: 'Noto-Sans',
+                ),
+              ),
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pullRefresh() async {
+    var newPlaylists = await _slowUpdatePlaylists();
+    setState(() {
+      playlists = newPlaylists;
+    });
+  }
+
+
+  Padding _buildGridAlbums() {
+    return Padding(
+      padding: const EdgeInsets.all(30.0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 30,
+          childAspectRatio: 0.75,
         ),
-        Padding(
-          padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.02),
-          child: const Row(
+        itemBuilder: (context, index) => GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  switch (selectedMode) {
+                    case Mode.PureMode:
+                      return PureModePlayerPage(playlist: playlists[index]);
+                    case Mode.ProMode:
+                      return ProModePlayerPage(playlist: playlists[index]);
+                    case Mode.SocialMode:
+                      return SocialModePlayerPage();
+                  }
+                },
+              ),
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Flexible(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 30, right: 30),
-                  child: Text(
-                    'Welcome,\nHere Are The Music For You',
-                    style: TextStyle(
-                      fontSize: 30,
+              Column(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 3 / 8,
+                    height: MediaQuery.of(context).size.width * 3 / 8,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: goldColour,
+                        width: 3,
+                      ),
                       color: goldColour,
-                      fontFamily: 'Noto-Sans',
+                      borderRadius: BorderRadius.circular(30),
+                      image: DecorationImage(
+                        image: NetworkImage(playlists[index].getCoverPath(),
+                            scale: 0.1),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Text(
+                  playlists[index].getName(),
+                  style: const TextStyle(
+                    color: goldColour,
+                    fontFamily: 'Noto-Sans',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: _buildGridAlbums(playlists),
-        ),
-      ],
+        itemCount: playlists.length,
+      ),
     );
   }
 
-  GridView _buildGridAlbums(List<Playlist> playlists) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 30,
-        childAspectRatio: 0.75,
-      ),
-      itemBuilder: (context, index) => GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                switch (selectedMode) {
-                  case Mode.PureMode:
-                    return PureModePlayerPage(playlist: playlists[index]);
-                  case Mode.ProMode:
-                    return ProModePlayerPage(playlist: playlists[index]);
-                  case Mode.SocialMode:
-                    return SocialModePlayerPage();
-                }
-              },
-            ),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 3 / 8,
-                  height: MediaQuery.of(context).size.width * 3 / 8,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: goldColour,
-                      width: 3,
-                    ),
-                    color: goldColour,
-                    borderRadius: BorderRadius.circular(30),
-                    image: DecorationImage(
-                      image: NetworkImage(playlists[index].getCoverPath(),
-                          scale: 0.1),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: Text(
-                playlists[index].getName(),
-                style: const TextStyle(
-                  color: goldColour,
-                  fontFamily: 'Noto-Sans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-      itemCount: playlists.length,
-    );
-  }
+  @override
+  bool get wantKeepAlive => true;
 }
 
-class IntegratedMainPage extends StatelessWidget {
+class IntegratedMainPage extends StatefulWidget {
   const IntegratedMainPage({super.key});
 
   @override
+  State<StatefulWidget> createState() => IntegratedMainPageState();
+}
+
+class IntegratedMainPageState extends State<IntegratedMainPage> {
+  final PageController pageController = PageController();
+  static dynamic pageValue = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    pageController.addListener(() {
+      setState(() {
+        pageValue = pageController.page;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final PageController pageController = PageController();
-    return PageView(
+    var list = [
+      MainPage(pageController: pageController),
+      SearchPage(pageController: pageController),
+    ];
+    return PageView.builder(
       controller: pageController,
+      itemCount: 2,
       scrollDirection: Axis.horizontal,
-      children: [
-        MainPage(pageController: pageController),
-        SearchPage(pageController: pageController),
-      ],
+      itemBuilder: (context, index) {
+        return Transform(
+          transform: Matrix4.identity()..rotateX(pageValue - index),
+          child: list[index],
+        );
+      },
     );
   }
 }

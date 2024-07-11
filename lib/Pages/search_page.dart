@@ -14,7 +14,6 @@ import 'package:spoplusplusfy/Utilities/search_engine.dart';
 import '../Classes/album.dart';
 import 'artist_page.dart';
 
-
 class SearchPage extends StatefulWidget {
   final PageController pageController;
 
@@ -38,24 +37,12 @@ class _SearchPageState extends State<SearchPage>
   final List<CustomizedPlaylist> _resultPlaylists = [];
   final List<Song> _resultSongs = [];
 
-  final ScrollController _controller = ScrollController();
-
-  _scrollListener() async {
-    ScrollPosition position = _controller.position;
-    if (_controller.offset == position.maxScrollExtent) {
-      widget.pageController.nextPage(
-          duration: const Duration(milliseconds: 200), curve: Curves.linear);
-    } else if (_controller.offset == position.minScrollExtent) {
-      widget.pageController.previousPage(
-          duration: const Duration(milliseconds: 200), curve: Curves.linear);
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_searchDone);
-    _controller.addListener(_scrollListener);
+
   }
 
   void _searchDone() {
@@ -106,7 +93,7 @@ class _SearchPageState extends State<SearchPage>
             height: 15,
           ),
           SizedBox(
-            height: width * 2 / 9  + 30,
+            height: width * 2 / 9 + 30,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) => const SizedBox(
@@ -119,10 +106,26 @@ class _SearchPageState extends State<SearchPage>
                   onTap: () => {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => ArtistPage(
-                                  artist: _resultArtists[index],
-                                ))),
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  ArtistPage(artist: _resultArtists[index]),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            const begin = Offset(0.0, -1.0);
+                            const end = Offset.zero;
+                            const curve = Curves.ease;
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                          transitionDuration: const Duration(seconds: 1),
+                          reverseTransitionDuration:
+                              const Duration(milliseconds: 600),
+                        )),
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -189,11 +192,30 @@ class _SearchPageState extends State<SearchPage>
                   onTap: () => {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => PlaylistPage(
-                                playlist: _resultAlbums[index],
-                                songs: PlaylistSongManager.getSongsForPlaylist(
-                                    _resultAlbums[index]))))
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation,
+                                  secondaryAnimation) =>
+                              PlaylistPage(
+                                  playlist: _resultAlbums[index],
+                                  songs:
+                                      PlaylistSongManager.getSongsForPlaylist(
+                                          _resultAlbums[index])),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            const begin = Offset(0.0, -1.0);
+                            const end = Offset.zero;
+                            const curve = Curves.ease;
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                          transitionDuration: const Duration(seconds: 1),
+                          reverseTransitionDuration:
+                              const Duration(milliseconds: 600),
+                        ))
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -319,7 +341,7 @@ class _SearchPageState extends State<SearchPage>
               shrinkWrap: true,
               primary: false,
               padding: const EdgeInsets.only(left: 25, right: 25),
-              separatorBuilder: (context, index) =>  SizedBox(
+              separatorBuilder: (context, index) => SizedBox(
                 height: height / 100,
               ),
               itemCount: _resultSongs.length,
@@ -370,7 +392,7 @@ class _SearchPageState extends State<SearchPage>
                         width: 20,
                       ),
                       SizedBox(
-                        width: width * 1/15,
+                        width: width * 1 / 15,
                         child: Text(
                           _formatTime(_resultSongs[index].getDuration()),
                           overflow: TextOverflow.ellipsis,
@@ -431,23 +453,30 @@ class _SearchPageState extends State<SearchPage>
             Navigator.push(
               context,
               PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) =>
-                      UserPage(user: NormalUser(name: 'name', id: 1, gender: Gender.Mysterious, portrait: Image.asset('a'), age: 1), isSelf: true),
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) {
-                    const begin = Offset(0.0, -1.0);
-                    const end = Offset.zero;
-                    const curve = Curves.ease;
-                    var tween = Tween(begin: begin, end: end)
-                        .chain(CurveTween(curve: curve));
-                    return SlideTransition(
-                      position: animation.drive(tween),
-                      child: child,
-                    );
-                  },
-                  transitionDuration: const Duration(seconds: 1),
-                  reverseTransitionDuration: const Duration(milliseconds: 600),
-                  ),
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    UserPage(
+                        user: NormalUser(
+                            name: 'name',
+                            id: 1,
+                            gender: Gender.Mysterious,
+                            portrait: Image.asset('a'),
+                            age: 1),
+                        isSelf: true),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(0.0, -1.0);
+                  const end = Offset.zero;
+                  const curve = Curves.ease;
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: curve));
+                  return SlideTransition(
+                    position: animation.drive(tween),
+                    child: child,
+                  );
+                },
+                transitionDuration: const Duration(seconds: 1),
+                reverseTransitionDuration: const Duration(milliseconds: 600),
+              ),
             );
           },
           child: Row(
@@ -516,9 +545,8 @@ class _SearchPageState extends State<SearchPage>
                       endIndent: 10,
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(6, 12,0, 12),
-                      child: SvgPicture.asset(
-                          'assets/icons/ear_gold.svg'),
+                      padding: const EdgeInsets.fromLTRB(6, 12, 0, 12),
+                      child: SvgPicture.asset('assets/icons/ear_gold.svg'),
                     ),
                     const VerticalDivider(
                       color: Color(0xffFFE8A3),
