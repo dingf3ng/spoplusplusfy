@@ -1,17 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
-import 'package:spoplusplusfy/Classes/normal_user.dart';
-import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Pages/login_signup_page.dart';
 import 'package:spoplusplusfy/Pages/main_page.dart';
 import 'package:spoplusplusfy/Pages/playlist_page.dart';
-import 'package:spoplusplusfy/Pages/user_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
 import '../Classes/album.dart';
@@ -40,10 +36,10 @@ class _SearchPageState extends State<SearchPage>
   final List<CustomizedPlaylist> _resultPlaylists = [];
   final List<Song> _resultSongs = [];
 
-  bool _searchAlbums = true;
-  bool _searchArtists = true;
-  bool _searchPlaylists = true;
-  bool _searchSongs = true;
+  final bool _searchAlbums = true;
+  final bool _searchArtists = true;
+  final bool _searchPlaylists = true;
+  final bool _searchSongs = true;
 
   void _openFilter() {
     var width = MediaQuery.of(context).size.width;
@@ -99,7 +95,7 @@ class _SearchPageState extends State<SearchPage>
           height: height / 10,
         ),
         Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           height: height / 5,
           width: width / 7,
           child: Visibility(
@@ -108,7 +104,7 @@ class _SearchPageState extends State<SearchPage>
           ),
         ),
         Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             height: height / 5,
             width: width * 5 / 7,
             alignment: Alignment.center,
@@ -536,7 +532,7 @@ class _SearchPageState extends State<SearchPage>
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
-                    SignupPage(),
+                    const SignupPage(),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                   const begin = Offset(0.0, -1.0);
