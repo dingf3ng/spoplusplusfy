@@ -432,6 +432,7 @@ class SignupPageState extends State<SignupPage>
 
   Scaffold _userPage() {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: ListView(children: [
         Stack(
           children: [
@@ -536,6 +537,7 @@ class SignupPageState extends State<SignupPage>
 
   Scaffold _emailPage() {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: ListView(children: [
         Stack(
           children: [
@@ -690,6 +692,7 @@ class SignupPageState extends State<SignupPage>
 
   Scaffold _personalInfoPage() {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: ListView(children: [
         Stack(
           children: [

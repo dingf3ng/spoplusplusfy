@@ -23,9 +23,17 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<MainPage> {
   Mode selectedMode = Mode.PureMode;
+
   List<Playlist> playlists = [];
+  late Future<List<Playlist>> futurePlaylists;
+
+  @override
+  void initState() {
+    super.initState();
+    futurePlaylists = _getPlaylists();
+  }
 
   Future<List<Playlist>> _getPlaylists() async {
     if (playlists.isNotEmpty) return playlists;
@@ -64,7 +72,7 @@ class _MainPageState extends State<MainPage>
             _buildModeSelector(),
             _buildTitle(),
             FutureBuilder<List<Playlist>>(
-              future: _getPlaylists(),
+              future: futurePlaylists,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -191,7 +199,7 @@ class _MainPageState extends State<MainPage>
                       borderRadius: BorderRadius.circular(30),
                       image: DecorationImage(
                         image: NetworkImage(playlists[index].getCoverPath(),
-                            scale: 0.1),
+                            ),
                         fit: BoxFit.cover,
                       ),
                     ),

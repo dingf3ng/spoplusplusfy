@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
@@ -7,6 +8,8 @@ import 'package:spoplusplusfy/Classes/normal_user.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:spoplusplusfy/Pages/login_signup_page.dart';
+import 'package:spoplusplusfy/Pages/main_page.dart';
 import 'package:spoplusplusfy/Pages/playlist_page.dart';
 import 'package:spoplusplusfy/Pages/user_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
@@ -37,12 +40,91 @@ class _SearchPageState extends State<SearchPage>
   final List<CustomizedPlaylist> _resultPlaylists = [];
   final List<Song> _resultSongs = [];
 
+  bool _searchAlbums = true;
+  bool _searchArtists = true;
+  bool _searchPlaylists = true;
+  bool _searchSongs = true;
+
+  void _openFilter() {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height / 4;
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => Container(
+              width: width,
+              height: MediaQuery.of(context).size.height / 3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(width / 15),
+                    topRight: Radius.circular(width / 15)),
+                color: Colors.black,
+                border: const Border(
+                    left: BorderSide(color: goldColour, width: 2),
+                    right: BorderSide(color: goldColour, width: 2),
+                    top: BorderSide(color: goldColour, width: 2)),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    child: const Text(
+                      'Search Filter',
+                      style: TextStyle(
+                          color: goldColour,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 20),
+                    ),
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    indent: 13,
+                    endIndent: 13,
+                    color: goldColour,
+                  ),
+                  _buildCheckBox(context, 'Artists', height),
+                  _buildCheckBox(context, 'Albums', height),
+                  _buildCheckBox(context, 'Playlists', height),
+                  _buildCheckBox(context, 'Songs', height)
+                ],
+              ),
+            ));
+  }
+
+  Widget _buildCheckBox(context, title, height) {
+    var width = MediaQuery.of(context).size.width;
+    return Row(
+      children: [
+        SizedBox(
+          width: 25,
+          height: height / 10,
+        ),
+        Container(
+          padding: EdgeInsets.all(10),
+          height: height / 5,
+          width: width / 7,
+          child: Visibility(
+            visible: true,
+            child: SvgPicture.asset('assets/icons/checkmark_gold.svg'),
+          ),
+        ),
+        Container(
+            padding: EdgeInsets.all(10),
+            height: height / 5,
+            width: width * 5 / 7,
+            alignment: Alignment.center,
+            child: Text(
+              title,
+              style: const TextStyle(
+                  color: goldColour, fontWeight: FontWeight.w400, fontSize: 20),
+            )),
+      ],
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_searchDone);
-
   }
 
   void _searchDone() {
@@ -454,14 +536,7 @@ class _SearchPageState extends State<SearchPage>
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
-                    UserPage(
-                        user: NormalUser(
-                            name: 'name',
-                            id: 1,
-                            gender: Gender.Mysterious,
-                            portrait: Image.asset('a'),
-                            age: 1),
-                        isSelf: true),
+                    SignupPage(),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                   const begin = Offset(0.0, -1.0);
@@ -544,9 +619,12 @@ class _SearchPageState extends State<SearchPage>
                       indent: 10,
                       endIndent: 10,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(6, 12, 0, 12),
-                      child: SvgPicture.asset('assets/icons/ear_gold.svg'),
+                    GestureDetector(
+                      onTap: () => {_openFilter()},
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(6, 12, 0, 12),
+                        child: SvgPicture.asset('assets/icons/ear_gold.svg'),
+                      ),
                     ),
                     const VerticalDivider(
                       color: Color(0xffFFE8A3),
