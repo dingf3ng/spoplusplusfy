@@ -7,7 +7,6 @@ import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Classes/track.dart';
 import 'package:http/http.dart' as http;
 
-const fhlIP = '192.168.1.1:8000';
 const dfIP = '192.168.2.169:8000';
 
 class PlaylistIterator {

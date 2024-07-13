@@ -7,7 +7,7 @@ import 'package:spoplusplusfy/Classes/voice.dart';
 import 'package:spoplusplusfy/Classes/name.dart';
 import 'package:http/http.dart' as http;
 
-const fhlIP = '192.168.1.1:8000';
+const fhlIP = '10.211.55.5:8000';
 const dfIP = '192.168.2.169:8000';
 const local = '10.0.2.2:8000';
 

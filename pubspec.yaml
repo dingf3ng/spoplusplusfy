@@ -47,6 +47,7 @@ dependencies:
   newton_particles: any
   chewie: any
   confetti: 0.7.0
+  shared_preferences: any
 
   path: any
 dev_dependencies:

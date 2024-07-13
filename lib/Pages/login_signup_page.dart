@@ -1,8 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:newton_particles/newton_particles.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:stacked/stacked.dart';
+
+import '../Classes/database.dart';
+import 'main_page.dart';
 
 const String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
 // Define the regex pattern for username validation
@@ -20,6 +29,29 @@ const String blackPlay = 'assets/icons/music_play_black.svg';
 const Color primaryColor = Color(0x00000000);
 const Color secondaryColor = Color(0xffFFE8A3);
 const Color effectColor = Color.fromRGBO(0xff, 0xe8, 0xa3, 0.6);
+class Test extends StatelessWidget {
+  const Test({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          colorScheme: const ColorScheme.dark(
+              primary: Colors.black, secondary: Color(0xffFFE8A3)),
+          fontFamily: 'NotoSans',
+          textSelectionTheme: const TextSelectionThemeData(
+            cursorColor: Color(0xffFFE8A3),
+          )),
+      home: const LoginPage(),
+    );
+  }
+}
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseHelper.initializeFrontendData();
+  runApp(Test());
+}
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -55,7 +87,7 @@ class SignupPageState extends State<SignupPage>
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfirmController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _bioController = TextEditingController();
 
   final PageController _controller = PageController();
@@ -81,10 +113,10 @@ class SignupPageState extends State<SignupPage>
       duration: const Duration(seconds: 2),
       vsync: this,
     )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          Navigator.of(context).pop();
-        }
-      });
+      if (status == AnimationStatus.completed) {
+        Navigator.of(context).pop();
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final size = MediaQuery.of(context).size;
@@ -138,7 +170,7 @@ class SignupPageState extends State<SignupPage>
         _usernamePrompt = 'Username too long';
       } else {
         _usernamePrompt =
-            'Username should only contains letters, numbers, \'-\' or \'_\'';
+        'Username should only contains letters, numbers, \'-\' or \'_\'';
       }
       _goodUsername = suc;
     });
@@ -174,11 +206,11 @@ class SignupPageState extends State<SignupPage>
   void _testBio() {
     String query = _bioController.text;
     setState(() {
-      bool suc = query.length <= 100;
+      bool suc = query.length <= 250;
       if (suc) {
         _bioPrompt = '';
       } else {
-        _bioPrompt = 'Maximum length is 100 characters';
+        _bioPrompt = 'Maximum length is 250 characters';
       }
       _goodBio = suc;
     });
@@ -309,40 +341,40 @@ class SignupPageState extends State<SignupPage>
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    const BorderSide(color: secondaryColor, width: 2)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    const BorderSide(color: secondaryColor, width: 2)),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    const BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: hintText,
                 labelStyle:
-                    const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset(iconPath),
                 ),
                 suffixIcon: test
                     ? SizedBox(
-                        width: 50,
-                        child: IntrinsicHeight(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(6, 12, 12, 12),
-                                child: SvgPicture.asset(
-                                    'assets/icons/checkmark_gold.svg'),
-                              ),
-                            ],
-                          ),
+                  width: 50,
+                  child: IntrinsicHeight(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(6, 12, 12, 12),
+                          child: SvgPicture.asset(
+                              'assets/icons/checkmark_gold.svg'),
                         ),
-                      )
+                      ],
+                    ),
+                  ),
+                )
                     : null,
               ),
             )),
@@ -389,40 +421,40 @@ class SignupPageState extends State<SignupPage>
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    const BorderSide(color: secondaryColor, width: 2)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    const BorderSide(color: secondaryColor, width: 2)),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    const BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: hintText,
                 labelStyle:
-                    const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset(iconPath),
                 ),
                 suffixIcon: test
                     ? SizedBox(
-                        width: 50,
-                        child: IntrinsicHeight(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(6, 12, 12, 12),
-                                child: SvgPicture.asset(
-                                    'assets/icons/checkmark_gold.svg'),
-                              ),
-                            ],
-                          ),
+                  width: 50,
+                  child: IntrinsicHeight(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(6, 12, 12, 12),
+                          child: SvgPicture.asset(
+                              'assets/icons/checkmark_gold.svg'),
                         ),
-                      )
+                      ],
+                    ),
+                  ),
+                )
                     : null,
               ),
             )),
@@ -494,10 +526,10 @@ class SignupPageState extends State<SignupPage>
                         fixedSize: const Size(65, 65),
                         padding: const EdgeInsets.all(10),
                         side:
-                            const BorderSide(width: 2.0, color: secondaryColor),
+                        const BorderSide(width: 2.0, color: secondaryColor),
                       ),
                       child:
-                          SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
+                      SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
                     ),
                     Visibility(
                       visible: _goodUsername &&
@@ -506,7 +538,31 @@ class SignupPageState extends State<SignupPage>
                           _goodEmail &&
                           _goodCode,
                       child: OutlinedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          var response = await http.post(
+                              Uri.parse('http://$fhlIP/api/auth/register/'),
+                              headers: <String, String>{
+                                'Content-Type': 'application/json; charset=UTF-8',
+                              },
+                              body: jsonEncode({
+                                'email' : _emailController.text,
+                                'password' : _passwordController.text,
+                                'username' : _usernameController.text,
+                              })
+                          );
+                          if (response.statusCode != 200) {
+                            showDialog(context: context, builder: (context) {
+                              var errorType = jsonDecode(response.body).keys.toList()[0];
+                              var errorDialog = jsonDecode(response.body).values.toList()[0][0];
+                              return AlertDialog(
+                                  title: Text(errorType),
+                                  content: SingleChildScrollView(
+                                      child: ListBody(
+                                        children: <Widget>[
+                                          Text(errorDialog),
+                                        ],)));
+                            });
+                          }
                           _controller.nextPage(
                               duration: const Duration(milliseconds: 600),
                               curve: Curves.ease);
@@ -587,14 +643,14 @@ class SignupPageState extends State<SignupPage>
                     ),
                     Flexible(
                         child: Text(
-                      'Welcome to Spo++fy',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          color: secondaryColor,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 55,
-                          fontStyle: FontStyle.italic),
-                    )),
+                          'Welcome to Spo++fy',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              color: secondaryColor,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 55,
+                              fontStyle: FontStyle.italic),
+                        )),
                     SizedBox(
                       width: 25,
                     ),
@@ -613,21 +669,43 @@ class SignupPageState extends State<SignupPage>
                           _emailController, 'assets/icons/email_gold.svg'),
                     ),
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (!_goodEmail) return;
+                        var response = await http.post(
+                            Uri.parse('http://$fhlIP/api/auth/send_verification_code/'),
+                            headers: <String, String>{
+                              'Content-Type': 'application/json; charset=UTF-8',
+                            },
+                          body: jsonEncode({'email' : _emailController.text})
+                        );
+                        if (response.statusCode != 200) {
+                          showDialog(context: context, builder: (context) {
+                            var errorType = jsonDecode(response.body).keys.toList()[0];
+                            var errorDialog = jsonDecode(response.body).values.toList()[0][0];
+                            return AlertDialog(
+                                title: Text(errorType),
+                                content: SingleChildScrollView(
+                                child: ListBody(
+                                children: <Widget>[
+                                Text(errorDialog),
+                            ],)));
+                          });
+                        }
                         _emailTimer =
                             Timer.periodic(const Duration(seconds: 1), (timer) {
-                          setState(() {
-                            _buttonText = '$_countdownDuration s';
-                            _countdownDuration--;
-                            _buttonPressed = true;
-                          });
-                          if (_countdownDuration < 0) {
-                            _countdownDuration = 60;
-                            _buttonText = 'Send code';
-                            timer.cancel();
-                          }
-                        });
+                              setState(() {
+                                _buttonText = '$_countdownDuration s';
+                                _countdownDuration--;
+                                _buttonPressed = true;
+                              });
+                              if (_countdownDuration < 0) {
+                                setState(() {
+                                  _countdownDuration = 60;
+                                  _buttonText = 'Send code';
+                                  timer.cancel();
+                                });
+                              }
+                            });
                       },
                       style: TextButton.styleFrom(
                           backgroundColor: secondaryColor,
@@ -738,10 +816,10 @@ class SignupPageState extends State<SignupPage>
                         fixedSize: const Size(65, 65),
                         padding: const EdgeInsets.all(10),
                         side:
-                            const BorderSide(width: 2.0, color: secondaryColor),
+                        const BorderSide(width: 2.0, color: secondaryColor),
                       ),
                       child:
-                          SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
+                      SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
                     ),
                     Visibility(
                       visible: _goodBio,
@@ -844,16 +922,17 @@ class LoginPageState extends State<LoginPage>
 
   bool _goodEmailFormat = false;
   bool _goodPasswordFormat = false;
+  bool _isLoading = false;
 
-  final TextEditingController _idController = TextEditingController();
-  final TextEditingController _psController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   @override
   void initState() {
     super.initState();
-    _idController.addListener(_checkEmailFormat);
-    _psController.addListener(_checkPasswordFormat);
+    _emailController.addListener(_checkEmailFormat);
+    _passwordController.addListener(_checkPasswordFormat);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final size = MediaQuery.of(context).size;
       _width = size.width;
@@ -862,14 +941,14 @@ class LoginPageState extends State<LoginPage>
   }
 
   void _checkEmailFormat() {
-    String query = _idController.text;
+    String query = _emailController.text;
     setState(() {
       _goodEmailFormat = RegExp(emailPattern).hasMatch(query);
     });
   }
 
   void _checkPasswordFormat() {
-    String query = _psController.text;
+    String query = _passwordController.text;
     setState(() {
       _goodPasswordFormat = RegExp(passwordPattern).hasMatch(query);
     });
@@ -953,28 +1032,62 @@ class LoginPageState extends State<LoginPage>
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 7,
                   ),
-                  Visibility(
-                      visible: _goodEmailFormat && _goodPasswordFormat,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          OutlinedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            style: OutlinedButton.styleFrom(
-                              fixedSize: const Size(65, 65),
-                              padding: const EdgeInsets.all(10),
-                              side: const BorderSide(
-                                  width: 2.0, color: secondaryColor),
-                            ),
-                            child: SvgPicture.asset(
-                                'assets/icons/right_arrow_gold.svg'),
-                          ),
-                        ],
-                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      OutlinedButton(
+                        onPressed: () async {
+                          if (_isLoading) return;
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          var response = await http.post(Uri.parse('http://$fhlIP/api/auth/login'),
+                              headers: {
+                                'Content-Type' : 'application/json',
+                              },
+                              body: jsonEncode(<String, String> {
+                                'email': _emailController.text,
+                                'password' : _passwordController.text,
+                              }));
+
+                          setState(() {
+                            _isLoading = false;
+                          });
+
+                          if (response.statusCode == 200) {
+                            Navigator.pop(context);
+                            SharedPreferences.getInstance().then((sp) {
+                              sp.setString('token', jsonDecode(response.body)['key']);
+                            });
+                          } else {
+                            var errorType = jsonDecode(response.body).keys.toList()[0];
+                            var errorDialog = jsonDecode(response.body).values.toList()[0][0];
+                            showDialog(context: context, builder: (context) {
+                              return AlertDialog(
+                                  title: Text(errorType),
+                                  content: SingleChildScrollView(
+                                  child: ListBody(
+                                  children: <Widget>[
+                                    Text(errorDialog),
+                              ])));
+                            });
+                          }
+                        },
+                        style: OutlinedButton.styleFrom(
+                          fixedSize: const Size(65, 65),
+                          padding: const EdgeInsets.all(10),
+                          side: const BorderSide(
+                              width: 2.0, color: secondaryColor),
+                        ),
+                        child: SvgPicture.asset(
+                            'assets/icons/right_arrow_gold.svg'),
+                      ),
+                    ],
+                  ),
                 ],
-              )
+              ),
+              if (_isLoading)
+                const Center(child: CircularProgressIndicator(color: secondaryColor,)),
             ],
           )
         ],
@@ -986,58 +1099,58 @@ class LoginPageState extends State<LoginPage>
     return Column(
       children: [
         const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: Text('Email',
-                  style: TextStyle(
-                    color: secondaryColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20,
-                  )),
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 25),
+                child: Text('Email',
+                    style: TextStyle(
+                      color: secondaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                    )),
+              ),
+            ]),
+        Container(
+            height: 50,
+            margin: const EdgeInsets.only(
+              top: 10,
+              left: 20,
+              right: 20,
             ),
-          ]),
-            Container(
-                height: 50,
-                margin: const EdgeInsets.only(
-                  top: 10,
-                  left: 20,
-                  right: 20,
+            child: TextField(
+              onTapOutside: (PointerDownEvent event) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+              controller: _emailController,
+              style: const TextStyle(
+                  color: secondaryColor, decorationThickness: 0),
+              decoration: InputDecoration(
+                filled: false,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                    const BorderSide(color: secondaryColor, width: 2)),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                    const BorderSide(color: secondaryColor, width: 2)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                    const BorderSide(color: secondaryColor, width: 2)),
+                contentPadding: const EdgeInsets.all(15),
+                labelText: 'Enter Your Email',
+                labelStyle:
+                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: SvgPicture.asset('assets/icons/user_gold.svg'),
                 ),
-                child: TextField(
-                  onTapOutside: (PointerDownEvent event) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  controller: _idController,
-                  style: const TextStyle(
-                      color: secondaryColor, decorationThickness: 0),
-                  decoration: InputDecoration(
-                    filled: false,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
-                    contentPadding: const EdgeInsets.all(15),
-                    labelText: 'Enter Your Email',
-                    labelStyle:
-                    const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: SvgPicture.asset('assets/icons/user_gold.svg'),
-                    ),
-                  ),
-                )),
-          ],
-        );
+              ),
+            )),
+      ],
+    );
   }
 
   Column _passWordTypingField() {
@@ -1067,7 +1180,7 @@ class LoginPageState extends State<LoginPage>
               onTapOutside: (PointerDownEvent event) {
                 FocusManager.instance.primaryFocus?.unfocus();
               },
-              controller: _psController,
+              controller: _passwordController,
               style: const TextStyle(
                   color: secondaryColor, decorationThickness: 0),
               decoration: InputDecoration(
