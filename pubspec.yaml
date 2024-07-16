@@ -47,11 +47,8 @@ dependencies:
   newton_particles: any
   chewie: any
   confetti: 0.7.0
-<<<<<<< HEAD
   shared_preferences: any
-=======
   sliding_switch: 1.1.0
->>>>>>> origin/finalize_frontend
 
   path: any
 dev_dependencies:
