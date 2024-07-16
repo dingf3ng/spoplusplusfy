@@ -97,11 +97,9 @@ class SignupPageState extends State<SignupPage>
   // TODO: Request the correct verification code
   bool verify(String s) {
     if (_requestVerification >= 10) {
-      print('here');
       setState(() {
         _emailVerificationPrompt = 'You\'ve entered the code too much times, tap to resend';
       });
-      print(_emailVerificationPrompt);
       return false;
     }
     _requestVerification += 1;
