@@ -20,9 +20,6 @@ const String usernamePattern = r'^[a-zA-Z0-9_-]{3,32}$';
 // Define the regex pattern for password validation
 const String passwordPattern = r'^.{8,32}$';
 
-//TODO: temp verification code
-const String temp_code = '123456';
-
 const String goldPlay = 'assets/icons/music_play_gold.svg';
 const String blackPlay = 'assets/icons/music_play_black.svg';
 
@@ -63,8 +60,6 @@ class SignupPage extends StatefulWidget {
 class SignupPageState extends State<SignupPage>
     with SingleTickerProviderStateMixin {
   int _selectedIdx = 0;
-  final int _finishedCnt = 0;
-  final int _progressTo = 1;
   bool _buttonPressed = false;
   bool _goodEmail = false;
   bool _goodUsername = false;
@@ -72,8 +67,7 @@ class SignupPageState extends State<SignupPage>
   bool _goodConfirm = false;
   bool _goodCode = false;
   bool _goodBio = false;
-  final bool _addedPage2 = false;
-  final bool _addedPage3 = false;
+  static int _requestVerification = 0;
   String _usernamePrompt = 'What should we call you?';
   String _passwordPrompt = 'Password should be 8-16 digits long';
   String _passwordConfirmPrompt = 'Please enter again your password';
@@ -108,7 +102,7 @@ class SignupPageState extends State<SignupPage>
     _passwordController.addListener(_testPassword);
     _passwordConfirmController.addListener(_testPasswordConfirm);
     _bioController.addListener(_testBio);
-
+    _requestVerification = 0;
     _animationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -132,6 +126,23 @@ class SignupPageState extends State<SignupPage>
     });
   }
 
+  // TODO: Request the correct verification code
+  bool verify(String s) {
+    if (_requestVerification >= 10) {
+      print('here');
+      setState(() {
+        _emailVerificationPrompt = 'You\'ve entered the code too much times, tap to resend';
+      });
+      print(_emailVerificationPrompt);
+      return false;
+    }
+    _requestVerification += 1;
+    //request = request();
+    //return s == request;
+    // TODO: return the result instead of true
+    return true;
+  }
+
   void _testEmail() {
     String query = _emailController.text;
     setState(() {
@@ -147,15 +158,23 @@ class SignupPageState extends State<SignupPage>
 
   void _testVerification() {
     String query = _verificationController.text;
-    setState(() {
-      bool suc = query == '123456';
-      if (suc) {
-        _emailVerificationPrompt = '';
-      } else {
+    if (query.length != 6) {
+      setState(() {
+        _goodCode = false;
         _emailVerificationPrompt = 'Verification code is invalid';
-      }
-      _goodCode = suc;
-    });
+        return;
+      });
+    } else {
+      setState(() {
+        bool suc = verify(query);
+        if (suc) {
+          _emailVerificationPrompt = '';
+        } else if(_requestVerification < 10) {
+          _emailVerificationPrompt = 'Verification code is invalid';
+        }
+        _goodCode = suc;
+      });
+    }
   }
 
   void _testUsername() {
@@ -464,6 +483,7 @@ class SignupPageState extends State<SignupPage>
 
   Scaffold _userPage() {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: ListView(children: [
         Stack(
           children: [
@@ -592,6 +612,7 @@ class SignupPageState extends State<SignupPage>
 
   Scaffold _emailPage() {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: ListView(children: [
         Stack(
           children: [
@@ -691,6 +712,9 @@ class SignupPageState extends State<SignupPage>
                             ],)));
                           });
                         }
+                        setState(() {
+                          _requestVerification = 0;
+                        });
                         _emailTimer =
                             Timer.periodic(const Duration(seconds: 1), (timer) {
                               setState(() {
@@ -768,6 +792,7 @@ class SignupPageState extends State<SignupPage>
 
   Scaffold _personalInfoPage() {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: ListView(children: [
         Stack(
           children: [
@@ -979,7 +1004,9 @@ class LoginPageState extends State<LoginPage>
               ),
               Column(
                 children: [
-                  SizedBox(height: MediaQuery.of(context).size.height / 10,),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 10,
+                  ),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -1008,14 +1035,14 @@ class LoginPageState extends State<LoginPage>
                       ),
                       Flexible(
                           child: Text(
-                            'Welcome Back!',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: secondaryColor,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 55,
-                                fontStyle: FontStyle.italic),
-                          )),
+                        'Welcome Back!',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color: secondaryColor,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 55,
+                            fontStyle: FontStyle.italic),
+                      )),
                       SizedBox(
                         width: 25,
                       ),
@@ -1130,19 +1157,19 @@ class LoginPageState extends State<LoginPage>
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                    const BorderSide(color: secondaryColor, width: 2)),
+                        const BorderSide(color: secondaryColor, width: 2)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                    const BorderSide(color: secondaryColor, width: 2)),
+                        const BorderSide(color: secondaryColor, width: 2)),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                    const BorderSide(color: secondaryColor, width: 2)),
+                        const BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: 'Enter Your Email',
                 labelStyle:
-                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                    const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset('assets/icons/user_gold.svg'),
@@ -1156,19 +1183,17 @@ class LoginPageState extends State<LoginPage>
   Column _passWordTypingField() {
     return Column(
       children: [
-        const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 25),
-                child: Text('Password',
-                    style: TextStyle(
-                      color: secondaryColor,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
-                    )),
-              ),
-            ]),
+        const Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Padding(
+            padding: EdgeInsets.only(left: 25),
+            child: Text('Password',
+                style: TextStyle(
+                  color: secondaryColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                )),
+          ),
+        ]),
         Container(
             height: 50,
             margin: const EdgeInsets.only(
@@ -1188,19 +1213,19 @@ class LoginPageState extends State<LoginPage>
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                    const BorderSide(color: secondaryColor, width: 2)),
+                        const BorderSide(color: secondaryColor, width: 2)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                    const BorderSide(color: secondaryColor, width: 2)),
+                        const BorderSide(color: secondaryColor, width: 2)),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide:
-                    const BorderSide(color: secondaryColor, width: 2)),
+                        const BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: 'Enter your Password',
                 labelStyle:
-                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                    const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset('assets/icons/user_gold.svg'),

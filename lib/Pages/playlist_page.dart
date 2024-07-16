@@ -93,6 +93,8 @@ class PlaylistPageState extends State<PlaylistPage> {
   }
 
   Row _playlistInfo() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -100,8 +102,8 @@ class PlaylistPageState extends State<PlaylistPage> {
           width: 25,
         ),
         Container(
-          width: 100,
-          height: 100,
+          width: width / 3,
+          height: width / 3,
           decoration: BoxDecoration(
               border: Border.all(
                 color: secondaryColor,
@@ -115,11 +117,11 @@ class PlaylistPageState extends State<PlaylistPage> {
               )),
         ),
         const SizedBox(
-          width: 25,
+          width: 20,
         ),
         SizedBox(
-          width: 200,
-          height: 170,
+          width: width / 2,
+          height: width / 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -189,13 +191,15 @@ class PlaylistPageState extends State<PlaylistPage> {
   }
 
   ListView _songsList() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return ListView.separated(
         shrinkWrap: true,
         primary: true,
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.only(left: 25, right: 25),
         itemBuilder: (context, index) => Container(
-              height: 80,
+              height: height / 13,
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(color: secondaryColor, width: 2),
@@ -205,7 +209,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   const SizedBox(
-                    width: 10,
+                    width: 5,
                   ),
                   Text(
                     '${index + 1}',
@@ -220,7 +224,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: 230,
+                        width: width / 2,
                         child: Text(
                           widget.songs[index].getName(),
                           overflow: TextOverflow.ellipsis,
@@ -232,7 +236,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                         ),
                       ),
                       SizedBox(
-                        width: 150,
+                        width: width / 3,
                         child: Text(
                           ArtistWorksManager.getArtistsOfSongAsString(
                               widget.songs[index]),
@@ -251,7 +255,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                     width: 10,
                   ),
                   SizedBox(
-                    width: 40,
+                    width: width / 10,
                     child: Text(
                       _formatTime(widget.songs[index].getDuration()),
                       overflow: TextOverflow.ellipsis,
@@ -273,6 +277,8 @@ class PlaylistPageState extends State<PlaylistPage> {
   }
 
   Visibility _recommendationList() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     Artist priArtist =
         ArtistWorksManager.getArtistsOfAlbum(widget.playlist as Album)[0];
     List<Album> rec = ArtistWorksManager.getAlbumsOfArtist(priArtist);
@@ -304,7 +310,7 @@ class PlaylistPageState extends State<PlaylistPage> {
             height: 15,
           ),
           SizedBox(
-            height: 160,
+            height: width * 3 / 7,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) => const SizedBox(
@@ -317,8 +323,8 @@ class PlaylistPageState extends State<PlaylistPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                      width: 140,
-                      height: 140,
+                      width: width / 3,
+                      height: width / 3,
                       decoration: BoxDecoration(
                           color: secondaryColor,
                           border: Border.all(
