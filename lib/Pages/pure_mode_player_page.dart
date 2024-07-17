@@ -53,24 +53,25 @@ class PlayerPageState extends State<PureModePlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    const Color goldColour = Color.fromRGBO(255, 232, 163, 1.0);
-    const songTitleStyle = TextStyle(
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var songTitleStyle = TextStyle(
       fontSize: 35,
-      color: goldColour,
+      color: secondaryColor,
       fontFamily: 'NotoSans',
     );
-    const songArtistStyle = TextStyle(
+    var songArtistStyle = TextStyle(
       fontSize: 30,
-      color: goldColour,
+      color: secondaryColor,
       fontFamily: 'NotoSans',
       fontWeight: FontWeight.w500,
     );
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: primaryColor,
       body: Center(
         child: isLoading
-            ? const CircularProgressIndicator(color: goldColour,)
+            ? CircularProgressIndicator(color: secondaryColor,)
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -98,7 +99,7 @@ class PlayerPageState extends State<PureModePlayerPage> {
                           image: Image.network(widget.playlist.getCoverPath(),).image,
                         ),
                         border: Border.all(
-                          color: goldColour,
+                          color: secondaryColor,
                           width: 3,
                         ),
                       ),
@@ -119,12 +120,12 @@ class PlayerPageState extends State<PureModePlayerPage> {
                       ),
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(40.0),
+                  Padding(
+                    padding: const EdgeInsets.all(40.0),
                     child: Text(
                       'lyrics',
                       style: TextStyle(
-                        color: goldColour,
+                        color: secondaryColor,
                         fontSize: 25,
                         fontStyle: FontStyle.italic,
                       ),

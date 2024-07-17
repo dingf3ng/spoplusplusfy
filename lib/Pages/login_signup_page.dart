@@ -14,10 +14,6 @@ const String passwordPattern = r'^.{8,32}$';
 const String goldPlay = 'assets/icons/music_play_gold.svg';
 const String blackPlay = 'assets/icons/music_play_black.svg';
 
-const Color primaryColor = Color(0x00000000);
-const Color secondaryColor = Color(0xffFFE8A3);
-const Color effectColor = Color.fromRGBO(0xff, 0xe8, 0xa3, 0.6);
-
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -98,7 +94,8 @@ class SignupPageState extends State<SignupPage>
   bool verify(String s) {
     if (_requestVerification >= 10) {
       setState(() {
-        _emailVerificationPrompt = 'You\'ve entered the code too much times, tap to resend';
+        _emailVerificationPrompt =
+            'You\'ve entered the code too much times, tap to resend';
       });
       return false;
     }
@@ -135,7 +132,7 @@ class SignupPageState extends State<SignupPage>
         bool suc = verify(query);
         if (suc) {
           _emailVerificationPrompt = '';
-        } else if(_requestVerification < 10) {
+        } else if (_requestVerification < 10) {
           _emailVerificationPrompt = 'Verification code is invalid';
         }
         _goodCode = suc;
@@ -212,8 +209,11 @@ class SignupPageState extends State<SignupPage>
   }
 
   NavigationBar _buildNavigationBar() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return NavigationBar(
       height: 50,
+      backgroundColor: primaryColor,
       selectedIndex: _selectedIdx,
       destinations: [
         NavigationDestination(
@@ -226,15 +226,16 @@ class SignupPageState extends State<SignupPage>
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
-              child: const Text(
+              child: Text(
                 'Username & Password',
                 style: TextStyle(
+                  color: primaryColor,
                     fontStyle: FontStyle.italic, fontWeight: FontWeight.w600),
               ),
             ),
             icon: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(width: 2.0, color: secondaryColor),
+                side: BorderSide(width: 2.0, color: secondaryColor),
               ),
               onPressed: () {
                 _selectedIdx = 0;
@@ -243,7 +244,7 @@ class SignupPageState extends State<SignupPage>
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
-              child: const Text(
+              child: Text(
                 'Username & Password',
                 style: TextStyle(
                     color: secondaryColor,
@@ -262,14 +263,14 @@ class SignupPageState extends State<SignupPage>
                     curve: Curves.ease);
                 setState(() {});
               },
-              child: const Text(
+              child: Text(
                 'Personal Information',
-                style: TextStyle(fontWeight: FontWeight.w600),
+                style: TextStyle(color: primaryColor,fontWeight: FontWeight.w600),
               ),
             ),
             icon: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(width: 2.0, color: secondaryColor),
+                side: BorderSide(width: 2.0, color: secondaryColor),
               ),
               onPressed: () {
                 _selectedIdx = 1;
@@ -278,7 +279,7 @@ class SignupPageState extends State<SignupPage>
                     curve: Curves.ease);
                 setState(() {});
               },
-              child: const Text('Personal Information',
+              child: Text('Personal Information',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: secondaryColor,
@@ -291,6 +292,8 @@ class SignupPageState extends State<SignupPage>
 
   Column _typingField(String fieldName, bool test, String hintText,
       TextEditingController? controller, String iconPath) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Column(
       children: [
         Row(
@@ -299,7 +302,7 @@ class SignupPageState extends State<SignupPage>
             Padding(
               padding: const EdgeInsets.only(left: 25),
               child: Text(fieldName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: secondaryColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
@@ -319,22 +322,18 @@ class SignupPageState extends State<SignupPage>
                 FocusManager.instance.primaryFocus?.unfocus();
               },
               controller: controller,
-              style: const TextStyle(
-                  color: secondaryColor, decorationThickness: 0),
+              style: TextStyle(color: secondaryColor, decorationThickness: 0),
               decoration: InputDecoration(
                 filled: false,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: hintText,
                 labelStyle:
@@ -369,6 +368,8 @@ class SignupPageState extends State<SignupPage>
 
   Column _multilineField(String fieldName, bool test, String hintText,
       TextEditingController? controller, String iconPath) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Column(
       children: [
         Row(
@@ -377,7 +378,7 @@ class SignupPageState extends State<SignupPage>
             Padding(
               padding: const EdgeInsets.only(left: 25),
               child: Text(fieldName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: secondaryColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
@@ -399,22 +400,18 @@ class SignupPageState extends State<SignupPage>
                 FocusManager.instance.primaryFocus?.unfocus();
               },
               controller: controller,
-              style: const TextStyle(
-                  color: secondaryColor, decorationThickness: 0),
+              style: TextStyle(color: secondaryColor, decorationThickness: 0),
               decoration: InputDecoration(
                 filled: false,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: hintText,
                 labelStyle:
@@ -448,8 +445,11 @@ class SignupPageState extends State<SignupPage>
   }
 
   Scaffold _userPage() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var effectColor = Theme.of(context).canvasColor;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: primaryColor,
       body: ListView(children: [
         Stack(
           children: [
@@ -461,7 +461,7 @@ class SignupPageState extends State<SignupPage>
                     particleConfiguration: ParticleConfiguration(
                       shape: CircleShape(),
                       size: const Size(5, 5),
-                      color: const SingleParticleColor(color: effectColor),
+                      color: SingleParticleColor(color: effectColor),
                     ),
                     effectConfiguration: const EffectConfiguration(),
                   )
@@ -511,8 +511,7 @@ class SignupPageState extends State<SignupPage>
                       style: OutlinedButton.styleFrom(
                         fixedSize: const Size(65, 65),
                         padding: const EdgeInsets.all(10),
-                        side:
-                            const BorderSide(width: 2.0, color: secondaryColor),
+                        side: BorderSide(width: 2.0, color: secondaryColor),
                       ),
                       child:
                           SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
@@ -535,8 +534,7 @@ class SignupPageState extends State<SignupPage>
                         style: OutlinedButton.styleFrom(
                           fixedSize: const Size(65, 65),
                           padding: const EdgeInsets.all(10),
-                          side: const BorderSide(
-                              width: 2.0, color: secondaryColor),
+                          side: BorderSide(width: 2.0, color: secondaryColor),
                         ),
                         child: SvgPicture.asset(
                             'assets/icons/right_arrow_gold.svg'),
@@ -553,8 +551,11 @@ class SignupPageState extends State<SignupPage>
   }
 
   Scaffold _emailPage() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var effectColor = Theme.of(context).canvasColor;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: primaryColor,
       body: ListView(children: [
         Stack(
           children: [
@@ -566,7 +567,7 @@ class SignupPageState extends State<SignupPage>
                     particleConfiguration: ParticleConfiguration(
                       shape: CircleShape(),
                       size: const Size(5, 5),
-                      color: const SingleParticleColor(color: effectColor),
+                      color: SingleParticleColor(color: effectColor),
                     ),
                     effectConfiguration: const EffectConfiguration(),
                   )
@@ -578,10 +579,10 @@ class SignupPageState extends State<SignupPage>
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 7,
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 25,
                     ),
                     Text(
@@ -599,9 +600,9 @@ class SignupPageState extends State<SignupPage>
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 30,
                 ),
-                const Row(
+                Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 25,
                     ),
                     Flexible(
@@ -614,7 +615,7 @@ class SignupPageState extends State<SignupPage>
                           fontSize: 55,
                           fontStyle: FontStyle.italic),
                     )),
-                    SizedBox(
+                    const SizedBox(
                       width: 25,
                     ),
                   ],
@@ -656,7 +657,8 @@ class SignupPageState extends State<SignupPage>
                           minimumSize: const Size(85, 50)),
                       child: Text(
                         _buttonText,
-                        style: const TextStyle(
+                        style: TextStyle(
+                          color: primaryColor,
                             fontWeight: FontWeight.w800, fontSize: 15),
                       ),
                     ),
@@ -694,8 +696,7 @@ class SignupPageState extends State<SignupPage>
                           style: OutlinedButton.styleFrom(
                             fixedSize: const Size(65, 65),
                             padding: const EdgeInsets.all(10),
-                            side: const BorderSide(
-                                width: 2.0, color: secondaryColor),
+                            side: BorderSide(width: 2.0, color: secondaryColor),
                           ),
                           child: SvgPicture.asset(
                               'assets/icons/right_arrow_gold.svg'),
@@ -711,8 +712,11 @@ class SignupPageState extends State<SignupPage>
   }
 
   Scaffold _personalInfoPage() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var effectColor = Theme.of(context).canvasColor;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: primaryColor,
       body: ListView(children: [
         Stack(
           children: [
@@ -724,7 +728,7 @@ class SignupPageState extends State<SignupPage>
                     particleConfiguration: ParticleConfiguration(
                       shape: CircleShape(),
                       size: const Size(5, 5),
-                      color: const SingleParticleColor(color: effectColor),
+                      color: SingleParticleColor(color: effectColor),
                     ),
                     effectConfiguration: const EffectConfiguration(),
                   )
@@ -760,8 +764,7 @@ class SignupPageState extends State<SignupPage>
                       style: OutlinedButton.styleFrom(
                         fixedSize: const Size(65, 65),
                         padding: const EdgeInsets.all(10),
-                        side:
-                            const BorderSide(width: 2.0, color: secondaryColor),
+                        side: BorderSide(width: 2.0, color: secondaryColor),
                       ),
                       child:
                           SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
@@ -780,8 +783,7 @@ class SignupPageState extends State<SignupPage>
                         style: OutlinedButton.styleFrom(
                           fixedSize: const Size(65, 65),
                           padding: const EdgeInsets.all(10),
-                          side: const BorderSide(
-                              width: 2.0, color: secondaryColor),
+                          side: BorderSide(width: 2.0, color: secondaryColor),
                         ),
                         child: SvgPicture.asset(
                             'assets/icons/right_arrow_gold.svg'),
@@ -798,8 +800,11 @@ class SignupPageState extends State<SignupPage>
   }
 
   Scaffold _finalPage() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var effectColor = Theme.of(context).canvasColor;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: primaryColor,
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -809,7 +814,7 @@ class SignupPageState extends State<SignupPage>
                 particleConfiguration: ParticleConfiguration(
                   shape: CircleShape(),
                   size: const Size(5, 5),
-                  color: const SingleParticleColor(color: effectColor),
+                  color: SingleParticleColor(color: effectColor),
                 ),
                 effectConfiguration: const EffectConfiguration(),
               )
@@ -900,8 +905,11 @@ class LoginPageState extends State<LoginPage>
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var effectColor = Theme.of(context).canvasColor;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: primaryColor,
       body: ListView(
         children: [
           Stack(
@@ -914,7 +922,7 @@ class LoginPageState extends State<LoginPage>
                       particleConfiguration: ParticleConfiguration(
                         shape: CircleShape(),
                         size: const Size(5, 5),
-                        color: const SingleParticleColor(color: effectColor),
+                        color: SingleParticleColor(color: effectColor),
                       ),
                       effectConfiguration: const EffectConfiguration(),
                     )
@@ -926,10 +934,10 @@ class LoginPageState extends State<LoginPage>
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 10,
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
                       Text(
@@ -947,9 +955,9 @@ class LoginPageState extends State<LoginPage>
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 30,
                   ),
-                  const Row(
+                  Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
                       Flexible(
@@ -962,7 +970,7 @@ class LoginPageState extends State<LoginPage>
                             fontSize: 55,
                             fontStyle: FontStyle.italic),
                       )),
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
                     ],
@@ -990,8 +998,8 @@ class LoginPageState extends State<LoginPage>
                             style: OutlinedButton.styleFrom(
                               fixedSize: const Size(65, 65),
                               padding: const EdgeInsets.all(10),
-                              side: const BorderSide(
-                                  width: 2.0, color: secondaryColor),
+                              side:
+                                  BorderSide(width: 2.0, color: secondaryColor),
                             ),
                             child: SvgPicture.asset(
                                 'assets/icons/right_arrow_gold.svg'),
@@ -1008,9 +1016,12 @@ class LoginPageState extends State<LoginPage>
   }
 
   Column _emailTypingField() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var effectColor = Theme.of(context).canvasColor;
     return Column(
       children: [
-        const Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Padding(
             padding: EdgeInsets.only(left: 25),
             child: Text('Email',
@@ -1033,22 +1044,18 @@ class LoginPageState extends State<LoginPage>
                 FocusManager.instance.primaryFocus?.unfocus();
               },
               controller: _idController,
-              style: const TextStyle(
-                  color: secondaryColor, decorationThickness: 0),
+              style: TextStyle(color: secondaryColor, decorationThickness: 0),
               decoration: InputDecoration(
                 filled: false,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: 'Enter Your Email',
                 labelStyle:
@@ -1064,9 +1071,12 @@ class LoginPageState extends State<LoginPage>
   }
 
   Column _passWordTypingField() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var effectColor = Theme.of(context).canvasColor;
     return Column(
       children: [
-        const Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Padding(
             padding: EdgeInsets.only(left: 25),
             child: Text('Password',
@@ -1089,22 +1099,18 @@ class LoginPageState extends State<LoginPage>
                 FocusManager.instance.primaryFocus?.unfocus();
               },
               controller: _psController,
-              style: const TextStyle(
-                  color: secondaryColor, decorationThickness: 0),
+              style: TextStyle(color: secondaryColor, decorationThickness: 0),
               decoration: InputDecoration(
                 filled: false,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        const BorderSide(color: secondaryColor, width: 2)),
+                    borderSide: BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: 'Enter your Password',
                 labelStyle:
@@ -1129,6 +1135,9 @@ class WavePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var effectColor = Theme.of(context).canvasColor;
     final paint = Paint()
       ..color = secondaryColor
       ..style = PaintingStyle.fill;

@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
@@ -11,6 +13,7 @@ import 'package:spoplusplusfy/Pages/playlist_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
 import '../Classes/album.dart';
+import '../main.dart';
 import 'artist_page.dart';
 
 class SearchPage extends StatefulWidget {
@@ -28,17 +31,17 @@ class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
 
-  static const Color primaryColor = Color(0x00000000);
-  static const Color secondaryColor = Color(0xffFFE8A3);
-
   final List<Artist> _resultArtists = [];
   final List<Album> _resultAlbums = [];
   final List<CustomizedPlaylist> _resultPlaylists = [];
   final List<Song> _resultSongs = [];
+  final List<Song> _foundSongs = [];
 
   static int _control = 210;
 
   void _openFilter() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height / 4;
     showModalBottomSheet(
@@ -53,19 +56,19 @@ class _SearchPageState extends State<SearchPage>
                     topLeft: Radius.circular(width / 15),
                     topRight: Radius.circular(width / 15)),
                 color: Colors.black,
-                border: const Border(
-                    left: BorderSide(color: goldColour, width: 2),
-                    right: BorderSide(color: goldColour, width: 2),
-                    top: BorderSide(color: goldColour, width: 2)),
+                border: Border(
+                    left: BorderSide(color: secondaryColor, width: 2),
+                    right: BorderSide(color: secondaryColor, width: 2),
+                    top: BorderSide(color: secondaryColor, width: 2)),
               ),
               child: Column(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(15),
-                    child: const Text(
+                    child: Text(
                       'Search Filter',
                       style: TextStyle(
-                          color: goldColour,
+                          color: secondaryColor,
                           fontWeight: FontWeight.w800,
                           fontSize: 20),
                     ),
@@ -116,6 +119,8 @@ class _SearchPageState extends State<SearchPage>
 
   Widget _buildCheckBox(context, title, height, int control, setter) {
     var width = MediaQuery.of(context).size.width;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Row(
       children: [
         SizedBox(
@@ -136,7 +141,7 @@ class _SearchPageState extends State<SearchPage>
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                  border: Border.all(color: goldColour, width: 2),
+                  border: Border.all(color: secondaryColor, width: 2),
                   borderRadius: const BorderRadius.all(Radius.circular(20))),
               height: height / 5,
               width: width / 7,
@@ -154,11 +159,210 @@ class _SearchPageState extends State<SearchPage>
             alignment: Alignment.center,
             child: Text(
               title,
-              style: const TextStyle(
-                  color: goldColour, fontWeight: FontWeight.w400, fontSize: 25),
+              style: TextStyle(
+                  color: secondaryColor, fontWeight: FontWeight.w400, fontSize: 22),
             )),
       ],
     );
+  }
+
+  void _openRecognizer() {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height / 4;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setSheetState) {
+            return Container(
+              width: width,
+              height: MediaQuery.of(context).size.height * 3 / 7,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(width / 15),
+                    topRight: Radius.circular(width / 15)),
+                color: Colors.black,
+                border: Border(
+                    left: BorderSide(color: secondaryColor, width: 2),
+                    right: BorderSide(color: secondaryColor, width: 2),
+                    top: BorderSide(color: secondaryColor, width: 2)),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    height: height / 4,
+                    padding: const EdgeInsets.all(15),
+                    child: Text(
+                      'Finder',
+                      style: TextStyle(
+                          color: secondaryColor,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(
+                    height: height * 1.45,
+                    child: ListView.separated(
+                        itemBuilder: (context, index) {
+                          return Container(
+                            height: height / 5,
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              border:
+                                  Border.all(color: secondaryColor, width: 2),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Container(
+                                  width: width * 4 / 11,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    _resultSongs[index].getName(),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: secondaryColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                SizedBox(
+                                  width: width * 2 / 9,
+                                  child: Text(
+                                    ArtistWorksManager.getArtistsOfSongAsString(
+                                        _resultSongs[index]),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: secondaryColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                SizedBox(
+                                  width: width * 1 / 15,
+                                  child: Text(
+                                    _formatTime(
+                                        _resultSongs[index].getDuration()),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: secondaryColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(
+                            height: 10,
+                          );
+                        },
+                        itemCount: _resultSongs.length),
+                  )
+                ],
+              ),
+            );
+          });
+        });
+  }
+
+  Future _showSettingDialog(context) {
+    var width = MediaQuery.of(context).size.width * 3 / 4;
+    var height = MediaQuery.of(context).size.height / 3;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Center(child: Text('Settings')),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(width / 10),
+              side: BorderSide(color: secondaryColor, width: 2.0),
+            ),
+            backgroundColor: Colors.black,
+            titleTextStyle: TextStyle(
+                color: secondaryColor, fontSize: 24, fontWeight: FontWeight.w600),
+            content: SizedBox(
+              height: height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Select Color Theme',
+                      style: TextStyle(
+                          color: secondaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
+                    child: Container(
+                      height: height / 9,
+                      width: width,
+                      alignment: Alignment.center,
+                      child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                themeNotifier.changeTheme(true, index);
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.circular(width / 10),
+                                    border: Border.all(
+                                        color: secondaryColor, width: 2),
+                                    gradient: LinearGradient(
+                                      colors: [primaryColor , secondaryColorList[index]],
+                                      stops: const [0.3,0.6],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    )),
+                                height: height / 9,
+                                width: width / 4,
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) => const SizedBox(
+                                width: 10,
+                              ),
+                          itemCount: 7),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -194,6 +398,9 @@ class _SearchPageState extends State<SearchPage>
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+
     return Scaffold(
       extendBodyBehindAppBar: false,
       backgroundColor: primaryColor,
@@ -215,6 +422,8 @@ class _SearchPageState extends State<SearchPage>
   Visibility _artistShowcase() {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Visibility(
       visible: _resultArtists.isNotEmpty,
       maintainAnimation: true,
@@ -284,7 +493,7 @@ class _SearchPageState extends State<SearchPage>
                           alignment: Alignment.center,
                           child: Text(
                             _resultArtists[index].getName(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: secondaryColor,
                               overflow: TextOverflow.ellipsis,
                               fontSize: 12,
@@ -308,6 +517,8 @@ class _SearchPageState extends State<SearchPage>
   Visibility _albumShowcase() {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Visibility(
       visible: _resultAlbums.isNotEmpty,
       maintainAnimation: true,
@@ -385,7 +596,7 @@ class _SearchPageState extends State<SearchPage>
                           width: width / 3,
                           child: Text(
                             _resultAlbums[index].getName(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: secondaryColor,
                               overflow: TextOverflow.ellipsis,
                               fontSize: 12,
@@ -409,6 +620,8 @@ class _SearchPageState extends State<SearchPage>
   Visibility _playlistShowcase() {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Visibility(
       visible: _resultPlaylists.isNotEmpty,
       maintainAnimation: true,
@@ -456,7 +669,7 @@ class _SearchPageState extends State<SearchPage>
                         alignment: Alignment.center,
                         child: Text(
                           _resultPlaylists[index].getName(),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: secondaryColor,
                             overflow: TextOverflow.ellipsis,
                             fontSize: 12,
@@ -479,6 +692,8 @@ class _SearchPageState extends State<SearchPage>
   Visibility _songShowcase() {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Visibility(
       visible: _resultSongs.isNotEmpty,
       maintainAnimation: true,
@@ -523,7 +738,7 @@ class _SearchPageState extends State<SearchPage>
                           child: Text(
                             _resultSongs[index].getName(),
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: secondaryColor,
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
@@ -539,7 +754,7 @@ class _SearchPageState extends State<SearchPage>
                             ArtistWorksManager.getArtistsOfSongAsString(
                                 _resultSongs[index]),
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: secondaryColor,
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
@@ -554,7 +769,7 @@ class _SearchPageState extends State<SearchPage>
                           child: Text(
                             _formatTime(_resultSongs[index].getDuration()),
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: secondaryColor,
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
@@ -592,13 +807,17 @@ class _SearchPageState extends State<SearchPage>
   }
 
   AppBar _appBar() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return AppBar(
       elevation: 0,
       leadingWidth: 70,
       toolbarHeight: 90,
       backgroundColor: primaryColor,
       leading: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          _showSettingDialog(context);
+        },
         child: FittedBox(
             alignment: Alignment.center,
             child: Padding(
@@ -634,7 +853,7 @@ class _SearchPageState extends State<SearchPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 'UserName ',
                 style: TextStyle(
                   fontFamily: 'NotoSans',
@@ -656,6 +875,8 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Container _searchField() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Container(
@@ -665,18 +886,18 @@ class _SearchPageState extends State<SearchPage>
             FocusManager.instance.primaryFocus?.unfocus();
           },
           controller: _searchController,
-          style: const TextStyle(color: secondaryColor, decorationThickness: 0),
+          style: TextStyle(color: secondaryColor, decorationThickness: 0),
           decoration: InputDecoration(
             filled: false,
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(color: secondaryColor, width: 2)),
+                borderSide: BorderSide(color: secondaryColor, width: 2)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(color: secondaryColor, width: 2)),
+                borderSide: BorderSide(color: secondaryColor, width: 2)),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(color: secondaryColor, width: 2)),
+                borderSide: BorderSide(color: secondaryColor, width: 2)),
             contentPadding: const EdgeInsets.all(15),
             hintText: 'Search...',
             hintStyle: const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
@@ -690,8 +911,21 @@ class _SearchPageState extends State<SearchPage>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const VerticalDivider(
-                      color: Color(0xffFFE8A3),
+                    VerticalDivider(
+                      color: secondaryColor,
+                      thickness: 2,
+                      indent: 10,
+                      endIndent: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () => {_openRecognizer()},
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(6, 12, 0, 12),
+                        child: SvgPicture.asset('assets/icons/ear_gold.svg'),
+                      ),
+                    ),
+                    VerticalDivider(
+                      color: secondaryColor,
                       thickness: 2,
                       indent: 10,
                       endIndent: 10,
@@ -699,20 +933,10 @@ class _SearchPageState extends State<SearchPage>
                     GestureDetector(
                       onTap: () => {_openFilter()},
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(6, 12, 0, 12),
-                        child: SvgPicture.asset('assets/icons/ear_gold.svg'),
+                        padding: const EdgeInsets.fromLTRB(6, 12, 12, 12),
+                        child: SvgPicture.asset(
+                            'assets/icons/filter_search_gold.svg'),
                       ),
-                    ),
-                    const VerticalDivider(
-                      color: Color(0xffFFE8A3),
-                      thickness: 2,
-                      indent: 10,
-                      endIndent: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(6, 12, 12, 12),
-                      child: SvgPicture.asset(
-                          'assets/icons/filter_search_gold.svg'),
                     ),
                   ],
                 ),
@@ -723,7 +947,9 @@ class _SearchPageState extends State<SearchPage>
   }
 
   TextStyle _headlineTextStyle() {
-    return const TextStyle(
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    return TextStyle(
       color: secondaryColor,
       fontWeight: FontWeight.w600,
       fontSize: 27,

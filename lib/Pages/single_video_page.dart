@@ -41,6 +41,8 @@ class _VideoPlayerWidgetState extends State<SingleVideoPage> {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return FutureBuilder(
       future: _initializeVideoPlayerFuture,
       builder: (context, snapshot) {
@@ -86,9 +88,9 @@ class _VideoPlayerWidgetState extends State<SingleVideoPage> {
                   const SizedBox(width: 30,),
                   CircleAvatar(backgroundImage: Image.asset('assets/images/pf.jpg').image, radius: 40,),
                   const SizedBox(width: 30,),
-                  const Text('Name', style: TextStyle(color: goldColour, fontFamily: 'NotoSans', fontSize: 40),),
+                  Text('Name', style: TextStyle(color: secondaryColor , fontFamily: 'NotoSans', fontSize: 40),),
                   const SizedBox(width: 30,),
-                  Container(width: 90, height: 50, decoration: BoxDecoration(color: goldColour, borderRadius: BorderRadius.circular(3.0)),
+                  Container(width: 90, height: 50, decoration: BoxDecoration(color: secondaryColor, borderRadius: BorderRadius.circular(3.0)),
                     child: const Center(child: Text('follow', style: TextStyle(fontSize: 20),)),
                   ),
                 ],
@@ -96,7 +98,7 @@ class _VideoPlayerWidgetState extends State<SingleVideoPage> {
             ],
           );
         } else {
-          return const Center(child: CircularProgressIndicator(color: goldColour,));
+          return Center(child: CircularProgressIndicator(color: secondaryColor,));
         }
       },
     );
