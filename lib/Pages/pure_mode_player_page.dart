@@ -71,7 +71,9 @@ class PlayerPageState extends State<PureModePlayerPage> {
       backgroundColor: primaryColor,
       body: Center(
         child: isLoading
-            ? CircularProgressIndicator(color: secondaryColor,)
+            ? CircularProgressIndicator(
+                color: secondaryColor,
+              )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -96,7 +98,9 @@ class PlayerPageState extends State<PureModePlayerPage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: Image.network(widget.playlist.getCoverPath(),).image,
+                          image: Image.network(
+                            widget.playlist.getCoverPath(),
+                          ).image,
                         ),
                         border: Border.all(
                           color: secondaryColor,

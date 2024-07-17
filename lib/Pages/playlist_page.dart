@@ -18,12 +18,12 @@ class PlaylistPage extends StatefulWidget {
 }
 
 class PlaylistPageState extends State<PlaylistPage> {
-  static const Color primaryColor = Color(0x00000000);
-  static const Color secondaryColor = Color(0xffFFE8A3);
-
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Scaffold(
+      backgroundColor: primaryColor,
       appBar: _appBar(),
       body: ListView(
         children: [
@@ -48,7 +48,10 @@ class PlaylistPageState extends State<PlaylistPage> {
   }
 
   AppBar _appBar() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return AppBar(
+      backgroundColor: primaryColor,
       leadingWidth: 80,
       toolbarHeight: 70,
       leading: GestureDetector(
@@ -57,7 +60,10 @@ class PlaylistPageState extends State<PlaylistPage> {
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 8, 8),
-              child: SvgPicture.asset('assets/icons/heart_gold.svg'),
+              child: SvgPicture.asset(
+                'assets/icons/heart_gold.svg',
+                colorFilter: ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+              ),
             )),
       ),
       actions: [
@@ -71,6 +77,8 @@ class PlaylistPageState extends State<PlaylistPage> {
                     'assets/icons/download_gold.svg',
                     height: 32,
                     width: 32,
+                    colorFilter:
+                        ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                   ))),
         ),
         GestureDetector(
@@ -83,6 +91,8 @@ class PlaylistPageState extends State<PlaylistPage> {
                     'assets/icons/dot_gold.svg',
                     height: 32,
                     width: 32,
+                    colorFilter:
+                        ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                   ))),
         ),
         Container(
@@ -95,6 +105,8 @@ class PlaylistPageState extends State<PlaylistPage> {
   Row _playlistInfo() {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -131,7 +143,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                   child: Text(
                     widget.playlist.getName(),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: secondaryColor,
                       fontSize: 23,
                       fontWeight: FontWeight.w800,
@@ -144,7 +156,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                   ArtistWorksManager.getArtistsOfAlbumAsString(
                       widget.playlist as Album),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: secondaryColor,
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
@@ -157,22 +169,22 @@ class PlaylistPageState extends State<PlaylistPage> {
                   Text(
                     '${widget.songs.length} songs',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: secondaryColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 17,
                     child: VerticalDivider(
-                      color: Color(0xffFFE8A3),
+                      color: secondaryColor,
                       thickness: 2,
                     ),
                   ),
                   Text(
                     '${widget.songs.map((song) => song.getDuration()).reduce((a, b) => a + b) ~/ 60} min',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: secondaryColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -193,6 +205,8 @@ class PlaylistPageState extends State<PlaylistPage> {
   ListView _songsList() {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return ListView.separated(
         shrinkWrap: true,
         primary: true,
@@ -213,7 +227,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                   ),
                   Text(
                     '${index + 1}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: secondaryColor,
                       fontWeight: FontWeight.w200,
                       fontSize: 30,
@@ -228,7 +242,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                         child: Text(
                           widget.songs[index].getName(),
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: secondaryColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
@@ -241,7 +255,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                           ArtistWorksManager.getArtistsOfSongAsString(
                               widget.songs[index]),
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: secondaryColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 12,
@@ -259,7 +273,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                     child: Text(
                       _formatTime(widget.songs[index].getDuration()),
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: secondaryColor,
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
@@ -279,6 +293,8 @@ class PlaylistPageState extends State<PlaylistPage> {
   Visibility _recommendationList() {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     Artist priArtist =
         ArtistWorksManager.getArtistsOfAlbum(widget.playlist as Album)[0];
     List<Album> rec = ArtistWorksManager.getAlbumsOfArtist(priArtist);
@@ -296,7 +312,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                   child: Text(
                     'More by ${priArtist.getName()}',
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: secondaryColor,
                       fontSize: 25,
                       fontWeight: FontWeight.w600,
@@ -341,7 +357,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                       alignment: Alignment.center,
                       child: Text(
                         rec[index].getName(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: secondaryColor,
                           overflow: TextOverflow.ellipsis,
                           fontSize: 12,

@@ -2,12 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
-import 'package:spoplusplusfy/Pages/login_signup_page.dart';
 import 'package:spoplusplusfy/Pages/pro_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/pure_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
 import 'package:spoplusplusfy/Pages/social_mode_player_page.dart';
-
 
 enum Mode { PureMode, SocialMode, ProMode }
 
@@ -23,7 +21,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<MainPage> {
+    with
+        SingleTickerProviderStateMixin,
+        AutomaticKeepAliveClientMixin<MainPage> {
   Mode selectedMode = Mode.PureMode;
 
   List<Playlist> playlists = [];
@@ -159,7 +159,6 @@ class _MainPageState extends State<MainPage>
     });
   }
 
-
   Padding _buildGridAlbums() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -207,8 +206,9 @@ class _MainPageState extends State<MainPage>
                       color: secondaryColor,
                       borderRadius: BorderRadius.circular(30),
                       image: DecorationImage(
-                        image: NetworkImage(playlists[index].getCoverPath(),
-                            ),
+                        image: NetworkImage(
+                          playlists[index].getCoverPath(),
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),

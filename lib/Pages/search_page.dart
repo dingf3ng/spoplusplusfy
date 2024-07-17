@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +7,6 @@ import 'package:spoplusplusfy/Classes/customized_playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Pages/login_signup_page.dart';
-import 'package:spoplusplusfy/Pages/main_page.dart';
 import 'package:spoplusplusfy/Pages/playlist_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
@@ -95,8 +93,11 @@ class _SearchPageState extends State<SearchPage>
                             height: width / 20,
                             width: width / 20,
                             alignment: Alignment.center,
-                            child:
-                                SvgPicture.asset('assets/icons/reset_gold.svg'),
+                            child: SvgPicture.asset(
+                              'assets/icons/reset_gold.svg',
+                              colorFilter: ColorFilter.mode(
+                                  secondaryColor, BlendMode.srcIn),
+                            ),
                           ),
                           SizedBox(
                             width: width / 20,
@@ -147,7 +148,11 @@ class _SearchPageState extends State<SearchPage>
               width: width / 7,
               child: Visibility(
                 visible: _control % control == 0,
-                child: SvgPicture.asset('assets/icons/checkmark_gold.svg'),
+                child: SvgPicture.asset(
+                  'assets/icons/checkmark_gold.svg',
+                  colorFilter:
+                      ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                ),
               ),
             ),
           ),
@@ -160,7 +165,9 @@ class _SearchPageState extends State<SearchPage>
             child: Text(
               title,
               style: TextStyle(
-                  color: secondaryColor, fontWeight: FontWeight.w400, fontSize: 22),
+                  color: secondaryColor,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 22),
             )),
       ],
     );
@@ -302,7 +309,9 @@ class _SearchPageState extends State<SearchPage>
             ),
             backgroundColor: Colors.black,
             titleTextStyle: TextStyle(
-                color: secondaryColor, fontSize: 24, fontWeight: FontWeight.w600),
+                color: secondaryColor,
+                fontSize: 24,
+                fontWeight: FontWeight.w600),
             content: SizedBox(
               height: height,
               child: Column(
@@ -342,8 +351,11 @@ class _SearchPageState extends State<SearchPage>
                                     border: Border.all(
                                         color: secondaryColor, width: 2),
                                     gradient: LinearGradient(
-                                      colors: [primaryColor , secondaryColorList[index]],
-                                      stops: const [0.3,0.6],
+                                      colors: [
+                                        primaryColor,
+                                        secondaryColorList[index]
+                                      ],
+                                      stops: const [0.3, 0.6],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     )),
@@ -822,7 +834,10 @@ class _SearchPageState extends State<SearchPage>
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 8, 8),
-              child: SvgPicture.asset('assets/icons/setting_gold.svg'),
+              child: SvgPicture.asset(
+                'assets/icons/setting_gold.svg',
+                colorFilter: ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+              ),
             )),
       ),
       actions: [
@@ -863,7 +878,10 @@ class _SearchPageState extends State<SearchPage>
                 ),
               ),
               SvgPicture.asset('assets/icons/user_gold.svg',
-                  height: 32, width: 32)
+                  colorFilter:
+                      ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                  height: 32,
+                  width: 32)
             ],
           ),
         ),
@@ -900,10 +918,13 @@ class _SearchPageState extends State<SearchPage>
                 borderSide: BorderSide(color: secondaryColor, width: 2)),
             contentPadding: const EdgeInsets.all(15),
             hintText: 'Search...',
-            hintStyle: const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+            hintStyle: TextStyle(color: secondaryColor, fontSize: 14),
             prefixIcon: Padding(
               padding: const EdgeInsets.all(12),
-              child: SvgPicture.asset('assets/icons/search_gold.svg'),
+              child: SvgPicture.asset(
+                'assets/icons/search_gold.svg',
+                colorFilter: ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+              ),
             ),
             suffixIcon: SizedBox(
               width: width / 4,
@@ -921,7 +942,11 @@ class _SearchPageState extends State<SearchPage>
                       onTap: () => {_openRecognizer()},
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(6, 12, 0, 12),
-                        child: SvgPicture.asset('assets/icons/ear_gold.svg'),
+                        child: SvgPicture.asset(
+                          'assets/icons/ear_gold.svg',
+                          colorFilter:
+                              ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                        ),
                       ),
                     ),
                     VerticalDivider(
@@ -935,7 +960,10 @@ class _SearchPageState extends State<SearchPage>
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(6, 12, 12, 12),
                         child: SvgPicture.asset(
-                            'assets/icons/filter_search_gold.svg'),
+                          'assets/icons/filter_search_gold.svg',
+                          colorFilter:
+                              ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                        ),
                       ),
                     ),
                   ],

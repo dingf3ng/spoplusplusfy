@@ -229,8 +229,9 @@ class SignupPageState extends State<SignupPage>
               child: Text(
                 'Username & Password',
                 style: TextStyle(
-                  color: primaryColor,
-                    fontStyle: FontStyle.italic, fontWeight: FontWeight.w600),
+                    color: primaryColor,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w600),
               ),
             ),
             icon: OutlinedButton(
@@ -265,7 +266,8 @@ class SignupPageState extends State<SignupPage>
               },
               child: Text(
                 'Personal Information',
-                style: TextStyle(color: primaryColor,fontWeight: FontWeight.w600),
+                style:
+                    TextStyle(color: primaryColor, fontWeight: FontWeight.w600),
               ),
             ),
             icon: OutlinedButton(
@@ -658,8 +660,9 @@ class SignupPageState extends State<SignupPage>
                       child: Text(
                         _buttonText,
                         style: TextStyle(
-                          color: primaryColor,
-                            fontWeight: FontWeight.w800, fontSize: 15),
+                            color: primaryColor,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 15),
                       ),
                     ),
                     const SizedBox(
@@ -1023,7 +1026,7 @@ class LoginPageState extends State<LoginPage>
       children: [
         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Padding(
-            padding: EdgeInsets.only(left: 25),
+            padding: const EdgeInsets.only(left: 25),
             child: Text('Email',
                 style: TextStyle(
                   color: secondaryColor,
@@ -1078,7 +1081,7 @@ class LoginPageState extends State<LoginPage>
       children: [
         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Padding(
-            padding: EdgeInsets.only(left: 25),
+            padding: const EdgeInsets.only(left: 25),
             child: Text('Password',
                 style: TextStyle(
                   color: secondaryColor,

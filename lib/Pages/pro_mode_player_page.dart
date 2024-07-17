@@ -6,8 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
-import 'package:spoplusplusfy/Pages/login_signup_page.dart';
-import 'package:spoplusplusfy/Pages/main_page.dart';
 import '../Classes/artist.dart';
 
 // TODO: resolve the issue of red screen with similar method as pure mode page
@@ -162,7 +160,6 @@ class PlayerPageState extends State<ProModePlayerPage> {
           width: 20,
         ),
         _asyncButtonBuilder(
-
             'assets/icons/more_category_black.svg',
             PlaylistIterator.separateCurrSongOthers,
             PlaylistIterator.switchBetweenOtherTrackAndSong),
@@ -224,8 +221,8 @@ class PlayerPageState extends State<ProModePlayerPage> {
                               'assets/icons/record_paused_gold.svg',
                               height: 20,
                               width: 20,
-                              colorFilter:
-                                  ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                              colorFilter: ColorFilter.mode(
+                                  secondaryColor, BlendMode.srcIn),
                             ),
                           ),
                           Center(
