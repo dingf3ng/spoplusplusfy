@@ -31,8 +31,10 @@ class ArtistPageState extends State<ArtistPage> {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
     return Scaffold(
       appBar: _infoBar(),
+      backgroundColor: primaryColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -50,7 +52,7 @@ class ArtistPageState extends State<ArtistPage> {
     var secondaryColor = Theme.of(context).hintColor;
     return NavigationBar(
       backgroundColor: primaryColor,
-      height: height / 10,
+      height: height / 40,
       selectedIndex: _selectedIdx,
       destinations: [
         NavigationDestination(
@@ -67,10 +69,10 @@ class ArtistPageState extends State<ArtistPage> {
                       curve: Curves.bounceInOut);
                   setState(() {});
                 },
-                child: const Text(
+                child: Text(
                   'Works',
                   style: TextStyle(
-                      fontStyle: FontStyle.italic, fontWeight: FontWeight.w600),
+                      fontStyle: FontStyle.italic, fontWeight: FontWeight.w600, color: primaryColor),
                 ),
               ),
             ),
@@ -109,10 +111,10 @@ class ArtistPageState extends State<ArtistPage> {
                       curve: Curves.bounceInOut);
                   setState(() {});
                 },
-                child: const Text(
+                child: Text(
                   'Posts',
                   style: TextStyle(
-                      fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+                      fontWeight: FontWeight.w600, fontStyle: FontStyle.italic, color: primaryColor),
                 ),
               ),
             ),
@@ -248,7 +250,7 @@ class ArtistPageState extends State<ArtistPage> {
                             WidgetStateProperty.all(secondaryColor),
                       ),
                       onPressed: () => {},
-                      child: const Text('Follow')),
+                      child: Text('Follow', style: TextStyle(color: primaryColor),)),
                   const SizedBox(
                     width: 10,
                   ),
