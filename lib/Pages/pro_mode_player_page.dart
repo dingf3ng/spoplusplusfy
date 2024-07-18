@@ -6,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_iterator.dart';
-import 'package:spoplusplusfy/Pages/main_page.dart';
 import '../Classes/artist.dart';
 
 // TODO: resolve the issue of red screen with similar method as pure mode page
@@ -60,15 +59,16 @@ class PlayerPageState extends State<ProModePlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    const Color goldColour = Color.fromRGBO(255, 232, 163, 1.0);
-    const songTitleStyle = TextStyle(
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    var songTitleStyle = TextStyle(
       fontSize: 35,
-      color: goldColour,
+      color: secondaryColor,
       fontFamily: 'NotoSans',
     );
-    const songArtistStyle = TextStyle(
+    var songArtistStyle = TextStyle(
       fontSize: 30,
-      color: goldColour,
+      color: secondaryColor,
       fontFamily: 'NotoSans',
       fontWeight: FontWeight.w500,
     );
@@ -90,11 +90,11 @@ class PlayerPageState extends State<ProModePlayerPage> {
             });
       },
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: primaryColor,
         body: _isLoading
-            ? const Center(
+            ? Center(
                 child: CircularProgressIndicator(
-                color: goldColour,
+                color: secondaryColor,
               ))
             : Center(
                 child: Column(
@@ -104,20 +104,20 @@ class PlayerPageState extends State<ProModePlayerPage> {
                     _songArtistName(songArtistStyle),
                     Padding(
                       padding: const EdgeInsets.all(30.0),
-                      child: _albumCoverWithSwipeDetection(goldColour),
+                      child: _albumCoverWithSwipeDetection(secondaryColor),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.all(40.0),
+                    Padding(
+                      padding: const EdgeInsets.all(40.0),
                       child: Text(
                         'lyrics',
                         style: TextStyle(
-                          color: goldColour,
+                          color: secondaryColor,
                           fontSize: 25,
                           fontStyle: FontStyle.italic,
                         ),
                       ),
                     ),
-                    _musicDecomposeButtons(goldColour),
+                    _musicDecomposeButtons(),
                     const SizedBox(
                       height: 50,
                     ),
@@ -134,12 +134,11 @@ class PlayerPageState extends State<ProModePlayerPage> {
     );
   }
 
-  Row _musicDecomposeButtons(Color goldColour) {
+  Row _musicDecomposeButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _asyncButtonBuilder(
-            goldColour,
             'assets/icons/bass_guitar_black.svg',
             PlaylistIterator.separateCurrSongBass,
             PlaylistIterator.switchBetweenBassTrackAndSong),
@@ -147,7 +146,6 @@ class PlayerPageState extends State<ProModePlayerPage> {
           width: 20,
         ),
         _asyncButtonBuilder(
-            goldColour,
             'assets/icons/drum_black.svg',
             PlaylistIterator.separateCurrSongDrums,
             PlaylistIterator.switchBetweenDrumTrackAndSong),
@@ -155,7 +153,6 @@ class PlayerPageState extends State<ProModePlayerPage> {
           width: 20,
         ),
         _asyncButtonBuilder(
-            goldColour,
             'assets/icons/microphone_black.svg',
             PlaylistIterator.separateCurrSongVocals,
             PlaylistIterator.switchBetweenVocalTrackAndSong),
@@ -163,7 +160,6 @@ class PlayerPageState extends State<ProModePlayerPage> {
           width: 20,
         ),
         _asyncButtonBuilder(
-            goldColour,
             'assets/icons/more_category_black.svg',
             PlaylistIterator.separateCurrSongOthers,
             PlaylistIterator.switchBetweenOtherTrackAndSong),
@@ -172,15 +168,16 @@ class PlayerPageState extends State<ProModePlayerPage> {
   }
 
   AsyncButtonBuilder _asyncButtonBuilder(
-    Color goldColour,
     String buttonImagePath,
     Function separate,
     Function switchBetweenSongAndTrack,
   ) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return AsyncButtonBuilder(
         child: CircleAvatar(
           radius: 30,
-          backgroundColor: goldColour,
+          backgroundColor: secondaryColor,
           child: SvgPicture.asset(
             buttonImagePath,
             width: 30,
@@ -224,13 +221,13 @@ class PlayerPageState extends State<ProModePlayerPage> {
                               'assets/icons/record_paused_gold.svg',
                               height: 20,
                               width: 20,
-                              colorFilter:
-                                  ColorFilter.mode(goldColour, BlendMode.srcIn),
+                              colorFilter: ColorFilter.mode(
+                                  secondaryColor, BlendMode.srcIn),
                             ),
                           ),
                           Center(
                               child: CircularProgressIndicator(
-                            color: goldColour,
+                            color: secondaryColor,
                           )),
                         ],
                       ),
@@ -242,8 +239,8 @@ class PlayerPageState extends State<ProModePlayerPage> {
                     style: ButtonStyle(
                       padding: WidgetStateProperty.all(EdgeInsets.zero),
                       shape: WidgetStateProperty.all(const CircleBorder()),
-                      backgroundColor: WidgetStateProperty.all(Colors.black),
-                      foregroundColor: WidgetStateProperty.all(goldColour),
+                      backgroundColor: WidgetStateProperty.all(primaryColor),
+                      foregroundColor: WidgetStateProperty.all(secondaryColor),
                     ),
                     child: SvgPicture.asset(
                       'assets/icons/checkmark_gold.svg',
@@ -255,18 +252,18 @@ class PlayerPageState extends State<ProModePlayerPage> {
                 return TextButton(
                     onPressed: () {},
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.black),
+                      backgroundColor: WidgetStateProperty.all(primaryColor),
                       padding: WidgetStateProperty.all(EdgeInsets.zero),
                       shape: WidgetStateProperty.all(const CircleBorder()),
-                      foregroundColor: WidgetStateProperty.all(goldColour),
-                      overlayColor: WidgetStateProperty.all(goldColour),
+                      foregroundColor: WidgetStateProperty.all(secondaryColor),
+                      overlayColor: WidgetStateProperty.all(secondaryColor),
                     ),
                     child: SvgPicture.asset(
                       'assets/icons/exclaimation_mark_gold.svg',
                       width: 40,
                       height: 40,
                       colorFilter:
-                          ColorFilter.mode(goldColour, BlendMode.srcIn),
+                          ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                     ));
               });
           return button;
@@ -293,6 +290,8 @@ class PlayerPageState extends State<ProModePlayerPage> {
   }
 
   SizedBox _playPauseButton() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return SizedBox(
       width: 110,
       height: 110,
@@ -300,7 +299,7 @@ class PlayerPageState extends State<ProModePlayerPage> {
         style: ElevatedButton.styleFrom(
           shape: const CircleBorder(),
           padding: const EdgeInsets.all(20),
-          backgroundColor: goldColour,
+          backgroundColor: secondaryColor,
         ),
         onPressed: _pauseOrPlay,
         child: _isPlaying

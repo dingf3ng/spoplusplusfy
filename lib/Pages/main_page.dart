@@ -7,8 +7,6 @@ import 'package:spoplusplusfy/Pages/pure_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
 import 'package:spoplusplusfy/Pages/social_mode_player_page.dart';
 
-const Color goldColour = Color(0xffFFE8A3);
-
 enum Mode { PureMode, SocialMode, ProMode }
 
 class MainPage extends StatefulWidget {
@@ -23,7 +21,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<MainPage> {
+    with
+        SingleTickerProviderStateMixin,
+        AutomaticKeepAliveClientMixin<MainPage> {
   Mode selectedMode = Mode.PureMode;
 
   List<Playlist> playlists = [];
@@ -55,16 +55,18 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     super.build(context);
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: primaryColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: primaryColor,
         elevation: 0,
       ),
       body: RefreshIndicator(
         onRefresh: _pullRefresh,
-        backgroundColor: goldColour,
+        backgroundColor: secondaryColor,
         child: ListView(
           shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
@@ -92,6 +94,8 @@ class _MainPageState extends State<MainPage>
   }
 
   Widget _buildModeSelector() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     List<DropdownMenuItem<Mode>> list = [
       const DropdownMenuItem(
         value: Mode.PureMode,
@@ -111,6 +115,7 @@ class _MainPageState extends State<MainPage>
       height: 30,
       width: 100,
       child: DropdownButton<Mode>(
+        style: TextStyle(color: secondaryColor),
         value: selectedMode, // Use selectedMode
         items: list,
         onChanged: (Mode? newValue) {
@@ -123,18 +128,20 @@ class _MainPageState extends State<MainPage>
   }
 
   Widget _buildTitle() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.02),
-      child: const Row(
+      child: Row(
         children: [
           Flexible(
             child: Padding(
-              padding: EdgeInsets.only(left: 30, right: 30),
+              padding: const EdgeInsets.only(left: 30, right: 30),
               child: Text(
                 'Welcome,\nHere Are The Music For You',
                 style: TextStyle(
                   fontSize: 30,
-                  color: goldColour,
+                  color: secondaryColor,
                   fontFamily: 'Noto-Sans',
                 ),
               ),
@@ -152,8 +159,9 @@ class _MainPageState extends State<MainPage>
     });
   }
 
-
   Padding _buildGridAlbums() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Padding(
       padding: const EdgeInsets.all(30.0),
       child: GridView.builder(
@@ -192,14 +200,15 @@ class _MainPageState extends State<MainPage>
                     height: MediaQuery.of(context).size.width * 3 / 8,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: goldColour,
+                        color: secondaryColor,
                         width: 3,
                       ),
-                      color: goldColour,
+                      color: secondaryColor,
                       borderRadius: BorderRadius.circular(30),
                       image: DecorationImage(
-                        image: NetworkImage(playlists[index].getCoverPath(),
-                            ),
+                        image: NetworkImage(
+                          playlists[index].getCoverPath(),
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -210,8 +219,8 @@ class _MainPageState extends State<MainPage>
                 padding: const EdgeInsets.all(5),
                 child: Text(
                   playlists[index].getName(),
-                  style: const TextStyle(
-                    color: goldColour,
+                  style: TextStyle(
+                    color: secondaryColor,
                     fontFamily: 'Noto-Sans',
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

@@ -127,8 +127,7 @@ class UserPageState extends State<UserPage> {
                     color: secondaryColor, fontWeight: FontWeight.w600),
               ),
             ),
-            label: ''
-        ),
+            label: ''),
         NavigationDestination(
             selectedIcon: FilledButton(
               style: FilledButton.styleFrom(
@@ -229,11 +228,15 @@ class UserPageState extends State<UserPage> {
                   ),
                   TextButton(
                       style: ButtonStyle(
-                        backgroundColor:
-                        widget.isSelf ?WidgetStateProperty.all(primaryColor) : WidgetStateProperty.all(secondaryColor),
+                        backgroundColor: widget.isSelf
+                            ? WidgetStateProperty.all(primaryColor)
+                            : WidgetStateProperty.all(secondaryColor),
                       ),
                       onPressed: () => {},
-                      child: widget.isSelf ? SvgPicture.asset('assets/icons/edit_profile_gold.svg') : const Text('Follow')),
+                      child: widget.isSelf
+                          ? SvgPicture.asset(
+                              'assets/icons/edit_profile_gold.svg')
+                          : const Text('Follow')),
                   const SizedBox(
                     width: 10,
                   ),

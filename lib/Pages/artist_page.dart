@@ -20,8 +20,6 @@ class ArtistPage extends StatefulWidget {
 class ArtistPageState extends State<ArtistPage> {
   int _selectedIdx = 0;
   final PageController _controller = PageController();
-  static const Color primaryColor = Color(0x00000000);
-  static const Color secondaryColor = Color(0xffFFE8A3);
 
   @override
   void initState() {
@@ -30,16 +28,15 @@ class ArtistPageState extends State<ArtistPage> {
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _infoBar(),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildNavigationBar(),
-          const SizedBox(
-            height: 25,
-          ),
           _pageView(),
         ],
       ),
@@ -49,85 +46,107 @@ class ArtistPageState extends State<ArtistPage> {
   NavigationBar _buildNavigationBar() {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return NavigationBar(
-      height: height / 50,
+      backgroundColor: primaryColor,
+      height: height / 10,
       selectedIndex: _selectedIdx,
       destinations: [
         NavigationDestination(
-            selectedIcon: FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: secondaryColor),
-              onPressed: () {
-                _selectedIdx = 0;
-                _controller.animateToPage(_selectedIdx,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.bounceInOut);
-                setState(() {});
-              },
-              child: const Text(
-                'Works',
-                style: TextStyle(
-                    fontStyle: FontStyle.italic, fontWeight: FontWeight.w600),
+            selectedIcon: SizedBox(
+              height: height / 40,
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: secondaryColor,
+                ),
+                onPressed: () {
+                  _selectedIdx = 0;
+                  _controller.animateToPage(_selectedIdx,
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.bounceInOut);
+                  setState(() {});
+                },
+                child: const Text(
+                  'Works',
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic, fontWeight: FontWeight.w600),
+                ),
               ),
             ),
-            icon: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(width: 2.0, color: secondaryColor),
-              ),
-              onPressed: () {
-                _selectedIdx = 0;
-                _controller.animateToPage(_selectedIdx,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.bounceInOut);
-                setState(() {});
-              },
-              child: const Text(
-                'Works',
-                style: TextStyle(
-                    color: secondaryColor,
-                    fontWeight: FontWeight.w600),
+            icon: SizedBox(
+              height: height / 40,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(width: 2.0, color: secondaryColor),
+                ),
+                onPressed: () {
+                  _selectedIdx = 0;
+                  _controller.animateToPage(_selectedIdx,
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.bounceInOut);
+                  setState(() {});
+                },
+                child: Text(
+                  'Works',
+                  style: TextStyle(
+                      color: secondaryColor, fontWeight: FontWeight.w600),
+                ),
               ),
             ),
             label: ''),
         NavigationDestination(
-            selectedIcon: FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: secondaryColor),
-              onPressed: () {
-                _selectedIdx = 1;
-                _controller.animateToPage(_selectedIdx,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.bounceInOut);
-                setState(() {});
-              },
-              child: const Text(
-                'Posts',
-                style: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+            selectedIcon: SizedBox(
+              height: height / 40,
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: secondaryColor,
+                ),
+                onPressed: () {
+                  _selectedIdx = 1;
+                  _controller.animateToPage(_selectedIdx,
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.bounceInOut);
+                  setState(() {});
+                },
+                child: const Text(
+                  'Posts',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+                ),
               ),
             ),
-            icon: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(width: 2.0, color: secondaryColor),
+            icon: SizedBox(
+              height: height / 40,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(width: 2.0, color: secondaryColor),
+                ),
+                onPressed: () {
+                  _selectedIdx = 1;
+                  _controller.animateToPage(_selectedIdx,
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.bounceInOut);
+                  setState(() {});
+                },
+                child: Text('Posts',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: secondaryColor,
+                    )),
               ),
-              onPressed: () {
-                _selectedIdx = 1;
-                _controller.animateToPage(_selectedIdx,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.bounceInOut);
-                setState(() {});
-              },
-              child: const Text('Posts',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: secondaryColor,
-                  )),
             ),
             label: '')
       ],
     );
   }
 
-  SizedBox _pageView() {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height - 320,
+  Container _pageView() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+    return Container(
+      color: primaryColor,
+      height: MediaQuery.of(context).size.height * 2 / 3,
       child: PageView(
         controller: _controller,
         onPageChanged: (index) => {
@@ -164,6 +183,8 @@ class ArtistPageState extends State<ArtistPage> {
   }
 
   AppBar _infoBar() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return AppBar(
@@ -171,7 +192,9 @@ class ArtistPageState extends State<ArtistPage> {
       backgroundColor: primaryColor,
       leading: Row(
         children: [
-          const SizedBox(width: 25,),
+          const SizedBox(
+            width: 25,
+          ),
           Container(
             height: width / 3,
             width: width / 3,
@@ -189,7 +212,9 @@ class ArtistPageState extends State<ArtistPage> {
               ),
             ),
           ),
-          const SizedBox(width: 25,),
+          const SizedBox(
+            width: 25,
+          ),
         ],
       ),
       leadingWidth: width / 2,
@@ -207,7 +232,7 @@ class ArtistPageState extends State<ArtistPage> {
                     child: Text(
                       widget.artist.getName(),
                       textAlign: TextAlign.left,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: secondaryColor,
                         fontSize: 23,
                         fontWeight: FontWeight.w800,
@@ -232,7 +257,7 @@ class ArtistPageState extends State<ArtistPage> {
               const SizedBox(
                 height: 15,
               ),
-              const Flexible(
+              Flexible(
                 child: Text(
                   'Some random introduction to the singer/band',
                   textAlign: TextAlign.left,
@@ -254,16 +279,18 @@ class ArtistPageState extends State<ArtistPage> {
   }
 
   Visibility _recommendShowcase() {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     List<Album> albums = ArtistWorksManager.getAlbumsOfArtist(widget.artist);
     return Visibility(
       visible: albums.isNotEmpty,
       child: Column(
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 25),
+                padding: const EdgeInsets.only(left: 25),
                 child: Text(
                   'Recommended to you',
                   style: TextStyle(
@@ -321,7 +348,7 @@ class ArtistPageState extends State<ArtistPage> {
                         width: MediaQuery.of(context).size.width / 3,
                         child: Text(
                           albums[index].getName(),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: secondaryColor,
                             overflow: TextOverflow.ellipsis,
                             fontSize: 15,
@@ -342,13 +369,15 @@ class ArtistPageState extends State<ArtistPage> {
   }
 
   Column _buildGridAlbums(List<Playlist> playlists) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Column(
       children: [
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 25),
+              padding: const EdgeInsets.only(left: 25),
               child: Text(
                 'Albums',
                 style: TextStyle(
@@ -410,7 +439,7 @@ class ArtistPageState extends State<ArtistPage> {
                   alignment: Alignment.center,
                   child: Text(
                     playlists[index].getName(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: secondaryColor,
                       fontFamily: 'Noto-Sans',
                       fontSize: 15,
