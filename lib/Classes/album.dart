@@ -16,7 +16,7 @@ class Album extends Playlist {
     int id = map['album_id'] as int;
     return Album(
       name: map['name'] as String,
-      playlistCoverPath: 'http://$dfIP/api/get_album_cover/${id.toString().padLeft(6, '0')}',
+      playlistCoverPath: 'http://$local/api/get_album_cover/${id.toString().padLeft(6, '0')}',
       id: id,
       mutable: false,
     );
