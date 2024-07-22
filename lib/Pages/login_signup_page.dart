@@ -696,43 +696,44 @@ class SignupPageState extends State<SignupPage>
                               },
                               body: jsonEncode({'email': _emailController.text})
                           );
-                          if (response.statusCode != 200) {
-                            showDialog(context: context, builder: (context) {
-                              var errorType = jsonDecode(response.body).keys.toList()[0];
-                              if (errorType.runtimeType != String) {
-                                errorType = errorType[0];
-                              }
-                              var errorDialog = jsonDecode(response.body).values.toList()[0];
-                              if (errorDialog.runtimeType != String) {
-                                errorDialog = errorDialog[0];
-                              }
-                              return AlertDialog(
-                                  title: Text(errorType),
-                                  content: SingleChildScrollView(
-                                      child: ListBody(
-                                        children: <Widget>[
-                                          Text(errorDialog),
-                                        ],)));
+                          if (response.statusCode == 200 || response.statusCode == 201) {
+                            setState(() {
+                              _requestVerification = 0;
                             });
-                          }
-                          setState(() {
-                            _requestVerification = 0;
-                          });
-                          _emailTimer =
-                              Timer.periodic(const Duration(seconds: 1), (timer) {
-                                setState(() {
-                                  _buttonText = '$_countdownDuration s';
-                                  _countdownDuration--;
-                                  _buttonPressed = true;
-                                });
-                                if (_countdownDuration < 0) {
+                            _emailTimer =
+                                Timer.periodic(const Duration(seconds: 1), (timer) {
                                   setState(() {
-                                    _countdownDuration = 60;
-                                    _buttonText = 'Send code';
-                                    timer.cancel();
+                                    _buttonText = '$_countdownDuration s';
+                                    _countdownDuration--;
+                                    _buttonPressed = true;
                                   });
-                                }
-                              });
+                                  if (_countdownDuration < 0) {
+                                    setState(() {
+                                      _countdownDuration = 60;
+                                      _buttonText = 'Send code';
+                                      timer.cancel();
+                                    });
+                                  }
+                                });
+                          }
+
+                          showDialog(context: context, builder: (context) {
+                            var errorType = jsonDecode(response.body).keys.toList()[0];
+                            if (errorType.runtimeType != String) {
+                              errorType = errorType[0];
+                            }
+                            var errorDialog = jsonDecode(response.body).values.toList()[0];
+                            if (errorDialog.runtimeType != String) {
+                              errorDialog = errorDialog[0];
+                            }
+                            return AlertDialog(
+                                title: Text(errorType),
+                                content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(errorDialog),
+                                      ],)));
+                          });
                         } catch(e) {
                           showDialog(context: context, builder: (context) {
                             return const AlertDialog(
@@ -814,9 +815,11 @@ class SignupPageState extends State<SignupPage>
                                             ],)));
                                 });
                               }
-                              _controller.nextPage(
-                                  duration: const Duration(milliseconds: 600),
-                                  curve: Curves.ease);
+                              if (response.statusCode == 200 || response.statusCode == 201) {
+                                _controller.nextPage(
+                                    duration: const Duration(milliseconds: 600),
+                                    curve: Curves.ease);
+                              }
                             } catch(e) {
                               showDialog(context: context, builder: (context) {
                                 return const AlertDialog(
