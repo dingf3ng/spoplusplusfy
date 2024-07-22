@@ -532,36 +532,56 @@ class SignupPageState extends State<SignupPage>
                           _goodCode,
                       child: OutlinedButton(
                         onPressed: () async {
-                          var response = await http.post(
-                              Uri.parse('http://$fhlIP/api/auth/register/'),
-                              headers: <String, String>{
-                                'Content-Type': 'application/json; charset=UTF-8',
-                              },
-                              body: jsonEncode({
-                                'email' : _emailController.text,
-                                'password' : _passwordController.text,
-                                'username' : _usernameController.text,
-                              })
-                          );
-                          if (response.statusCode != 200) {
+                          try {
+                            var response = await http.post(
+                                Uri.parse('http://$fhlIP/api/auth/register'),
+                                headers: <String, String>{
+                                  'Content-Type': 'application/json; charset=UTF-8',
+                                },
+                                body: jsonEncode({
+                                  'email' : _emailController.text,
+                                  'password' : _passwordController.text,
+                                  'username' : _usernameController.text,
+                                })
+                            );
+                            if (response.statusCode != 201) {
+                              showDialog(context: context, builder: (context) {
+                                var errorType = jsonDecode(response.body).keys.toList()[0];
+                                if (errorType.runtimeType != String) {
+                                  errorType = errorType[0];
+                                }
+                                var errorDialog = jsonDecode(response.body).values.toList()[0];
+                                if (errorDialog.runtimeType != String) {
+                                  errorDialog = errorDialog[0];
+                                }
+                                return AlertDialog(
+                                    title: Text(errorType),
+                                    content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            Text(errorDialog),
+                                          ],)));
+                              });
+                            }
+                            _controller.nextPage(
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.ease);
+                            setState(() {
+                              _selectedIdx++;
+                            });
+                          } catch(e) {
                             showDialog(context: context, builder: (context) {
-                              var errorType = jsonDecode(response.body).keys.toList()[0];
-                              var errorDialog = jsonDecode(response.body).values.toList()[0][0];
                               return AlertDialog(
-                                  title: Text(errorType),
+                                  title: Text(e.toString()),
                                   content: SingleChildScrollView(
                                       child: ListBody(
                                         children: <Widget>[
-                                          Text(errorDialog),
+                                          Text(e.toString()),
                                         ],)));
                             });
                           }
-                          _controller.nextPage(
-                              duration: const Duration(milliseconds: 600),
-                              curve: Curves.ease);
-                          setState(() {
-                            _selectedIdx++;
-                          });
+
+
                         },
                         style: OutlinedButton.styleFrom(
                           fixedSize: const Size(65, 65),
@@ -667,44 +687,64 @@ class SignupPageState extends State<SignupPage>
                     TextButton(
                       onPressed: () async {
                         if (!_goodEmail) return;
-                        var response = await http.post(
-                            Uri.parse('http://$fhlIP/api/auth/send_verification_code/'),
-                            headers: <String, String>{
-                              'Content-Type': 'application/json; charset=UTF-8',
-                            },
-                          body: jsonEncode({'email' : _emailController.text})
-                        );
-                        if (response.statusCode != 200) {
+                        try {
+                          var response = await http.post(
+                              Uri.parse(
+                                  'http://$fhlIP/api/auth/send_verification_code'),
+                              headers: <String, String>{
+                                'Content-Type': 'application/json; charset=UTF-8',
+                              },
+                              body: jsonEncode({'email': _emailController.text})
+                          );
+                          if (response.statusCode != 200) {
+                            showDialog(context: context, builder: (context) {
+                              var errorType = jsonDecode(response.body).keys.toList()[0];
+                              if (errorType.runtimeType != String) {
+                                errorType = errorType[0];
+                              }
+                              var errorDialog = jsonDecode(response.body).values.toList()[0];
+                              if (errorDialog.runtimeType != String) {
+                                errorDialog = errorDialog[0];
+                              }
+                              return AlertDialog(
+                                  title: Text(errorType),
+                                  content: SingleChildScrollView(
+                                      child: ListBody(
+                                        children: <Widget>[
+                                          Text(errorDialog),
+                                        ],)));
+                            });
+                          }
+                          setState(() {
+                            _requestVerification = 0;
+                          });
+                          _emailTimer =
+                              Timer.periodic(const Duration(seconds: 1), (timer) {
+                                setState(() {
+                                  _buttonText = '$_countdownDuration s';
+                                  _countdownDuration--;
+                                  _buttonPressed = true;
+                                });
+                                if (_countdownDuration < 0) {
+                                  setState(() {
+                                    _countdownDuration = 60;
+                                    _buttonText = 'Send code';
+                                    timer.cancel();
+                                  });
+                                }
+                              });
+                        } catch(e) {
                           showDialog(context: context, builder: (context) {
-                            var errorType = jsonDecode(response.body).keys.toList()[0];
-                            var errorDialog = jsonDecode(response.body).values.toList()[0][0];
-                            return AlertDialog(
-                                title: Text(errorType),
+                            return const AlertDialog(
+                                title: Text('Internet Error'),
                                 content: SingleChildScrollView(
-                                child: ListBody(
-                                children: <Widget>[
-                                Text(errorDialog),
-                            ],)));
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text('No Connection'),
+                                      ],)));
                           });
                         }
-                        setState(() {
-                          _requestVerification = 0;
-                        });
-                        _emailTimer =
-                            Timer.periodic(const Duration(seconds: 1), (timer) {
-                              setState(() {
-                                _buttonText = '$_countdownDuration s';
-                                _countdownDuration--;
-                                _buttonPressed = true;
-                              });
-                              if (_countdownDuration < 0) {
-                                setState(() {
-                                  _countdownDuration = 60;
-                                  _buttonText = 'Send code';
-                                  timer.cancel();
-                                });
-                              }
-                            });
+
                       },
                       style: TextButton.styleFrom(
                           backgroundColor: secondaryColor,
@@ -743,10 +783,51 @@ class SignupPageState extends State<SignupPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         OutlinedButton(
-                          onPressed: () {
-                            _controller.nextPage(
-                                duration: const Duration(milliseconds: 600),
-                                curve: Curves.ease);
+                          onPressed: () async {
+                            try {
+                              var response = await http.post(
+                                  Uri.parse(
+                                      'http://$fhlIP/api/auth/verify_email'),
+                                  headers: <String, String>{
+                                    'Content-Type': 'application/json; charset=UTF-8',
+                                  },
+                                  body: jsonEncode({'email': _emailController.text,
+                                    'code' : _verificationController.text,
+                                  })
+                              );
+                              if (response.statusCode != 200) {
+                                showDialog(context: context, builder: (context) {
+                                  var errorType = jsonDecode(response.body).keys.toList()[0];
+                                  if (errorType.runtimeType != String) {
+                                    errorType = errorType[0];
+                                  }
+                                  var errorDialog = jsonDecode(response.body).values.toList()[0];
+                                  if (errorDialog.runtimeType != String) {
+                                    errorDialog = errorDialog[0];
+                                  }
+                                  return AlertDialog(
+                                      title: Text(errorType),
+                                      content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              Text(errorDialog),
+                                            ],)));
+                                });
+                              }
+                              _controller.nextPage(
+                                  duration: const Duration(milliseconds: 600),
+                                  curve: Curves.ease);
+                            } catch(e) {
+                              showDialog(context: context, builder: (context) {
+                                return const AlertDialog(
+                                    title: Text('error'),
+                                    content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            Text('No Connection'),
+                                          ],)));
+                              });
+                            }
                           },
                           style: OutlinedButton.styleFrom(
                             fixedSize: const Size(65, 65),
@@ -828,13 +909,54 @@ class SignupPageState extends State<SignupPage>
                     Visibility(
                       visible: _goodBio,
                       child: OutlinedButton(
-                        onPressed: () {
-                          _controller.nextPage(
-                              duration: const Duration(milliseconds: 600),
-                              curve: Curves.ease);
-                          setState(() {
-                            _selectedIdx--;
-                          });
+                        onPressed: () async {
+                          try {
+                            var response = await http.post(
+                                Uri.parse('http://$fhlIP/api/auth/profiles'),
+                                headers: <String, String>{
+                                  'Content-Type': 'application/json; charset=UTF-8',
+                                },
+                                body: jsonEncode({
+                                  'email' : _emailController.text,
+                                  'bio' : _bioController.text,
+                                })
+                            );
+                            if (response.statusCode != 201) {
+                              showDialog(context: context, builder: (context) {
+                                var errorType = jsonDecode(response.body).keys.toList()[0];
+                                if (errorType.runtimeType != String) {
+                                  errorType = errorType[0];
+                                }
+                                var errorDialog = jsonDecode(response.body).values.toList()[0];
+                                if (errorDialog.runtimeType != String) {
+                                  errorDialog = errorDialog[0];
+                                }
+                                return AlertDialog(
+                                    title: Text(errorType),
+                                    content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            Text(errorDialog),
+                                          ],)));
+                              });
+                            }
+                            _controller.nextPage(
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.ease);
+                            setState(() {
+                              _selectedIdx--;
+                            });
+                          } catch(e) {
+                            showDialog(context: context, builder: (context) {
+                              return AlertDialog(
+                                  title: Text(e.toString()),
+                                  content: SingleChildScrollView(
+                                      child: ListBody(
+                                        children: <Widget>[
+                                          Text(e.toString()),
+                                        ],)));
+                            });
+                          }
                         },
                         style: OutlinedButton.styleFrom(
                           fixedSize: const Size(65, 65),
@@ -1019,14 +1141,14 @@ class LoginPageState extends State<LoginPage>
                       ),
                       Flexible(
                           child: Text(
-                        'Welcome Back!',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            color: secondaryColor,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 55,
-                            fontStyle: FontStyle.italic),
-                      )),
+                            'Welcome Back!',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: secondaryColor,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 55,
+                                fontStyle: FontStyle.italic),
+                          )),
                       const SizedBox(
                         width: 25,
                       ),
@@ -1052,35 +1174,53 @@ class LoginPageState extends State<LoginPage>
                           setState(() {
                             _isLoading = true;
                           });
-                          var response = await http.post(Uri.parse('http://$fhlIP/api/auth/login'),
-                              headers: {
-                                'Content-Type' : 'application/json',
-                              },
-                              body: jsonEncode(<String, String> {
-                                'email': _emailController.text,
-                                'password' : _passwordController.text,
-                              }));
+                          try {
+                            var response = await http.post(Uri.parse('http://$fhlIP/api/auth/login'),
+                                headers: {
+                                  'Content-Type' : 'application/json',
+                                },
+                                body: jsonEncode(<String, String> {
+                                  'email': _emailController.text,
+                                  'password' : _passwordController.text,
+                                }));
 
-                          setState(() {
-                            _isLoading = false;
-                          });
-
-                          if (response.statusCode == 200) {
-                            Navigator.pop(context);
-                            SharedPreferences.getInstance().then((sp) {
-                              sp.setString('token', jsonDecode(response.body)['key']);
+                            setState(() {
+                              _isLoading = false;
                             });
-                          } else {
-                            var errorType = jsonDecode(response.body).keys.toList()[0];
-                            var errorDialog = jsonDecode(response.body).values.toList()[0][0];
+
+                            if (response.statusCode == 200) {
+                              Navigator.pop(context);
+                              SharedPreferences.getInstance().then((sp) {
+                                sp.setString('token', jsonDecode(response.body)['key']);
+                              });
+                            } else {
+                              var errorType = jsonDecode(response.body).keys.toList()[0];
+                              if (errorType.runtimeType != String) {
+                                errorType = errorType[0];
+                              }
+                              var errorDialog = jsonDecode(response.body).values.toList()[0];
+                              if (errorDialog.runtimeType != String) {
+                                errorDialog = errorDialog[0];
+                              }
+                              showDialog(context: context, builder: (context) {
+                                return AlertDialog(
+                                    title: Text(errorType),
+                                    content: SingleChildScrollView(
+                                        child: ListBody(
+                                            children: <Widget>[
+                                              Text(errorDialog),
+                                            ])));
+                              });
+                            }
+                          } catch(e) {
                             showDialog(context: context, builder: (context) {
                               return AlertDialog(
-                                  title: Text(errorType),
+                                  title: Text(e.toString()),
                                   content: SingleChildScrollView(
-                                  child: ListBody(
-                                  children: <Widget>[
-                                    Text(errorDialog),
-                              ])));
+                                      child: ListBody(
+                                        children: <Widget>[
+                                          Text(e.toString()),
+                                        ],)));
                             });
                           }
                         },
@@ -1095,6 +1235,24 @@ class LoginPageState extends State<LoginPage>
                       ),
                     ],
                   ),
+                  SizedBox(height: 40,),
+                  Center(
+                    child: TextButton(
+                      child: Text(
+                        'Do not have an account yet? Click me to register one now!',
+                        style: TextStyle(fontSize: 17, color: secondaryColor,
+                            fontStyle: FontStyle.italic, decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.w600, decorationColor: secondaryColor
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SignupPage()));
+                      },
+                    ),
+                  )
                 ],
               ),
               if (_isLoading)
@@ -1151,7 +1309,7 @@ class LoginPageState extends State<LoginPage>
                 contentPadding: const EdgeInsets.all(15),
                 labelText: 'Enter Your Email',
                 labelStyle:
-                    const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset('assets/icons/user_gold.svg'),
@@ -1207,7 +1365,7 @@ class LoginPageState extends State<LoginPage>
                 contentPadding: const EdgeInsets.all(15),
                 labelText: 'Enter your Password',
                 labelStyle:
-                    const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset('assets/icons/user_gold.svg'),
