@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spoplusplusfy/Classes/name.dart';
 import 'package:spoplusplusfy/Classes/follower_manager.dart';
+import 'package:http/http.dart' as http;
+import 'package:spoplusplusfy/Classes/song.dart';
 
 enum Gender { Male, Female, Mysterious }
 
@@ -63,5 +66,13 @@ abstract class Person implements Name {
 
   void delete() {
     FollowerManager.deletePerson(this);
+  }
+  
+  static Future<bool> deviceIsLoggedIn() async {
+    return (SharedPreferences.getInstance()).then((sp) { return sp.getString('token')!.isEmpty;});
+  }
+  
+  static Future<String> getToken() {
+    return (SharedPreferences.getInstance()).then((sp) { return sp.getString('token')!;});
   }
 }

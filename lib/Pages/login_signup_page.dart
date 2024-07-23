@@ -226,11 +226,6 @@ class SignupPageState extends State<SignupPage>
             selectedIcon: FilledButton(
               style: FilledButton.styleFrom(backgroundColor: secondaryColor),
               onPressed: () {
-                _selectedIdx = 0;
-                _controller.animateToPage(_selectedIdx + 1,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.bounceInOut);
-                setState(() {});
               },
               child: Text(
                 'Username & Password',
@@ -245,11 +240,6 @@ class SignupPageState extends State<SignupPage>
                 side: BorderSide(width: 2.0, color: secondaryColor),
               ),
               onPressed: () {
-                _selectedIdx = 0;
-                _controller.animateToPage(_selectedIdx + 1,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.bounceInOut);
-                setState(() {});
               },
               child: Text(
                 'Username & Password',
@@ -281,11 +271,7 @@ class SignupPageState extends State<SignupPage>
                 side: BorderSide(width: 2.0, color: secondaryColor),
               ),
               onPressed: () {
-                _selectedIdx = 1;
-                _controller.animateToPage(_selectedIdx + 1,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.ease);
-                setState(() {});
+
               },
               child: Text('Personal Information',
                   style: TextStyle(
@@ -544,7 +530,7 @@ class SignupPageState extends State<SignupPage>
                                   'username' : _usernameController.text,
                                 })
                             );
-                            if (response.statusCode != 201) {
+                            if (response.statusCode != 201 && response.statusCode != 200) {
                               showDialog(context: context, builder: (context) {
                                 var errorType = jsonDecode(response.body).keys.toList()[0];
                                 if (errorType.runtimeType != String) {
@@ -914,17 +900,16 @@ class SignupPageState extends State<SignupPage>
                       child: OutlinedButton(
                         onPressed: () async {
                           try {
-                            var response = await http.post(
-                                Uri.parse('http://$fhlIP/api/auth/profiles'),
+                            var response = await http.patch(
+                                Uri.parse('http://$fhlIP/api/profiles/update_by_email/${_emailController.text}/'),
                                 headers: <String, String>{
                                   'Content-Type': 'application/json; charset=UTF-8',
                                 },
                                 body: jsonEncode({
-                                  'email' : _emailController.text,
                                   'bio' : _bioController.text,
                                 })
                             );
-                            if (response.statusCode != 201) {
+                            if (response.statusCode != 201 || response.statusCode != 200) {
                               showDialog(context: context, builder: (context) {
                                 var errorType = jsonDecode(response.body).keys.toList()[0];
                                 if (errorType.runtimeType != String) {
