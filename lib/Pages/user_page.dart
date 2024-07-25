@@ -1,6 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spoplusplusfy/Classes/normal_user.dart';
+import 'package:spoplusplusfy/Classes/video.dart';
+import 'package:spoplusplusfy/Classes/person.dart';
+import 'package:spoplusplusfy/Pages/social_mode_player_page.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'User Page Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        scaffoldBackgroundColor: Colors.black,
+        brightness: Brightness.dark,
+      ),
+      home: UserPage(
+        user: NormalUser(
+          name: 'John Doe',
+          portrait: Image.asset('assets/images/pf.jpg'),
+          id: 23,
+          gender: Gender.Mysterious,
+          age: 3,
+          bio: 'this is a test bio',
+        ),
+        isSelf: true,
+      ),
+    );
+  }
+}
 
 class UserPage extends StatefulWidget {
   final NormalUser user;
@@ -14,10 +47,14 @@ class UserPage extends StatefulWidget {
 
 class UserPageState extends State<UserPage> {
   int _selectedIdx = 0;
+  NormalUser get user => widget.user;
 
   final PageController _controller = PageController();
   static const Color primaryColor = Color(0x00000000);
   static const Color secondaryColor = Color(0xffFFE8A3);
+
+  static const double minThumbnailWidth = 150.0;
+  static const double aspectRatio = 16 / 9;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +68,9 @@ class UserPageState extends State<UserPage> {
             height: MediaQuery.of(context).size.height / 10,
             padding: const EdgeInsets.all(10),
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                // TODO: Video upload search page should pop out
+              },
               style: OutlinedButton.styleFrom(
                   shape: const CircleBorder(),
                   side: const BorderSide(color: secondaryColor, width: 5)),
@@ -55,29 +94,153 @@ class UserPageState extends State<UserPage> {
           _selectedIdx = index,
           setState(() {}),
         },
-        children: [_workPage(), _postPage()],
+        children: [_likedVideosGridView(), _postedVideosGridView()],
       ),
     );
   }
 
-  ListView _workPage() {
-    return ListView(
-      children: const [],
+  Widget _likedVideosGridView() {
+    Future<List<Video>> videosFuture = user.getCreatedVideos();
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final double width = constraints.maxWidth;
+        final int crossAxisCount = (width / minThumbnailWidth).floor();
+        final double itemWidth = width / crossAxisCount;
+        final double itemHeight = itemWidth / aspectRatio;
+
+        return FutureBuilder<List<Video>>(
+          future: videosFuture,
+          builder: (context, snapshot) {
+            return GridView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: snapshot.data?.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                childAspectRatio: aspectRatio,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemBuilder: (context, index) {
+                return GridTile(
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(primaryColor),
+                      overlayColor: WidgetStateProperty.all(secondaryColor),
+                    ),
+                    onPressed: () {
+                      if (snapshot.hasData && snapshot.connectionState==ConnectionState.done) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SocialModePlayerPage(snapshot.data!, index),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: secondaryColor,
+                        ),
+                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: snapshot.connectionState == ConnectionState.waiting
+                          ? const Center(child: CircularProgressIndicator())
+                          : !snapshot.hasData || snapshot.data!.isEmpty
+                          ? const Center(child: Text('No videos available'))
+                          : snapshot.hasError
+                          ? Center(child: Text('Error: ${snapshot.error}'))
+                          : ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        child: Image.network(
+                          snapshot.data![index].coverImageUrl,
+                          fit: BoxFit.cover,
+                          width: itemWidth,
+                          height: itemHeight,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
-  ListView _postPage() {
-    return ListView(
-      children: [
-        Container(
-          color: Colors.blue,
-          height: 500,
-        ),
-        Container(
-          color: Colors.green,
-          height: 250,
-        ),
-      ],
+
+  Widget _postedVideosGridView() {
+    Future<List<Video>> videosFuture = user.getLikedVideos();
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final double width = constraints.maxWidth;
+        final int crossAxisCount = (width / minThumbnailWidth).floor();
+        final double itemWidth = width / crossAxisCount;
+        final double itemHeight = itemWidth / aspectRatio;
+
+        return FutureBuilder<List<Video>>(
+          future: videosFuture,
+          builder: (context, snapshot) {
+            return GridView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: snapshot.data?.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                childAspectRatio: aspectRatio,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemBuilder: (context, index) {
+                return GridTile(
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(primaryColor),
+                      overlayColor: WidgetStateProperty.all(secondaryColor),
+                    ),
+                    onPressed: () {
+                      if (snapshot.hasData && snapshot.connectionState==ConnectionState.done) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SocialModePlayerPage(snapshot.data!, index),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: secondaryColor,
+                        ),
+                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: snapshot.connectionState == ConnectionState.waiting
+                          ? const Center(child: CircularProgressIndicator())
+                          : !snapshot.hasData || snapshot.data!.isEmpty
+                          ? const Center(child: Text('No videos available'))
+                          : snapshot.hasError
+                          ? Center(child: Text('Error: ${snapshot.error}'))
+                          : ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        child: Image.network(
+                          snapshot.data![index].coverImageUrl,
+                          fit: BoxFit.cover,
+                          width: itemWidth,
+                          height: itemHeight,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -87,6 +250,7 @@ class UserPageState extends State<UserPage> {
     return NavigationBar(
       height: height / 50,
       selectedIndex: _selectedIdx,
+      backgroundColor: primaryColor,
       destinations: [
         NavigationDestination(
             selectedIcon: FilledButton(
@@ -208,7 +372,7 @@ class UserPageState extends State<UserPage> {
           height: width / 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -229,13 +393,13 @@ class UserPageState extends State<UserPage> {
                   TextButton(
                       style: ButtonStyle(
                         backgroundColor: widget.isSelf
-                            ? WidgetStateProperty.all(primaryColor)
-                            : WidgetStateProperty.all(secondaryColor),
+                            ? MaterialStateProperty.all(primaryColor)
+                            : MaterialStateProperty.all(secondaryColor),
                       ),
                       onPressed: () => {},
                       child: widget.isSelf
                           ? SvgPicture.asset(
-                              'assets/icons/edit_profile_gold.svg')
+                          'assets/icons/edit_profile_gold.svg')
                           : const Text('Follow')),
                   const SizedBox(
                     width: 10,
@@ -245,10 +409,10 @@ class UserPageState extends State<UserPage> {
               const SizedBox(
                 height: 15,
               ),
-              const Flexible(
+              Flexible(
                 child: Text(
-                  'Some random introduction to the singer/band',
-                  textAlign: TextAlign.left,
+                  user.bio,
+                  textAlign: TextAlign.right,
                   style: TextStyle(
                     color: secondaryColor,
                     fontSize: 16,

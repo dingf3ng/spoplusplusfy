@@ -11,6 +11,7 @@ import 'package:spoplusplusfy/Pages/playlist_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
 import '../Classes/album.dart';
+import '../Classes/person.dart';
 import '../main.dart';
 import 'artist_page.dart';
 
@@ -821,6 +822,7 @@ class _SearchPageState extends State<SearchPage>
   AppBar _appBar() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
+
     return AppBar(
       elevation: 0,
       leadingWidth: 70,

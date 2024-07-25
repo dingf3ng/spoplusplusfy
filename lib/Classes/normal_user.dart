@@ -8,7 +8,8 @@ class NormalUser extends Person {
     required super.id,
     required super.gender,
     required super.portrait,
-    required super.age});
+    required super.age,
+    required super.bio});
 
   static late NormalUser currentUser;
 

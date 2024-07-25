@@ -185,6 +185,7 @@ class _MainPageState extends State<MainPage>
                       return ProModePlayerPage(playlist: playlists[index]);
                     case Mode.SocialMode:
                       return SocialModePlayerPage();
+                      //TODO: fill in the videos by implmenting a static function for get
                   }
                 },
               ),

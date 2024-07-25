@@ -14,6 +14,7 @@ class Artist extends Person implements Name {
     required super.gender,
     required super.portrait,
     super.age,
+    required super.bio,
   });
 
   factory Artist.fromMap(Map<String, Object?> map) {
@@ -22,6 +23,7 @@ class Artist extends Person implements Name {
       id: id++,
       gender: Gender.Mysterious,
       portrait: _getRandom(),
+      bio: (map['bio'] ?? '') as String,
     );
   }
 

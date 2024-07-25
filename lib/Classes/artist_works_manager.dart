@@ -40,7 +40,8 @@ class ArtistWorksManager {
     for (Song song in songs) {
       Artist artist = name2Artist[songId2ArtistName[song.getId()]]??
           Artist(name: 'unknown', id: 0, gender: Gender.Mysterious,
-              portrait: Image.asset('assets/images/artist_portrait.jpg'));
+              portrait: Image.asset('assets/images/artist_portrait.jpg'),
+              bio: 'this is a test bio');
       Album album = songs2albums[song]!;
 
       if (!added.contains(album)) {
@@ -73,8 +74,9 @@ class ArtistWorksManager {
             id: 000,
             gender: Gender.Mysterious,
             portrait: const Image(
-              image: AssetImage(''),
-            ))
+              image: AssetImage('assets/images/pf.jpg'),
+            ), bio: 'this is a test bio',
+        )
       ];
     }
     return _songArtistMap[song]!

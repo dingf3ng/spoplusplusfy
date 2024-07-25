@@ -22,7 +22,7 @@ class _VideoPlayerWidgetState extends State<SingleVideoPage> {
   void initState() {
     super.initState();
     // TODO: this needs modification
-    _controller = VideoPlayerController.network(widget.video.getUrl());
+    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.video.getUrl()));
 
     _initializeVideoPlayerFuture = _controller.initialize().then((_) {
       setState(() {});
