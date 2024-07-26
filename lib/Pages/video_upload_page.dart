@@ -15,12 +15,14 @@ import '../Classes/database.dart';
 import '../Classes/person.dart';
 import '../main.dart';
 import 'artist_page.dart';
+import 'video_preview_page.dart'; // Assuming you have a VideoPreviewPage for preview
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseHelper.initializeFrontendData();
   runApp(MaterialApp(home: VideoUploadPage(pageController: PageController(),),));
 }
+
 class VideoUploadPage extends StatefulWidget {
   final PageController pageController;
 
@@ -40,7 +42,6 @@ class _VideoUploadPageState extends State<VideoUploadPage>
   final List<Song> _foundSongs = [];
 
   static int _control = 210;
-
 
   @override
   void initState() {
@@ -108,7 +109,40 @@ class _VideoUploadPageState extends State<VideoUploadPage>
                 itemCount: _resultSongs.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
-                    onTap: () {  },
+                    onTap: () {
+                      // Pop out window for confirm choosing this song for uploading video.
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Confirm Selection"),
+                            content: Text(
+                                "Do you want to choose this song for uploading the video?"),
+                            actions: [
+                              TextButton(
+                                child: Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text("Confirm"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          VideoPreviewPage(song: _resultSongs[index]),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
                     child: Container(
                       height: height / 20,
                       decoration: BoxDecoration(
@@ -250,6 +284,7 @@ class _VideoUploadPageState extends State<VideoUploadPage>
           ),
         ));
   }
+
 
   TextStyle _headlineTextStyle() {
     var primaryColor = Theme.of(context).primaryColor;
