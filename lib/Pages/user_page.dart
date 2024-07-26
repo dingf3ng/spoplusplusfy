@@ -4,6 +4,7 @@ import 'package:spoplusplusfy/Classes/normal_user.dart';
 import 'package:spoplusplusfy/Classes/video.dart';
 import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Pages/social_mode_player_page.dart';
+import 'package:spoplusplusfy/Pages/video_upload_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -69,7 +70,9 @@ class UserPageState extends State<UserPage> {
             padding: const EdgeInsets.all(10),
             child: OutlinedButton(
               onPressed: () {
-                // TODO: Video upload search page should pop out
+                Navigator.push(context,
+                    MaterialPageRoute(builder:
+                        (context) => VideoUploadPage(pageController: PageController())));
               },
               style: OutlinedButton.styleFrom(
                   shape: const CircleBorder(),
@@ -101,12 +104,22 @@ class UserPageState extends State<UserPage> {
 
   Widget _likedVideosGridView() {
     Future<List<Video>> videosFuture = user.getCreatedVideos();
+    return _gridViewForVideos(videosFuture);
+  }
+
+
+  Widget _postedVideosGridView() {
+    Future<List<Video>> videosFuture = user.getLikedVideos();
+    return _gridViewForVideos(videosFuture);
+  }
+
+  LayoutBuilder _gridViewForVideos(Future<List<Video>> videosFuture) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         final double width = constraints.maxWidth;
         final int crossAxisCount = (width / minThumbnailWidth).floor();
         final double itemWidth = width / crossAxisCount;
-        final double itemHeight = itemWidth / aspectRatio;
+        final double itemHeight = itemWidth / aspectRatio * 1.9;
 
         return FutureBuilder<List<Video>>(
           future: videosFuture,
@@ -116,9 +129,9 @@ class UserPageState extends State<UserPage> {
               itemCount: snapshot.data?.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
-                childAspectRatio: aspectRatio,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
+                childAspectRatio: itemWidth/itemHeight,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
               ),
               itemBuilder: (context, index) {
                 return GridTile(
@@ -138,29 +151,7 @@ class UserPageState extends State<UserPage> {
                         );
                       }
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: secondaryColor,
-                        ),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: snapshot.connectionState == ConnectionState.waiting
-                          ? const Center(child: CircularProgressIndicator())
-                          : !snapshot.hasData || snapshot.data!.isEmpty
-                          ? const Center(child: Text('No videos available'))
-                          : snapshot.hasError
-                          ? Center(child: Text('Error: ${snapshot.error}'))
-                          : ClipRRect(
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                        child: Image.network(
-                          snapshot.data![index].coverImageUrl,
-                          fit: BoxFit.cover,
-                          width: itemWidth,
-                          height: itemHeight,
-                        ),
-                      ),
-                    ),
+                    child: _singleGrid(snapshot, context, index, itemWidth, itemHeight),
                   ),
                 );
               },
@@ -172,76 +163,58 @@ class UserPageState extends State<UserPage> {
   }
 
 
-  Widget _postedVideosGridView() {
-    Future<List<Video>> videosFuture = user.getLikedVideos();
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        final double width = constraints.maxWidth;
-        final int crossAxisCount = (width / minThumbnailWidth).floor();
-        final double itemWidth = width / crossAxisCount;
-        final double itemHeight = itemWidth / aspectRatio;
+  GridTile _singleGrid(AsyncSnapshot<List<Video>> snapshot, BuildContext context, int index, double itemWidth, double itemHeight) {
 
-        return FutureBuilder<List<Video>>(
-          future: videosFuture,
-          builder: (context, snapshot) {
-            return GridView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: snapshot.data?.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                childAspectRatio: aspectRatio,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemBuilder: (context, index) {
-                return GridTile(
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(primaryColor),
-                      overlayColor: WidgetStateProperty.all(secondaryColor),
-                    ),
-                    onPressed: () {
-                      if (snapshot.hasData && snapshot.connectionState==ConnectionState.done) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SocialModePlayerPage(snapshot.data!, index),
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: secondaryColor,
+    return GridTile(
+                child: GestureDetector(
+                  onTap: () {
+                    if (snapshot.hasData && snapshot.connectionState==ConnectionState.done) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SocialModePlayerPage(snapshot.data!, index),
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      );
+                    }
+                  },
+                  child: Container(
+                    height: itemHeight,
+                    width: itemWidth,
+                    // NO effect here for some reason. The height and width cannot be adjusted chatgpt
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 3.0,
+                        color: secondaryColor,
                       ),
-                      child: snapshot.connectionState == ConnectionState.waiting
-                          ? const Center(child: CircularProgressIndicator())
-                          : !snapshot.hasData || snapshot.data!.isEmpty
-                          ? const Center(child: Text('No videos available'))
-                          : snapshot.hasError
-                          ? Center(child: Text('Error: ${snapshot.error}'))
-                          : ClipRRect(
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                        child: Image.network(
-                          snapshot.data![index].coverImageUrl,
-                          fit: BoxFit.cover,
+                      borderRadius: const BorderRadius.all(Radius.circular(60)),
+                    ),
+                    child: snapshot.connectionState == ConnectionState.waiting
+                            ? SizedBox(
                           width: itemWidth,
                           height: itemHeight,
-                        ),
+                          child: const DecoratedBox(
+                            decoration: const BoxDecoration(
+                                color: Colors.black
+                            ),
+                          ),
+                        )
+                        : !snapshot.hasData || snapshot.data!.isEmpty
+                        ? const Center(child: Text('No videos available'))
+                        : snapshot.hasError
+                        ? Center(child: Text('Error: ${snapshot.error}'))
+                        : ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(60)),
+                      child: Image.network(
+                        snapshot.data![index].coverImageUrl,
+                        fit: BoxFit.cover,
+                        width: itemWidth,
+                        height: itemHeight,
                       ),
                     ),
                   ),
-                );
-              },
-            );
-          },
-        );
-      },
-    );
+                ),
+              );
   }
 
   NavigationBar _buildNavigationBar() {

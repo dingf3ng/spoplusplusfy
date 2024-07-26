@@ -174,22 +174,22 @@ class _MainPageState extends State<MainPage>
         ),
         itemBuilder: (context, index) => GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  switch (selectedMode) {
-                    case Mode.PureMode:
-                      return PureModePlayerPage(playlist: playlists[index]);
-                    case Mode.ProMode:
-                      return ProModePlayerPage(playlist: playlists[index]);
-                    case Mode.SocialMode:
-                      return SocialModePlayerPage();
-                      //TODO: fill in the videos by implmenting a static function for get
-                  }
-                },
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) {
+            //       switch (selectedMode) {
+            //         case Mode.PureMode:
+            //           return PureModePlayerPage(playlist: playlists[index]);
+            //         case Mode.ProMode:
+            //           return ProModePlayerPage(playlist: playlists[index]);
+            //         case Mode.SocialMode:
+            //           return SocialModePlayerPage();
+            //           //TODO: fill in the videos by implmenting a static function for get
+            //       }
+            //     },
+            //   ),
+            // );
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
