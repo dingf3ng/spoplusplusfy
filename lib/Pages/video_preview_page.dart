@@ -93,7 +93,7 @@ class _VideoPreviewPageState extends State<VideoPreviewPage> {
                 Navigator.of(context).pop();
                 _uploadVideo(
                     filePath: widget.videoFile.path,
-                    token: '2df516feff19c2508c7b04e522f99f034462e8ff',
+                    token: (await SharedPreferences.getInstance()).getString('token')!,
                     title: 'Default Title',
                     description: 'Default Description',
                     songId: widget.song.getId(),
@@ -113,10 +113,10 @@ class _VideoPreviewPageState extends State<VideoPreviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Preview Video"),
+        title: const Text("Preview Video"),
         actions: [
           IconButton(
-            icon: Icon(Icons.upload_file),
+            icon: const Icon(Icons.upload_file),
             onPressed: _showUploadDialog,
           ),
         ],
