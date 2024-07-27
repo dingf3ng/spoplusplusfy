@@ -55,24 +55,27 @@ class UserPageState extends State<UserPage> {
   NormalUser get user => widget.user;
 
   final PageController _controller = PageController();
-  static const Color primaryColor = Color(0x00000000);
-  static const Color secondaryColor = Color(0xffFFE8A3);
 
   static const double minThumbnailWidth = 150.0;
   static const double aspectRatio = 16 / 9;
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return Scaffold(
       appBar: _infoBar(),
-      body: Column(
-        children: [
-          _buildNavigationBar(),
-          _pageView(),
-          Visibility(
-            visible: widget.isSelf,
-            child: Container(
+      backgroundColor: primaryColor,
+      body: Container(
+        height: MediaQuery.of(context).size.height * 0.9,
+        child: Column(
+          children: [
+            SizedBox(height: 10,),
+            _buildNavigationBar(),
+            _pageView(),
+            Container(
               height: MediaQuery.of(context).size.height / 10,
+              color: primaryColor,
               padding: const EdgeInsets.all(10),
               child: OutlinedButton(
                 onPressed: () {
@@ -82,22 +85,26 @@ class UserPageState extends State<UserPage> {
                 },
                 style: OutlinedButton.styleFrom(
                     shape: const CircleBorder(),
-                    side: const BorderSide(color: secondaryColor, width: 5)),
+                    side: BorderSide(color: secondaryColor, width: 5)),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: SvgPicture.asset('assets/icons/plus_sign_gold.svg'),
+                  child: SvgPicture.asset(
+                    'assets/icons/plus_sign_gold.svg',
                 ),
               ),
-            ),
-          )
-        ],
+            )
+            )
+          ],
+        ),
       ),
     );
   }
 
-  SizedBox _pageView() {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 423 / 700,
+  Container _pageView() {
+    var primaryColor = Theme.of(context).primaryColor;
+    return Container(
+      color: primaryColor,
+      height: MediaQuery.of(context).size.height * 415 / 700,
       child: PageView(
         controller: _controller,
         onPageChanged: (index) => {
@@ -121,6 +128,8 @@ class UserPageState extends State<UserPage> {
   }
 
   LayoutBuilder _gridViewForVideos(Future<List<Video>> videosFuture) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         final double width = constraints.maxWidth;
@@ -172,6 +181,8 @@ class UserPageState extends State<UserPage> {
 
   GridTile _singleGrid(AsyncSnapshot<List<Video>> snapshot, BuildContext context, int index, double itemWidth, double itemHeight) {
 
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return GridTile(
                 child: GestureDetector(
                   onTap: () {
@@ -224,15 +235,20 @@ class UserPageState extends State<UserPage> {
               );
   }
 
-  NavigationBar _buildNavigationBar() {
+  Container _buildNavigationBar() {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    return NavigationBar(
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
+
+    return Container(
       height: height / 50,
-      selectedIndex: _selectedIdx,
-      backgroundColor: primaryColor,
-      destinations: [
-        NavigationDestination(
+      color: primaryColor,
+      child: NavigationBar(
+        backgroundColor: primaryColor,
+        selectedIndex: _selectedIdx,
+        destinations: [
+          NavigationDestination(
             selectedIcon: FilledButton(
               style: FilledButton.styleFrom(
                   backgroundColor: secondaryColor,
@@ -244,18 +260,17 @@ class UserPageState extends State<UserPage> {
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
-              child: const Text(
+              child: Text(
                 'Liked',
                 style: TextStyle(
-                    fontStyle: FontStyle.italic, fontWeight: FontWeight.w600),
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w600,
+                    color: primaryColor),
               ),
             ),
             icon: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(
-                  width: 2.0,
-                  color: secondaryColor,
-                ),
+                side: BorderSide(width: 2.0, color: secondaryColor),
                 minimumSize: Size(width * 2 / 7, 20),
               ),
               onPressed: () {
@@ -265,14 +280,16 @@ class UserPageState extends State<UserPage> {
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
-              child: const Text(
+              child: Text(
                 'Liked',
                 style: TextStyle(
-                    color: secondaryColor, fontWeight: FontWeight.w600),
+                    color: secondaryColor,
+                    fontWeight: FontWeight.w600),
               ),
             ),
-            label: ''),
-        NavigationDestination(
+            label: '',
+          ),
+          NavigationDestination(
             selectedIcon: FilledButton(
               style: FilledButton.styleFrom(
                   backgroundColor: secondaryColor,
@@ -284,15 +301,17 @@ class UserPageState extends State<UserPage> {
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
-              child: const Text(
+              child: Text(
                 'Creations',
                 style: TextStyle(
-                    fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.italic,
+                    color: primaryColor),
               ),
             ),
             icon: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                  side: const BorderSide(width: 2.0, color: secondaryColor),
+                  side: BorderSide(width: 2.0, color: secondaryColor),
                   minimumSize: Size(width * 2 / 7, 20)),
               onPressed: () {
                 _selectedIdx = 1;
@@ -301,20 +320,26 @@ class UserPageState extends State<UserPage> {
                     curve: Curves.bounceInOut);
                 setState(() {});
               },
-              child: const Text('Creations',
-                  style: TextStyle(
+              child: Text(
+                'Creations',
+                style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: secondaryColor,
-                  )),
+                    color: secondaryColor),
+              ),
             ),
-            label: '')
-      ],
+            label: '',
+          ),
+        ],
+      ),
     );
   }
+
 
   AppBar _infoBar() {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
     return AppBar(
       toolbarHeight: height / 4,
       backgroundColor: primaryColor,
@@ -360,7 +385,7 @@ class UserPageState extends State<UserPage> {
                     child: Text(
                       widget.user.getName(),
                       textAlign: TextAlign.left,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: secondaryColor,
                         fontSize: 23,
                         fontWeight: FontWeight.w800,
@@ -379,7 +404,10 @@ class UserPageState extends State<UserPage> {
                       onPressed: () => {},
                       child: widget.isSelf
                           ? SvgPicture.asset(
-                          'assets/icons/edit_profile_gold.svg')
+                              'assets/icons/edit_profile_gold.svg',
+                              colorFilter: ColorFilter.mode(
+                                  secondaryColor, BlendMode.srcIn),
+                            )
                           : const Text('Follow')),
                   const SizedBox(
                     width: 10,

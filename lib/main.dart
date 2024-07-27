@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spoplusplusfy/Classes/database.dart';
 import 'package:spoplusplusfy/Pages/main_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseHelper.initializeFrontendData();
-  runApp(ChangeNotifierProvider(
-    create: (context) => ThemeNotifier(),
-    child: const Spoplusplusfy(),
-  ),);
+  final themeNotifier = await ThemeNotifier.create();
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => themeNotifier,
+      child: const Spoplusplusfy(),
+    ),
+  );
 }
 
 const Color black = Colors.black;
@@ -39,11 +43,12 @@ class Spoplusplusfy extends StatelessWidget {
 // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final ThemeNotifier tn = Provider.of(context);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: tn._currentTheme,
-      home: const IntegratedMainPage(),
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: themeNotifier._currentTheme,
+        home: const IntegratedMainPage(),
+      ),
     );
   }
 
@@ -52,9 +57,19 @@ class Spoplusplusfy extends StatelessWidget {
 
 class ThemeNotifier extends ChangeNotifier {
   bool _isDarkMode = false;
-  ThemeData _currentTheme;
+  late ThemeData _currentTheme;
 
-  ThemeNotifier() : _currentTheme = buildTheme(true, 0);
+  ThemeNotifier._create(darkMode, id) {
+    _isDarkMode = darkMode;
+    _currentTheme = buildTheme(darkMode, id);
+  }
+
+  static Future<ThemeNotifier> create() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getInt('theme') ?? 0;
+    var component = ThemeNotifier._create(true, id);
+    return component;
+  }
 
   bool get isDarkMode => _isDarkMode;
 
@@ -62,11 +77,21 @@ class ThemeNotifier extends ChangeNotifier {
 
   static ThemeData buildTheme(bool isDark, int id) {
     return isDark
-        ? ThemeData(primaryColor: black, hintColor: secondaryColorList[id], canvasColor: secondaryColorList[id].withOpacity(0.6),)
-        : ThemeData(primaryColor: white, hintColor: secondaryColorList[id], canvasColor: secondaryColorList[id].withOpacity(0.6));
+        ? ThemeData(
+            primaryColor: black,
+            hintColor: secondaryColorList[id],
+            canvasColor: secondaryColorList[id].withOpacity(0.6),
+          )
+        : ThemeData(
+            primaryColor: white,
+            hintColor: secondaryColorList[id],
+            canvasColor: secondaryColorList[id].withOpacity(0.6));
   }
 
-  void changeTheme(bool isDark, int id) {
+  Future<void> changeTheme(bool isDark, int id) async {
+    // Load and obtain the shared preferences for this app.
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('theme', id);
     _isDarkMode = isDark;
     _currentTheme = buildTheme(isDark, id);
     notifyListeners();

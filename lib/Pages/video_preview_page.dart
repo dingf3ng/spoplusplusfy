@@ -28,6 +28,7 @@ class _VideoPreviewPageState extends State<VideoPreviewPage> {
   bool _isPlaying = false;
   File? _coverImageFile;
 
+
   @override
   void initState() {
     super.initState();
@@ -111,6 +112,7 @@ class _VideoPreviewPageState extends State<VideoPreviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    var secondaryColor = Theme.of(context).hintColor;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Preview Video"),
@@ -131,8 +133,8 @@ class _VideoPreviewPageState extends State<VideoPreviewPage> {
           ),
         ),
       )
-          : const Center(
-        child: CircularProgressIndicator(color: UserPageState.secondaryColor,),
+          : Center(
+        child: CircularProgressIndicator(color: secondaryColor,),
       ),
     );
   }

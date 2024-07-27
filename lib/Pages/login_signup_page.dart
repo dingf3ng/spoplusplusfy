@@ -256,6 +256,11 @@ class SignupPageState extends State<SignupPage>
             selectedIcon: FilledButton(
               style: FilledButton.styleFrom(backgroundColor: secondaryColor),
               onPressed: () {
+                if (!(_goodEmail &&
+                    _goodCode &&
+                    _goodUsername &&
+                    _goodConfirm &&
+                    _goodPassword)) return;
                 _selectedIdx = 1;
                 _controller.animateToPage(_selectedIdx + 1,
                     duration: const Duration(milliseconds: 200),
@@ -273,7 +278,6 @@ class SignupPageState extends State<SignupPage>
                 side: BorderSide(width: 2.0, color: secondaryColor),
               ),
               onPressed: () {
-
               },
               child: Text('Personal Information',
                   style: TextStyle(
@@ -332,11 +336,14 @@ class SignupPageState extends State<SignupPage>
                     borderSide: BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: hintText,
-                labelStyle:
-                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                labelStyle: TextStyle(color: secondaryColor, fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset(iconPath),
+                  child: SvgPicture.asset(
+                    iconPath,
+                    colorFilter:
+                        ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                  ),
                 ),
                 suffixIcon: test
                     ? SizedBox(
@@ -349,7 +356,10 @@ class SignupPageState extends State<SignupPage>
                           padding:
                           const EdgeInsets.fromLTRB(6, 12, 12, 12),
                           child: SvgPicture.asset(
-                              'assets/icons/checkmark_gold.svg'),
+                                  'assets/icons/checkmark_gold.svg',
+                                  colorFilter: ColorFilter.mode(
+                                      secondaryColor, BlendMode.srcIn),
+                                ),
                         ),
                       ],
                     ),
@@ -410,11 +420,14 @@ class SignupPageState extends State<SignupPage>
                     borderSide: BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: hintText,
-                labelStyle:
-                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                labelStyle: TextStyle(color: secondaryColor, fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset(iconPath),
+                  child: SvgPicture.asset(
+                    iconPath,
+                    colorFilter:
+                        ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                  ),
                 ),
                 suffixIcon: test
                     ? SizedBox(
@@ -427,7 +440,10 @@ class SignupPageState extends State<SignupPage>
                           padding:
                           const EdgeInsets.fromLTRB(6, 12, 12, 12),
                           child: SvgPicture.asset(
-                              'assets/icons/checkmark_gold.svg'),
+                                  'assets/icons/checkmark_gold.svg',
+                                  colorFilter: ColorFilter.mode(
+                                      secondaryColor, BlendMode.srcIn),
+                                ),
                         ),
                       ],
                     ),
@@ -509,8 +525,11 @@ class SignupPageState extends State<SignupPage>
                         padding: const EdgeInsets.all(10),
                         side: BorderSide(width: 2.0, color: secondaryColor),
                       ),
-                      child:
-                      SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
+                      child: SvgPicture.asset(
+                        'assets/icons/left_arrow_gold.svg',
+                        colorFilter:
+                            ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                      ),
                     ),
                     Visibility(
                       visible: _goodUsername &&
@@ -577,7 +596,10 @@ class SignupPageState extends State<SignupPage>
                           side: BorderSide(width: 2.0, color: secondaryColor),
                         ),
                         child: SvgPicture.asset(
-                            'assets/icons/right_arrow_gold.svg'),
+                          'assets/icons/right_arrow_gold.svg',
+                          colorFilter:
+                              ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                        ),
                       ),
                     ),
                   ],
@@ -826,7 +848,10 @@ class SignupPageState extends State<SignupPage>
                             side: BorderSide(width: 2.0, color: secondaryColor),
                           ),
                           child: SvgPicture.asset(
-                              'assets/icons/right_arrow_gold.svg'),
+                            'assets/icons/right_arrow_gold.svg',
+                            colorFilter: ColorFilter.mode(
+                                secondaryColor, BlendMode.srcIn),
+                          ),
                         ),
                       ],
                     )),
@@ -894,8 +919,11 @@ class SignupPageState extends State<SignupPage>
 
                         side: BorderSide(width: 2.0, color: secondaryColor),
                       ),
-                      child:
-                      SvgPicture.asset('assets/icons/left_arrow_gold.svg'),
+                      child: SvgPicture.asset(
+                        'assets/icons/left_arrow_gold.svg',
+                        colorFilter:
+                            ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                      ),
                     ),
                     Visibility(
                       visible: _goodBio,
@@ -954,7 +982,10 @@ class SignupPageState extends State<SignupPage>
                           side: BorderSide(width: 2.0, color: secondaryColor),
                         ),
                         child: SvgPicture.asset(
-                            'assets/icons/right_arrow_gold.svg'),
+                          'assets/icons/right_arrow_gold.svg',
+                          colorFilter:
+                              ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                        ),
                       ),
                     ),
                   ],
@@ -1016,6 +1047,9 @@ class SignupPageState extends State<SignupPage>
                   iconPlay,
                   width: MediaQuery.of(context).size.width / 5,
                   height: MediaQuery.of(context).size.width / 5,
+                  colorFilter: iconPlay == blackPlay
+                      ? null
+                      : ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -1298,11 +1332,14 @@ class LoginPageState extends State<LoginPage>
                     borderSide: BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: 'Enter Your Email',
-                labelStyle:
-                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                labelStyle: TextStyle(color: secondaryColor, fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset('assets/icons/user_gold.svg'),
+                  child: SvgPicture.asset(
+                    'assets/icons/user_gold.svg',
+                    colorFilter:
+                        ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                  ),
                 ),
               ),
             )),
@@ -1354,11 +1391,14 @@ class LoginPageState extends State<LoginPage>
                     borderSide: BorderSide(color: secondaryColor, width: 2)),
                 contentPadding: const EdgeInsets.all(15),
                 labelText: 'Enter your Password',
-                labelStyle:
-                const TextStyle(color: Color(0xffffE8A3), fontSize: 14),
+                labelStyle: TextStyle(color: secondaryColor, fontSize: 14),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset('assets/icons/user_gold.svg'),
+                  child: SvgPicture.asset(
+                    'assets/icons/user_gold.svg',
+                    colorFilter:
+                        ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                  ),
                 ),
               ),
             )),

@@ -1,13 +1,18 @@
+import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
+import 'package:spoplusplusfy/Classes/normal_user.dart';
+import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Pages/login_signup_page.dart';
 import 'package:spoplusplusfy/Pages/playlist_page.dart';
+import 'package:spoplusplusfy/Pages/user_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 
 import '../Classes/album.dart';
@@ -44,78 +49,83 @@ class _SearchPageState extends State<SearchPage>
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height / 4;
     showModalBottomSheet(
+        backgroundColor: primaryColor,
         context: context,
         builder: (context) {
-          return StatefulBuilder(builder: (context, setSheetState) {
-            return Container(
-              width: width,
-              height: MediaQuery.of(context).size.height * 3 / 7,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(width / 15),
-                    topRight: Radius.circular(width / 15)),
-                color: Colors.black,
-                border: Border(
-                    left: BorderSide(color: secondaryColor, width: 2),
-                    right: BorderSide(color: secondaryColor, width: 2),
-                    top: BorderSide(color: secondaryColor, width: 2)),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: Text(
-                      'Search Filter',
-                      style: TextStyle(
-                          color: secondaryColor,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 20),
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+            child: StatefulBuilder(builder: (context, setSheetState) {
+              return Container(
+                width: width,
+                height: MediaQuery.of(context).size.height * 3 / 7,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(width / 15),
+                      topRight: Radius.circular(width / 15)),
+                  color: primaryColor,
+                  border: Border(
+                      left: BorderSide(color: secondaryColor, width: 2),
+                      right: BorderSide(color: secondaryColor, width: 2),
+                      top: BorderSide(color: secondaryColor, width: 2)),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        'Search Filter',
+                        style: TextStyle(
+                            color: secondaryColor,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 20),
+                      ),
                     ),
-                  ),
-                  _buildCheckBox(context, 'Artists', height, 2, setSheetState),
-                  _buildCheckBox(context, 'Albums', height, 3, setSheetState),
-                  _buildCheckBox(
-                      context, 'Playlists', height, 5, setSheetState),
-                  _buildCheckBox(context, 'Songs', height, 7, setSheetState),
-                  ElevatedButton(
-                      onPressed: () {
-                        _control = 210;
-                        setSheetState(() {
-                          _searchDone();
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: secondaryColor,
-                          maximumSize: Size(width / 2, height)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: width / 20,
-                            width: width / 20,
-                            alignment: Alignment.center,
-                            child: SvgPicture.asset(
-                              'assets/icons/reset_gold.svg',
-                              colorFilter: ColorFilter.mode(
-                                  secondaryColor, BlendMode.srcIn),
+                    _buildCheckBox(
+                        context, 'Artists', height, 2, setSheetState),
+                    _buildCheckBox(context, 'Albums', height, 3, setSheetState),
+                    _buildCheckBox(
+                        context, 'Playlists', height, 5, setSheetState),
+                    _buildCheckBox(context, 'Songs', height, 7, setSheetState),
+                    ElevatedButton(
+                        onPressed: () {
+                          _control = 210;
+                          setSheetState(() {
+                            _searchDone();
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: secondaryColor,
+                            maximumSize: Size(width / 2, height)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: width / 20,
+                              width: width / 20,
+                              alignment: Alignment.center,
+                              child: SvgPicture.asset(
+                                'assets/icons/reset_gold.svg',
+                                colorFilter: ColorFilter.mode(
+                                    secondaryColor, BlendMode.srcIn),
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: width / 20,
-                          ),
-                          const Text(
-                            'Reset Filter',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 20),
-                          ),
-                        ],
-                      ))
-                ],
-              ),
-            );
-          });
+                            SizedBox(
+                              width: width / 20,
+                            ),
+                            const Text(
+                              'Reset Filter',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 20),
+                            ),
+                          ],
+                        ))
+                  ],
+                ),
+              );
+            }),
+          );
         });
   }
 
@@ -181,115 +191,121 @@ class _SearchPageState extends State<SearchPage>
     var secondaryColor = Theme.of(context).hintColor;
     showModalBottomSheet(
         context: context,
+        backgroundColor: primaryColor,
         builder: (context) {
-          return StatefulBuilder(builder: (context, setSheetState) {
-            return Container(
-              width: width,
-              height: MediaQuery.of(context).size.height * 3 / 7,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(width / 15),
-                    topRight: Radius.circular(width / 15)),
-                color: Colors.black,
-                border: Border(
-                    left: BorderSide(color: secondaryColor, width: 2),
-                    right: BorderSide(color: secondaryColor, width: 2),
-                    top: BorderSide(color: secondaryColor, width: 2)),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    height: height / 4,
-                    padding: const EdgeInsets.all(15),
-                    child: Text(
-                      'Finder',
-                      style: TextStyle(
-                          color: secondaryColor,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 20),
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+            child: StatefulBuilder(builder: (context, setSheetState) {
+              return Container(
+                width: width,
+                height: MediaQuery.of(context).size.height * 3 / 7,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(width / 15),
+                      topRight: Radius.circular(width / 15)),
+                  color: Colors.black,
+                  border: Border(
+                      left: BorderSide(color: secondaryColor, width: 2),
+                      right: BorderSide(color: secondaryColor, width: 2),
+                      top: BorderSide(color: secondaryColor, width: 2)),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      height: height / 4,
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        'Finder',
+                        style: TextStyle(
+                            color: secondaryColor,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 20),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: height * 1.45,
-                    child: ListView.separated(
-                        itemBuilder: (context, index) {
-                          return Container(
-                            height: height / 5,
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              border:
-                                  Border.all(color: secondaryColor, width: 2),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Container(
-                                  width: width * 4 / 11,
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    _resultSongs[index].getName(),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: secondaryColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 13,
+                    SizedBox(
+                      height: height * 1.45,
+                      child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            return Container(
+                              height: height / 5,
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                border:
+                                    Border.all(color: secondaryColor, width: 2),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  Container(
+                                    width: width * 4 / 11,
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      _resultSongs[index].getName(),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: secondaryColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                SizedBox(
-                                  width: width * 2 / 9,
-                                  child: Text(
-                                    ArtistWorksManager.getArtistsOfSongAsString(
-                                        _resultSongs[index]),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: secondaryColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 13,
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  SizedBox(
+                                    width: width * 2 / 9,
+                                    child: Text(
+                                      ArtistWorksManager
+                                          .getArtistsOfSongAsString(
+                                              _resultSongs[index]),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: secondaryColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                SizedBox(
-                                  width: width * 1 / 15,
-                                  child: Text(
-                                    _formatTime(
-                                        _resultSongs[index].getDuration()),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: secondaryColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12,
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  SizedBox(
+                                    width: width * 1 / 15,
+                                    child: Text(
+                                      _formatTime(
+                                          _resultSongs[index].getDuration()),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: secondaryColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 10,
-                          );
-                        },
-                        itemCount: _resultSongs.length),
-                  )
-                ],
-              ),
-            );
-          });
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              height: 10,
+                            );
+                          },
+                          itemCount: _resultSongs.length),
+                    )
+                  ],
+                ),
+              );
+            }),
+          );
         });
   }
 
@@ -299,82 +315,194 @@ class _SearchPageState extends State<SearchPage>
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
-    return showDialog(
+    return showGeneralDialog(
         context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Center(child: Text('Settings')),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(width / 10),
-              side: BorderSide(color: secondaryColor, width: 2.0),
-            ),
-            backgroundColor: Colors.black,
-            titleTextStyle: TextStyle(
-                color: secondaryColor,
-                fontSize: 24,
-                fontWeight: FontWeight.w600),
-            content: SizedBox(
-              height: height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Select Color Theme',
-                      style: TextStyle(
-                          color: secondaryColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
-                    child: Container(
-                      height: height / 9,
-                      width: width,
-                      alignment: Alignment.center,
-                      child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                themeNotifier.changeTheme(true, index);
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(width / 10),
-                                    border: Border.all(
-                                        color: secondaryColor, width: 2),
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        primaryColor,
-                                        secondaryColorList[index]
-                                      ],
-                                      stops: const [0.3, 0.6],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    )),
-                                height: height / 9,
-                                width: width / 4,
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) => const SizedBox(
-                                width: 10,
-                              ),
-                          itemCount: 7),
-                    ),
-                  )
-                ],
-              ),
-            ),
+        barrierDismissible: true,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        transitionDuration: const Duration(milliseconds: 300),
+        transitionBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(Tween(
+                    begin: const Offset(0.0, -1.0), end: const Offset(0.0, 0.0))
+                .chain(CurveTween(curve: Curves.ease))),
+            child: child,
           );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+              child: StatefulBuilder(
+                builder: (context, refresh) => AlertDialog(
+                    title: Center(child: Text('Settings', style: TextStyle(color: secondaryColor),)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(width / 10),
+                      side: BorderSide(color: secondaryColor, width: 2.0),
+                    ),
+                    backgroundColor: primaryColor,
+                    titleTextStyle: TextStyle(
+                        color: secondaryColor,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600),
+                    content:
+                      SizedBox(
+                        height: height,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Select Color Theme',
+                                style: TextStyle(
+                                    color: secondaryColor,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
+                              child: Container(
+                                height: height / 7,
+                                width: width,
+                                alignment: Alignment.center,
+                                child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          refresh((){
+                                              print('heello');
+                                              themeNotifier.changeTheme(
+                                                  true, index);
+                                            });
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(width / 10),
+                                              border: Border.all(
+                                                  color: secondaryColor, width: 2),
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  primaryColor,
+                                                  secondaryColorList[index]
+                                                ],
+                                                stops: const [0.3, 0.6],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                              )),
+                                          height: height / 7,
+                                          width: width / 4,
+                                        ),
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) =>
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                    itemCount: 7),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                OutlinedButton(
+                                  onPressed: () {
+                                    showAboutDialog(context: context);
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                        color: secondaryColor,
+                                        width: 2,
+                                      ),
+                                      minimumSize: Size(width / 2.5, height / 7)),
+                                  child: Text(
+                                    'About',
+                                    style: TextStyle(
+                                        color: secondaryColor, fontSize: 20),
+                                  ),
+                                ),
+                                OutlinedButton(
+                                  onPressed: () {},
+                                  style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                        color: secondaryColor,
+                                        width: 2,
+                                      ),
+                                      minimumSize: Size(width / 2.5, height / 7)),
+                                  child: Text(
+                                    'Sign Out',
+                                    style: TextStyle(
+                                        color: secondaryColor, fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                OutlinedButton(
+                                  onPressed: () {},
+                                  style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                        color: secondaryColor,
+                                        width: 2,
+                                      ),
+                                      minimumSize: Size(width / 2.5, height / 7)),
+                                  child: Text(
+                                    'Language',
+                                    style: TextStyle(
+                                        color: secondaryColor, fontSize: 20),
+                                  ),
+                                ),
+                                OutlinedButton(
+                                  onPressed: () {},
+                                  style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                        color: secondaryColor,
+                                        width: 2,
+                                      ),
+                                      minimumSize: Size(width / 2.5, height / 7)),
+                                  child: Text(
+                                    'Storage',
+                                    style: TextStyle(
+                                        color: secondaryColor, fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            FilledButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              style: FilledButton.styleFrom(
+                                  backgroundColor: secondaryColor,
+                                  minimumSize: Size(width / 2.5, height / 7)),
+                              child: Text(
+                                'Close',
+                                style: TextStyle(color: primaryColor, fontSize: 20),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+              ),
+              );
         });
   }
 
