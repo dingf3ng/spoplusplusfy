@@ -1,9 +1,15 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path/path.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
+import 'package:spoplusplusfy/Classes/normal_user.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Pages/login_signup_page.dart';
@@ -17,16 +23,11 @@ import '../main.dart';
 import 'artist_page.dart';
 import 'video_preview_page.dart'; // Assuming you have a VideoPreviewPage for preview
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseHelper.initializeFrontendData();
-  runApp(MaterialApp(home: VideoUploadPage(pageController: PageController(),),));
-}
-
 class VideoUploadPage extends StatefulWidget {
   final PageController pageController;
+  final NormalUser user;
 
-  const VideoUploadPage({super.key, required this.pageController});
+  const VideoUploadPage({super.key, required this.pageController, required this.user});
 
   @override
   State<StatefulWidget> createState() {
@@ -40,12 +41,14 @@ class _VideoUploadPageState extends State<VideoUploadPage>
 
   final List<Song> _resultSongs = [];
   final List<Song> _foundSongs = [];
+  late NormalUser user;
 
   static int _control = 210;
 
   @override
   void initState() {
     super.initState();
+    user = widget.user;
     _searchController.addListener(_searchDone);
   }
 
@@ -69,16 +72,16 @@ class _VideoUploadPageState extends State<VideoUploadPage>
       backgroundColor: primaryColor,
       body: ListView(
         children: [
-          _searchField(),
+          _searchField(context),
           const SizedBox(height: 40),
-          _songShowcase(),
+          _songShowcase(context),
           const SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  Visibility _songShowcase() {
+  Visibility _songShowcase(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     var primaryColor = Theme.of(context).primaryColor;
@@ -93,7 +96,7 @@ class _VideoUploadPageState extends State<VideoUploadPage>
         opacity: _resultSongs.isNotEmpty ? 1 : 0,
         child: Column(
           children: [
-            _showcaseHeadline('Songs'),
+            _showcaseHeadline('Songs', context),
             Container(
               height: 20,
             ),
@@ -128,14 +131,7 @@ class _VideoUploadPageState extends State<VideoUploadPage>
                               TextButton(
                                 child: Text("Confirm"),
                                 onPressed: () {
-                                  Navigator.of(context).pop();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          VideoPreviewPage(song: _resultSongs[index]),
-                                    ),
-                                  );
+                                  _pickVideo(context, _resultSongs[index]);
                                 },
                               ),
                             ],
@@ -216,7 +212,7 @@ class _VideoUploadPageState extends State<VideoUploadPage>
     );
   }
 
-  Row _showcaseHeadline(String arg) {
+  Row _showcaseHeadline(String arg, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -224,14 +220,14 @@ class _VideoUploadPageState extends State<VideoUploadPage>
           padding: const EdgeInsets.only(left: 25),
           child: Text(
             arg,
-            style: _headlineTextStyle(),
+            style: _headlineTextStyle(context),
           ),
         ),
       ],
     );
   }
 
-  Container _searchField() {
+  Container _searchField(BuildContext context) {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     final double width = MediaQuery.of(context).size.width;
@@ -286,7 +282,7 @@ class _VideoUploadPageState extends State<VideoUploadPage>
   }
 
 
-  TextStyle _headlineTextStyle() {
+  TextStyle _headlineTextStyle(BuildContext context) {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     return TextStyle(
@@ -295,11 +291,54 @@ class _VideoUploadPageState extends State<VideoUploadPage>
       fontSize: 27,
     );
   }
+  Future<void> _pickVideo(BuildContext context, Song song) async {
+    if (await _requestPermissions()) {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.video,
+      );
+      if (result != null && result.files.single.path != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VideoPreviewPage(videoFile: File(result.files.single.path!), song: song, user: widget.user,),
+          ),
+        );
+      }
+    } else {
+      _showPermissionDeniedMessage(context);
+    }
+  }
+  Future<bool> _requestPermissions() async {
+    if (Platform.isAndroid) {
+      if (await Permission.storage.request().isGranted) {
+        return true;
+      }
+      if (Platform.isAndroid && await Permission.videos.request().isGranted && await Permission.photos.request().isGranted) {
+        return true;
+      }
+    } else {
+      if (await Permission.photos.request().isGranted) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void _showPermissionDeniedMessage(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Permission denied to read external storage')),
+    );
+  }
+
+  String _formatTime(int duration) {
+    int h = duration ~/ 3600;
+    int m = (duration - h * 3600) ~/ 60;
+    String s = (duration - h * 3600 - m * 60).toString().padLeft(2, '0');
+    return h != 0 ? '$h:$m:0$s' : '$m:$s';
+  }
+
 }
 
-String _formatTime(int duration) {
-  int h = duration ~/ 3600;
-  int m = (duration - h * 3600) ~/ 60;
-  String s = (duration - h * 3600 - m * 60).toString().padLeft(2, '0');
-  return h != 0 ? '$h:$m:0$s' : '$m:$s';
-}
+
+
+

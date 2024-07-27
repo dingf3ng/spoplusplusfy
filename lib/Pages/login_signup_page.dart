@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
+import '../Utilities/api_service.dart';
+
 
 const String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
 // Define the regex pattern for username validation

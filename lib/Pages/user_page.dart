@@ -6,7 +6,11 @@ import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Pages/social_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/video_upload_page.dart';
 
-void main() {
+import '../Classes/database.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseHelper.initializeFrontendData();
   runApp(MyApp());
 }
 
@@ -65,21 +69,24 @@ class UserPageState extends State<UserPage> {
         children: [
           _buildNavigationBar(),
           _pageView(),
-          Container(
-            height: MediaQuery.of(context).size.height / 10,
-            padding: const EdgeInsets.all(10),
-            child: OutlinedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder:
-                        (context) => VideoUploadPage(pageController: PageController())));
-              },
-              style: OutlinedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  side: const BorderSide(color: secondaryColor, width: 5)),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: SvgPicture.asset('assets/icons/plus_sign_gold.svg'),
+          Visibility(
+            visible: widget.isSelf,
+            child: Container(
+              height: MediaQuery.of(context).size.height / 10,
+              padding: const EdgeInsets.all(10),
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder:
+                          (context) => VideoUploadPage(pageController: PageController(), user: widget.user)));
+                },
+                style: OutlinedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    side: const BorderSide(color: secondaryColor, width: 5)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: SvgPicture.asset('assets/icons/plus_sign_gold.svg'),
+                ),
               ),
             ),
           )

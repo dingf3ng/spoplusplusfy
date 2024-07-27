@@ -3,6 +3,8 @@ import 'package:spoplusplusfy/Classes/playlist.dart';
 import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
+import '../Utilities/api_service.dart';
+
 class Album extends Playlist {
   Album({
     required super.name,

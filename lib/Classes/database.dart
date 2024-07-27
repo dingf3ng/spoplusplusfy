@@ -7,6 +7,7 @@ import 'package:spoplusplusfy/Classes/song.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 import 'package:http/http.dart' as http;
 
+import '../Utilities/api_service.dart';
 import 'album.dart';
 import 'artist.dart';
 import 'playlist.dart';
