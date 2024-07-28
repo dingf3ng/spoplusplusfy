@@ -20,6 +20,7 @@ import '../Classes/person.dart';
 import '../main.dart';
 import 'artist_page.dart';
 
+/// The SearchPage widget allows users to search for artists, albums, playlists, and songs.
 class SearchPage extends StatefulWidget {
   final PageController pageController;
 
@@ -31,8 +32,7 @@ class SearchPage extends StatefulWidget {
   }
 }
 
-class _SearchPageState extends State<SearchPage>
-    with SingleTickerProviderStateMixin {
+class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
 
   final List<Artist> _resultArtists = [];
@@ -43,6 +43,7 @@ class _SearchPageState extends State<SearchPage>
 
   static int _control = 210;
 
+  /// Opens the filter modal to select search criteria.
   void _openFilter() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -80,11 +81,9 @@ class _SearchPageState extends State<SearchPage>
                             fontSize: 20),
                       ),
                     ),
-                    _buildCheckBox(
-                        context, 'Artists', height, 2, setSheetState),
+                    _buildCheckBox(context, 'Artists', height, 2, setSheetState),
                     _buildCheckBox(context, 'Albums', height, 3, setSheetState),
-                    _buildCheckBox(
-                        context, 'Playlists', height, 5, setSheetState),
+                    _buildCheckBox(context, 'Playlists', height, 5, setSheetState),
                     _buildCheckBox(context, 'Songs', height, 7, setSheetState),
                     ElevatedButton(
                         onPressed: () {
@@ -129,9 +128,9 @@ class _SearchPageState extends State<SearchPage>
         });
   }
 
+  /// Builds a checkbox for the filter modal.
   Widget _buildCheckBox(context, title, height, int control, setter) {
     var width = MediaQuery.of(context).size.width;
-    var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     return Row(
       children: [
@@ -162,7 +161,7 @@ class _SearchPageState extends State<SearchPage>
                 child: SvgPicture.asset(
                   'assets/icons/checkmark_gold.svg',
                   colorFilter:
-                      ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                  ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -184,6 +183,7 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
+  /// Opens the song recognizer modal.
   void _openRecognizer() {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height / 4;
@@ -231,12 +231,12 @@ class _SearchPageState extends State<SearchPage>
                               decoration: BoxDecoration(
                                 color: Colors.transparent,
                                 border:
-                                    Border.all(color: secondaryColor, width: 2),
+                                Border.all(color: secondaryColor, width: 2),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                MainAxisAlignment.spaceAround,
                                 children: [
                                   const SizedBox(
                                     width: 20,
@@ -262,7 +262,7 @@ class _SearchPageState extends State<SearchPage>
                                     child: Text(
                                       ArtistWorksManager
                                           .getArtistsOfSongAsString(
-                                              _resultSongs[index]),
+                                          _resultSongs[index]),
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: secondaryColor,
@@ -309,6 +309,7 @@ class _SearchPageState extends State<SearchPage>
         });
   }
 
+  /// Shows the settings dialog.
   Future _showSettingDialog(context) {
     var width = MediaQuery.of(context).size.width * 3 / 4;
     var height = MediaQuery.of(context).size.height / 3;
@@ -319,190 +320,190 @@ class _SearchPageState extends State<SearchPage>
         context: context,
         barrierDismissible: true,
         barrierLabel:
-            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        MaterialLocalizations.of(context).modalBarrierDismissLabel,
         transitionDuration: const Duration(milliseconds: 300),
         transitionBuilder: (context, animation, secondaryAnimation, child) {
           return SlideTransition(
             position: animation.drive(Tween(
-                    begin: const Offset(0.0, -1.0), end: const Offset(0.0, 0.0))
+                begin: const Offset(0.0, -1.0), end: const Offset(0.0, 0.0))
                 .chain(CurveTween(curve: Curves.ease))),
             child: child,
           );
         },
         pageBuilder: (context, animation, secondaryAnimation) {
           return BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-              child: StatefulBuilder(
-                builder: (context, refresh) => AlertDialog(
-                    title: Center(child: Text('Settings', style: TextStyle(color: secondaryColor),)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(width / 10),
-                      side: BorderSide(color: secondaryColor, width: 2.0),
-                    ),
-                    backgroundColor: primaryColor,
-                    titleTextStyle: TextStyle(
-                        color: secondaryColor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600),
-                    content:
-                      SizedBox(
-                        height: height,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Select Color Theme',
-                                style: TextStyle(
-                                    color: secondaryColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
-                              child: Container(
-                                height: height / 7,
-                                width: width,
-                                alignment: Alignment.center,
-                                child: ListView.separated(
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          refresh((){
-                                              print('heello');
-                                              themeNotifier.changeTheme(
-                                                  true, index);
-                                            });
-                                        },
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(width / 10),
-                                              border: Border.all(
-                                                  color: secondaryColor, width: 2),
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  primaryColor,
-                                                  secondaryColorList[index]
-                                                ],
-                                                stops: const [0.3, 0.6],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                              )),
-                                          height: height / 7,
-                                          width: width / 4,
-                                        ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) =>
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                    itemCount: 7),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                OutlinedButton(
-                                  onPressed: () {
-                                    showAboutDialog(context: context);
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: secondaryColor,
-                                        width: 2,
-                                      ),
-                                      minimumSize: Size(width / 2.5, height / 7)),
-                                  child: Text(
-                                    'About',
-                                    style: TextStyle(
-                                        color: secondaryColor, fontSize: 20),
-                                  ),
-                                ),
-                                OutlinedButton(
-                                  onPressed: () {},
-                                  style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: secondaryColor,
-                                        width: 2,
-                                      ),
-                                      minimumSize: Size(width / 2.5, height / 7)),
-                                  child: Text(
-                                    'Sign Out',
-                                    style: TextStyle(
-                                        color: secondaryColor, fontSize: 20),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                OutlinedButton(
-                                  onPressed: () {},
-                                  style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: secondaryColor,
-                                        width: 2,
-                                      ),
-                                      minimumSize: Size(width / 2.5, height / 7)),
-                                  child: Text(
-                                    'Language',
-                                    style: TextStyle(
-                                        color: secondaryColor, fontSize: 20),
-                                  ),
-                                ),
-                                OutlinedButton(
-                                  onPressed: () {},
-                                  style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: secondaryColor,
-                                        width: 2,
-                                      ),
-                                      minimumSize: Size(width / 2.5, height / 7)),
-                                  child: Text(
-                                    'Storage',
-                                    style: TextStyle(
-                                        color: secondaryColor, fontSize: 20),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            FilledButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              style: FilledButton.styleFrom(
-                                  backgroundColor: secondaryColor,
-                                  minimumSize: Size(width / 2.5, height / 7)),
-                              child: Text(
-                                'Close',
-                                style: TextStyle(color: primaryColor, fontSize: 20),
-                              ),
-                            ),
-                          ],
+            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+            child: StatefulBuilder(
+              builder: (context, refresh) => AlertDialog(
+                title: Center(child: Text('Settings', style: TextStyle(color: secondaryColor),)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(width / 10),
+                  side: BorderSide(color: secondaryColor, width: 2.0),
+                ),
+                backgroundColor: primaryColor,
+                titleTextStyle: TextStyle(
+                    color: secondaryColor,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600),
+                content:
+                SizedBox(
+                  height: height,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Select Color Theme',
+                          style: TextStyle(
+                              color: secondaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600),
                         ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
+                        child: Container(
+                          height: height / 7,
+                          width: width,
+                          alignment: Alignment.center,
+                          child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    refresh((){
+                                      print('heello');
+                                      themeNotifier.changeTheme(
+                                          true, index);
+                                    });
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(width / 10),
+                                        border: Border.all(
+                                            color: secondaryColor, width: 2),
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            primaryColor,
+                                            secondaryColorList[index]
+                                          ],
+                                          stops: const [0.3, 0.6],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        )),
+                                    height: height / 7,
+                                    width: width / 4,
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) =>
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              itemCount: 7),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () {
+                              showAboutDialog(context: context);
+                            },
+                            style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: secondaryColor,
+                                  width: 2,
+                                ),
+                                minimumSize: Size(width / 2.5, height / 7)),
+                            child: Text(
+                              'About',
+                              style: TextStyle(
+                                  color: secondaryColor, fontSize: 20),
+                            ),
+                          ),
+                          OutlinedButton(
+                            onPressed: () {},
+                            style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: secondaryColor,
+                                  width: 2,
+                                ),
+                                minimumSize: Size(width / 2.5, height / 7)),
+                            child: Text(
+                              'Sign Out',
+                              style: TextStyle(
+                                  color: secondaryColor, fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () {},
+                            style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: secondaryColor,
+                                  width: 2,
+                                ),
+                                minimumSize: Size(width / 2.5, height / 7)),
+                            child: Text(
+                              'Language',
+                              style: TextStyle(
+                                  color: secondaryColor, fontSize: 20),
+                            ),
+                          ),
+                          OutlinedButton(
+                            onPressed: () {},
+                            style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: secondaryColor,
+                                  width: 2,
+                                ),
+                                minimumSize: Size(width / 2.5, height / 7)),
+                            child: Text(
+                              'Storage',
+                              style: TextStyle(
+                                  color: secondaryColor, fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      FilledButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: FilledButton.styleFrom(
+                            backgroundColor: secondaryColor,
+                            minimumSize: Size(width / 2.5, height / 7)),
+                        child: Text(
+                          'Close',
+                          style: TextStyle(color: primaryColor, fontSize: 20),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              );
+            ),
+          );
         });
   }
 
@@ -512,6 +513,7 @@ class _SearchPageState extends State<SearchPage>
     _searchController.addListener(_searchDone);
   }
 
+  /// Performs the search based on the current input and selected filters.
   void _searchDone() {
     String query = _searchController.text;
     setState(() {
@@ -537,10 +539,43 @@ class _SearchPageState extends State<SearchPage>
     });
   }
 
+  /// Displays the username of the current user.
+  Widget _usernameDisplay(Future<Person> person) {
+    var secondaryColor = Theme.of(context).hintColor;
+    return FutureBuilder(
+        future: person,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text(
+              'Loading...',
+              style: TextStyle(
+                fontFamily: 'NotoSans',
+                fontWeight: FontWeight.w600,
+                fontStyle: FontStyle.italic,
+                color: secondaryColor,
+              ),
+            );
+          } else {
+            return Text(
+              snapshot.data!.getName(),
+              style: TextStyle(
+                fontFamily: 'NotoSans',
+                fontWeight: FontWeight.w600,
+                fontStyle: FontStyle.italic,
+                color: secondaryColor,
+              ), );
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
+    Future<Person> user = Person.deviceIsLoggedIn().then((isLoggedIn) => isLoggedIn
+        ? Person.getPersonLoggedInOnDevice()
+        : Future.value(NormalUser(name:'Unregister', id: 0, gender: Gender.Mysterious,
+      age: 0, bio: 'Null', portrait: Image.asset('assets/images/pf.jpg'),)  ));
 
     return Scaffold(
       extendBodyBehindAppBar: false,
@@ -560,10 +595,9 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
+  /// Displays the search results for artists.
   Visibility _artistShowcase() {
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-    var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     return Visibility(
       visible: _resultArtists.isNotEmpty,
@@ -596,7 +630,7 @@ class _SearchPageState extends State<SearchPage>
                           PageRouteBuilder(
                             pageBuilder:
                                 (context, animation, secondaryAnimation) =>
-                                    ArtistPage(artist: _resultArtists[index]),
+                                ArtistPage(artist: _resultArtists[index]),
                             transitionsBuilder: (context, animation,
                                 secondaryAnimation, child) {
                               const begin = Offset(0.0, -1.0);
@@ -611,7 +645,7 @@ class _SearchPageState extends State<SearchPage>
                             },
                             transitionDuration: const Duration(seconds: 1),
                             reverseTransitionDuration:
-                                const Duration(milliseconds: 600),
+                            const Duration(milliseconds: 600),
                           )),
                     },
                     child: Column(
@@ -655,10 +689,9 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
+  /// Displays the search results for albums.
   Visibility _albumShowcase() {
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-    var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     return Visibility(
       visible: _resultAlbums.isNotEmpty,
@@ -690,12 +723,12 @@ class _SearchPageState extends State<SearchPage>
                           context,
                           PageRouteBuilder(
                             pageBuilder: (context, animation,
-                                    secondaryAnimation) =>
+                                secondaryAnimation) =>
                                 PlaylistPage(
                                     playlist: _resultAlbums[index],
                                     songs:
-                                        PlaylistSongManager.getSongsForPlaylist(
-                                            _resultAlbums[index])),
+                                    PlaylistSongManager.getSongsForPlaylist(
+                                        _resultAlbums[index])),
                             transitionsBuilder: (context, animation,
                                 secondaryAnimation, child) {
                               const begin = Offset(0.0, -1.0);
@@ -710,7 +743,7 @@ class _SearchPageState extends State<SearchPage>
                             },
                             transitionDuration: const Duration(seconds: 1),
                             reverseTransitionDuration:
-                                const Duration(milliseconds: 600),
+                            const Duration(milliseconds: 600),
                           ))
                     },
                     child: Column(
@@ -758,10 +791,9 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
+  /// Displays the search results for playlists.
   Visibility _playlistShowcase() {
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-    var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     return Visibility(
       visible: _resultPlaylists.isNotEmpty,
@@ -830,10 +862,10 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
+  /// Displays the search results for songs.
   Visibility _songShowcase() {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
-    var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     return Visibility(
       visible: _resultSongs.isNotEmpty,
@@ -932,6 +964,7 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
+  /// Displays the headline for each section of search results.
   Row _showcaseHeadline(String arg) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -947,6 +980,7 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
+  /// Builds the app bar for the search page.
   AppBar _appBar() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -977,7 +1011,7 @@ class _SearchPageState extends State<SearchPage>
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
-                    const LoginPage(),
+                const LoginPage(),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                   const begin = Offset(0.0, -1.0);
@@ -1009,7 +1043,7 @@ class _SearchPageState extends State<SearchPage>
               ),
               SvgPicture.asset('assets/icons/user_gold.svg',
                   colorFilter:
-                      ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                  ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                   height: 32,
                   width: 32)
             ],
@@ -1022,11 +1056,11 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
+  /// Builds the search field.
   Container _searchField() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
     return Container(
         margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: TextField(
@@ -1075,7 +1109,7 @@ class _SearchPageState extends State<SearchPage>
                         child: SvgPicture.asset(
                           'assets/icons/ear_gold.svg',
                           colorFilter:
-                              ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                          ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                         ),
                       ),
                     ),
@@ -1092,7 +1126,7 @@ class _SearchPageState extends State<SearchPage>
                         child: SvgPicture.asset(
                           'assets/icons/filter_search_gold.svg',
                           colorFilter:
-                              ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                          ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                         ),
                       ),
                     ),
@@ -1104,8 +1138,8 @@ class _SearchPageState extends State<SearchPage>
         ));
   }
 
+  /// Returns the text style for the headline of each search results section.
   TextStyle _headlineTextStyle() {
-    var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     return TextStyle(
       color: secondaryColor,
@@ -1115,6 +1149,7 @@ class _SearchPageState extends State<SearchPage>
   }
 }
 
+/// Formats the duration of a song to a string format.
 String _formatTime(int duration) {
   int h = duration ~/ 3600;
   int m = (duration - h * 3600) ~/ 60;

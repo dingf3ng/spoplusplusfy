@@ -3,13 +3,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/playlist.dart';
-
 import '../Classes/album.dart';
 import '../Classes/song.dart';
 
+/// A page that displays the details of a playlist and its songs.
 class PlaylistPage extends StatefulWidget {
-  final Playlist playlist;
-  final List<Song> songs;
+  final Playlist playlist; // The playlist to be displayed
+  final List<Song> songs; // The list of songs in the playlist
 
   const PlaylistPage({super.key, required this.playlist, required this.songs});
 
@@ -17,6 +17,7 @@ class PlaylistPage extends StatefulWidget {
   State<StatefulWidget> createState() => PlaylistPageState();
 }
 
+/// The state class for the PlaylistPage, managing its state and UI.
 class PlaylistPageState extends State<PlaylistPage> {
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,7 @@ class PlaylistPageState extends State<PlaylistPage> {
     );
   }
 
+  /// Builds the AppBar for the PlaylistPage.
   AppBar _appBar() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -77,8 +79,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                     'assets/icons/download_gold.svg',
                     height: 32,
                     width: 32,
-                    colorFilter:
-                        ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                   ))),
         ),
         GestureDetector(
@@ -91,8 +92,7 @@ class PlaylistPageState extends State<PlaylistPage> {
                     'assets/icons/dot_gold.svg',
                     height: 32,
                     width: 32,
-                    colorFilter:
-                        ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(secondaryColor, BlendMode.srcIn),
                   ))),
         ),
         Container(
@@ -102,6 +102,7 @@ class PlaylistPageState extends State<PlaylistPage> {
     );
   }
 
+  /// Builds the information section for the playlist, including the cover image and details.
   Row _playlistInfo() {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -202,6 +203,7 @@ class PlaylistPageState extends State<PlaylistPage> {
     );
   }
 
+  /// Builds the list of songs in the playlist.
   ListView _songsList() {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -213,90 +215,91 @@ class PlaylistPageState extends State<PlaylistPage> {
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.only(left: 25, right: 25),
         itemBuilder: (context, index) => Container(
-              height: height / 13,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(color: secondaryColor, width: 2),
-                borderRadius: BorderRadius.circular(20),
+          height: height / 13,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border.all(color: secondaryColor, width: 2),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const SizedBox(
+                width: 5,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Text(
+                '${index + 1}',
+                style: TextStyle(
+                  color: secondaryColor,
+                  fontWeight: FontWeight.w200,
+                  fontSize: 30,
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Text(
-                    '${index + 1}',
-                    style: TextStyle(
-                      color: secondaryColor,
-                      fontWeight: FontWeight.w200,
-                      fontSize: 30,
-                    ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: width / 2,
-                        child: Text(
-                          widget.songs[index].getName(),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: secondaryColor,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: width / 3,
-                        child: Text(
-                          ArtistWorksManager.getArtistsOfSongAsString(
-                              widget.songs[index]),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: secondaryColor,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
                   SizedBox(
-                    width: width / 10,
+                    width: width / 2,
                     child: Text(
-                      _formatTime(widget.songs[index].getDuration()),
+                      widget.songs[index].getName(),
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: secondaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(
+                    width: width / 3,
+                    child: Text(
+                      ArtistWorksManager.getArtistsOfSongAsString(
+                          widget.songs[index]),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: secondaryColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(
+                width: width / 10,
+                child: Text(
+                  _formatTime(widget.songs[index].getDuration()),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
         separatorBuilder: (context, index) => const SizedBox(
-              height: 5,
-              width: 5,
-            ),
+          height: 5,
+          width: 5,
+        ),
         itemCount: widget.songs.length);
   }
 
+  /// Builds the recommendation list for albums by the primary artist of the current playlist.
   Visibility _recommendationList() {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     Artist priArtist =
-        ArtistWorksManager.getArtistsOfAlbum(widget.playlist as Album)[0];
+    ArtistWorksManager.getArtistsOfAlbum(widget.playlist as Album)[0];
     List<Album> rec = ArtistWorksManager.getAlbumsOfArtist(priArtist);
     return Visibility(
       visible: rec.isNotEmpty,
@@ -376,6 +379,7 @@ class PlaylistPageState extends State<PlaylistPage> {
   }
 }
 
+/// Formats the duration of a song into a string.
 String _formatTime(int duration) {
   int h = duration ~/ 3600;
   int m = (duration - h * 3600) ~/ 60;

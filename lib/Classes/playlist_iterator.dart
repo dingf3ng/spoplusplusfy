@@ -11,27 +11,64 @@ import '../Utilities/api_service.dart';
 
 const dfIP = '192.168.2.169:8000';
 
+/// A static class for managing playlist iteration and audio playback.
+///
+/// This class provides functionality for playing, pausing, and navigating through
+/// songs in a playlist, as well as separating and playing individual tracks.
 class PlaylistIterator {
+  /// The audio player used for playback.
   static final AudioPlayer _player = AudioPlayer();
+
+  /// The current list of songs in the playlist.
   static final List<Song> _currentList = [];
+
+  /// The currently playing song.
   static Song? _currentSong;
+
+  /// The separated vocal track of the current song.
   static Track? _currentVocalTrack;
+
+  /// The separated drum track of the current song.
   static Track? _currentDrumTrack;
+
+  /// The separated bass track of the current song.
   static Track? _currentBassTrack;
+
+  /// The separated 'other' track of the current song.
   static Track? _currentOtherTrack;
+
+  /// The index of the current song in the playlist.
   static int songIndex = 0;
+
+  /// The HTTP client used for making API requests.
   static http.Client? _client;
+
+  /// Flag indicating whether a separated track is currently playing.
   static bool _isPlayingTrack = false;
 
+  /// Changes the playback progress to the specified duration.
+  ///
+  /// Parameters:
+  /// - [progress]: The new playback position.
   static void changeProgressTo(Duration progress) {
     _player.seek(progress);
   }
 
+  /// Gets the currently playing song.
+  ///
+  /// Returns the current [Song], or throws a [StateError] if no song is playing.
   static Song getCurrentSong() =>
       _currentSong ?? (throw StateError('No current song'));
 
+  /// Checks if audio is currently playing.
+  ///
+  /// Returns [true] if audio is playing, [false] otherwise.
   static bool isPlaying() => _player.playing;
 
+  /// Sets the current playlist and prepares it for playback.
+  ///
+  /// Parameters:
+  /// - [playlist]: The [Playlist] to set as current.
   static Future<void> setPlaylist(Playlist playlist) async {
     List<AudioSource> playlistSource = [];
     _currentList.clear(); // Clear the list to avoid duplicates
@@ -42,11 +79,12 @@ class PlaylistIterator {
     }
     print(playlistSource.length);
     ConcatenatingAudioSource sourceForPlayer =
-        ConcatenatingAudioSource(children: playlistSource);
+    ConcatenatingAudioSource(children: playlistSource);
     await _player.setAudioSource(sourceForPlayer);
     _currentSong = _currentList[0];
   }
 
+  /// Clears all separated tracks.
   static void _clearTracks() {
     _currentVocalTrack = null;
     _currentBassTrack = null;
@@ -54,14 +92,20 @@ class PlaylistIterator {
     _currentOtherTrack = null;
   }
 
+  /// Starts or resumes playback.
   static void play() {
     _player.play();
   }
 
+  /// Pauses playback.
   static void pause() {
     _player.pause();
   }
 
+  /// Fast forwards the current song by the specified duration.
+  ///
+  /// Parameters:
+  /// - [time]: The duration to fast forward.
   static void fastForward(Duration time) {
     Duration songTotalLength = _player.duration ?? Duration.zero;
 
@@ -72,6 +116,10 @@ class PlaylistIterator {
     }
   }
 
+  /// Rewinds the current song by the specified duration.
+  ///
+  /// Parameters:
+  /// - [time]: The duration to rewind.
   static void fastRewind(Duration time) {
     if (_player.position - time > Duration.zero) {
       _player.seek(_player.position - time);
@@ -80,32 +128,42 @@ class PlaylistIterator {
     }
   }
 
+  /// Plays the next song in the playlist.
   static void playNextSong() {
     _player.seekToNext();
     _currentSong = _currentList[_player.currentIndex ?? 0];
   }
 
+  /// Plays the previous song in the playlist.
   static void playPreviousSong() {
     _player.seekToPrevious();
     _currentSong = _currentList[_player.currentIndex ?? 0];
   }
 
+  /// Separates the vocals from the current song.
   static Future<void> separateCurrSongVocals() async {
     await _separateCurrSong('vocals');
   }
 
+  /// Separates the drums from the current song.
   static Future<void> separateCurrSongDrums() async {
     await _separateCurrSong('drums');
   }
 
+  /// Separates the bass from the current song.
   static Future<void> separateCurrSongBass() async {
     await _separateCurrSong('bass');
   }
 
+  /// Separates other instruments from the current song.
   static Future<void> separateCurrSongOthers() async {
     await _separateCurrSong('others');
   }
 
+  /// Separates a specific track type from the current song.
+  ///
+  /// Parameters:
+  /// - [trackType]: The type of track to separate ('vocals', 'drums', 'bass', or 'others').
   static Future<void> _separateCurrSong(String trackType) async {
     _client = http.Client();
     _player.pause();
@@ -128,7 +186,6 @@ class PlaylistIterator {
     if (_currentOtherTrack != null && trackType == 'others') {
       return;
     }
-
 
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://$fhlIP/api/decompose/to_$trackType/${_currentSong!.getId().toString().padLeft(6, '0')}'));
@@ -162,6 +219,7 @@ class PlaylistIterator {
     }
   }
 
+  /// Stops the ongoing track separation process.
   static Future<void> stopDecomposing() async {
     if (_client != null) {
       _client!.close();
@@ -169,22 +227,30 @@ class PlaylistIterator {
     }
   }
 
+  /// Switches between playing the vocal track and the full song.
   static Future<void> switchBetweenVocalTrackAndSong() async {
     _switchBetweenTrackAndSong(_currentVocalTrack!);
   }
 
+  /// Switches between playing the drum track and the full song.
   static Future<void> switchBetweenDrumTrackAndSong() async {
     _switchBetweenTrackAndSong(_currentDrumTrack!);
   }
 
+  /// Switches between playing the bass track and the full song.
   static Future<void> switchBetweenBassTrackAndSong() async {
     _switchBetweenTrackAndSong(_currentBassTrack!);
   }
 
+  /// Switches between playing the 'other' track and the full song.
   static Future<void> switchBetweenOtherTrackAndSong() async {
     _switchBetweenTrackAndSong(_currentOtherTrack!);
   }
 
+  /// Switches between playing a specific track and the full song.
+  ///
+  /// Parameters:
+  /// - [track]: The [Track] to switch to/from.
   static Future<void> _switchBetweenTrackAndSong(Track track) async {
     // Save the current position
     Duration currentPosition = _player.position;

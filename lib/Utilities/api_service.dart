@@ -10,11 +10,27 @@ const local = '10.0.2.2';
 class ApiService {
   final Dio _dio = Dio();
 
+  /// Constructor to initialize Dio with base URL and default headers.
+  ///
+  /// The base URL is set to 'http://$fhlIP' and the 'Content-Type' header is set to 'application/json'.
   ApiService() {
     _dio.options.baseUrl = 'http://$fhlIP'; // Replace with your backend URL
     _dio.options.headers['Content-Type'] = 'application/json';
   }
 
+  /// Uploads a video file along with metadata to the backend.
+  ///
+  /// Parameters:
+  /// - [filePath]: The path to the video file.
+  /// - [token]: The authentication token.
+  /// - [title]: The title of the video.
+  /// - [description]: The description of the video.
+  /// - [songId]: The ID of the associated song.
+  /// - [coverImage]: The cover image file.
+  /// - [duration]: The duration of the video in seconds.
+  /// - [userId]: The ID of the user uploading the video.
+  ///
+  /// Throws an error if the upload fails.
   Future<void> uploadVideo({
     required String filePath,
     required String token,
@@ -26,9 +42,11 @@ class ApiService {
     required int userId,
   }) async {
     try {
+      // Extracting file names from paths
       String fileName = filePath.split('/').last;
       String coverImageName = coverImage.path.split('/').last;
 
+      // Creating FormData to send the data in multipart format
       FormData formData = FormData.fromMap({
         'video_file': await MultipartFile.fromFile(filePath, filename: fileName),
         'title': title,
@@ -39,16 +57,20 @@ class ApiService {
         'user': userId,
       });
 
+      // Adding authorization token to the headers
       _dio.options.headers['Authorization'] = 'Token $token';
 
+      // Sending POST request to upload the video
       Response response = await _dio.post('/api/videos/', data: formData);
 
+      // Checking response status code
       if (response.statusCode == 201) {
         print('Video uploaded successfully');
       } else {
         print('Failed to upload video');
       }
     } catch (e) {
+      // Handling and printing any errors that occur during the upload
       print('Error uploading video: $e');
     }
   }

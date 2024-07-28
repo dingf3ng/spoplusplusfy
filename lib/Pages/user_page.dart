@@ -14,11 +14,13 @@ void main() async {
   runApp(MyApp());
 }
 
+/// Main entry point of the application.
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'User Page Demo',
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -40,6 +42,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+/// Represents the user profile page.
 class UserPage extends StatefulWidget {
   final NormalUser user;
   final bool isSelf;
@@ -90,16 +95,17 @@ class UserPageState extends State<UserPage> {
                   padding: const EdgeInsets.all(20),
                   child: SvgPicture.asset(
                     'assets/icons/plus_sign_gold.svg',
+                  ),
                 ),
               ),
-            )
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
+  /// Builds the PageView widget that displays liked and posted videos.
   Container _pageView() {
     var primaryColor = Theme.of(context).primaryColor;
     return Container(
@@ -116,17 +122,19 @@ class UserPageState extends State<UserPage> {
     );
   }
 
+  /// Builds the GridView for liked videos.
   Widget _likedVideosGridView() {
-    Future<List<Video>> videosFuture = user.getCreatedVideos();
-    return _gridViewForVideos(videosFuture);
-  }
-
-
-  Widget _postedVideosGridView() {
     Future<List<Video>> videosFuture = user.getLikedVideos();
     return _gridViewForVideos(videosFuture);
   }
 
+  /// Builds the GridView for posted videos.
+  Widget _postedVideosGridView() {
+    Future<List<Video>> videosFuture = user.getCreatedVideos();
+    return _gridViewForVideos(videosFuture);
+  }
+
+  /// Builds the GridView for videos.
   LayoutBuilder _gridViewForVideos(Future<List<Video>> videosFuture) {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -153,8 +161,8 @@ class UserPageState extends State<UserPage> {
                 return GridTile(
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(primaryColor),
-                      overlayColor: WidgetStateProperty.all(secondaryColor),
+                      backgroundColor: MaterialStateProperty.all(primaryColor),
+                      overlayColor: MaterialStateProperty.all(secondaryColor),
                     ),
                     onPressed: () {
                       if (snapshot.hasData && snapshot.connectionState==ConnectionState.done) {
@@ -178,63 +186,62 @@ class UserPageState extends State<UserPage> {
     );
   }
 
-
+  /// Builds a single grid item.
   GridTile _singleGrid(AsyncSnapshot<List<Video>> snapshot, BuildContext context, int index, double itemWidth, double itemHeight) {
-
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     return GridTile(
-                child: GestureDetector(
-                  onTap: () {
-                    if (snapshot.hasData && snapshot.connectionState==ConnectionState.done) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              SocialModePlayerPage(snapshot.data!, index),
-                        ),
-                      );
-                    }
-                  },
-                  child: Container(
-                    height: itemHeight,
-                    width: itemWidth,
-                    // NO effect here for some reason. The height and width cannot be adjusted chatgpt
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 3.0,
-                        color: secondaryColor,
-                      ),
-                      borderRadius: const BorderRadius.all(Radius.circular(60)),
-                    ),
-                    child: snapshot.connectionState == ConnectionState.waiting
-                            ? SizedBox(
-                          width: itemWidth,
-                          height: itemHeight,
-                          child: const DecoratedBox(
-                            decoration: const BoxDecoration(
-                                color: Colors.black
-                            ),
-                          ),
-                        )
-                        : !snapshot.hasData || snapshot.data!.isEmpty
-                        ? const Center(child: Text('No videos available'))
-                        : snapshot.hasError
-                        ? Center(child: Text('Error: ${snapshot.error}'))
-                        : ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(60)),
-                      child: Image.network(
-                        snapshot.data![index].coverImageUrl,
-                        fit: BoxFit.cover,
-                        width: itemWidth,
-                        height: itemHeight,
-                      ),
-                    ),
-                  ),
-                ),
-              );
+      child: GestureDetector(
+        onTap: () {
+          if (snapshot.hasData && snapshot.connectionState==ConnectionState.done) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    SocialModePlayerPage(snapshot.data!, index),
+              ),
+            );
+          }
+        },
+        child: Container(
+          height: itemHeight,
+          width: itemWidth,
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 3.0,
+              color: secondaryColor,
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(60)),
+          ),
+          child: snapshot.connectionState == ConnectionState.waiting
+              ? SizedBox(
+            width: itemWidth,
+            height: itemHeight,
+            child: const DecoratedBox(
+              decoration: BoxDecoration(
+                  color: Colors.black
+              ),
+            ),
+          )
+              : !snapshot.hasData || snapshot.data!.isEmpty
+              ? const Center(child: Text('No videos available'))
+              : snapshot.hasError
+              ? Center(child: Text('Error: ${snapshot.error}'))
+              : ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(60)),
+            child: Image.network(
+              snapshot.data![index].coverImageUrl,
+              fit: BoxFit.cover,
+              width: itemWidth,
+              height: itemHeight,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
+  /// Builds the navigation bar for switching between liked and posted videos.
   Container _buildNavigationBar() {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -334,7 +341,7 @@ class UserPageState extends State<UserPage> {
     );
   }
 
-
+  /// Builds the app bar with user information.
   AppBar _infoBar() {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
@@ -404,10 +411,10 @@ class UserPageState extends State<UserPage> {
                       onPressed: () => {},
                       child: widget.isSelf
                           ? SvgPicture.asset(
-                              'assets/icons/edit_profile_gold.svg',
-                              colorFilter: ColorFilter.mode(
-                                  secondaryColor, BlendMode.srcIn),
-                            )
+                        'assets/icons/edit_profile_gold.svg',
+                        colorFilter: ColorFilter.mode(
+                            secondaryColor, BlendMode.srcIn),
+                      )
                           : const Text('Follow')),
                   const SizedBox(
                     width: 10,

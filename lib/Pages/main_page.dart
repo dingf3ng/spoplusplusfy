@@ -7,8 +7,11 @@ import 'package:spoplusplusfy/Pages/pure_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/search_page.dart';
 import 'package:spoplusplusfy/Pages/social_mode_player_page.dart';
 
+/// Enum representing the different modes available in the application.
 enum Mode { PureMode, SocialMode, ProMode }
 
+/// MainPage widget is the main screen of the application where users can see
+/// playlists and select different modes.
 class MainPage extends StatefulWidget {
   final PageController pageController;
 
@@ -20,14 +23,14 @@ class MainPage extends StatefulWidget {
   }
 }
 
+/// State class for MainPage, managing the state and UI for the main screen.
 class _MainPageState extends State<MainPage>
     with
         SingleTickerProviderStateMixin,
         AutomaticKeepAliveClientMixin<MainPage> {
-  Mode selectedMode = Mode.PureMode;
-
-  List<Playlist> playlists = [];
-  late Future<List<Playlist>> futurePlaylists;
+  Mode selectedMode = Mode.PureMode;  // Initially selected mode
+  List<Playlist> playlists = [];  // List of playlists
+  late Future<List<Playlist>> futurePlaylists;  // Future for fetching playlists
 
   @override
   void initState() {
@@ -35,6 +38,8 @@ class _MainPageState extends State<MainPage>
     futurePlaylists = _getPlaylists();
   }
 
+  /// Fetches playlists from the ArtistWorksManager.
+  /// Returns a list of playlists.
   Future<List<Playlist>> _getPlaylists() async {
     if (playlists.isNotEmpty) return playlists;
     playlists.clear();
@@ -44,6 +49,8 @@ class _MainPageState extends State<MainPage>
     return playlists;
   }
 
+  /// Simulates a slow update for playlists with a delay.
+  /// Returns the updated list of playlists.
   Future<List<Playlist>> _slowUpdatePlaylists() async {
     playlists.clear();
     for (int i = 0; i < 10; i++) {
@@ -93,6 +100,8 @@ class _MainPageState extends State<MainPage>
     );
   }
 
+  /// Builds the mode selector dropdown menu.
+  /// Allows users to select between Pure Mode, Pro Mode, and Social Mode.
   Widget _buildModeSelector() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -127,6 +136,7 @@ class _MainPageState extends State<MainPage>
     );
   }
 
+  /// Builds the title section of the main page.
   Widget _buildTitle() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -152,6 +162,7 @@ class _MainPageState extends State<MainPage>
     );
   }
 
+  /// Pull to refresh function that updates the playlists.
   Future<void> _pullRefresh() async {
     var newPlaylists = await _slowUpdatePlaylists();
     setState(() {
@@ -159,6 +170,7 @@ class _MainPageState extends State<MainPage>
     });
   }
 
+  /// Builds the grid of album playlists.
   Padding _buildGridAlbums() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -237,11 +249,12 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-
   @override
   bool get wantKeepAlive => true;
 }
 
+/// IntegratedMainPage is a StatefulWidget that integrates multiple pages
+/// and allows users to swipe between them.
 class IntegratedMainPage extends StatefulWidget {
   const IntegratedMainPage({super.key});
 
@@ -249,6 +262,7 @@ class IntegratedMainPage extends StatefulWidget {
   State<StatefulWidget> createState() => IntegratedMainPageState();
 }
 
+/// State class for IntegratedMainPage.
 class IntegratedMainPageState extends State<IntegratedMainPage> {
   final PageController pageController = PageController();
   static dynamic pageValue = 0.0;

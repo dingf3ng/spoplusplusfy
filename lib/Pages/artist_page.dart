@@ -8,17 +8,26 @@ import '../Classes/album.dart';
 import '../Classes/playlist.dart';
 import '../Classes/playlist_song_manager.dart';
 
+/// A widget that displays an artist's page, including their information, works, and posts.
 class ArtistPage extends StatefulWidget {
+  /// The artist whose information is being displayed.
   final Artist artist;
 
+  /// Creates an [ArtistPage] widget.
+  ///
+  /// The [artist] parameter is required and represents the artist to be displayed.
   const ArtistPage({super.key, required this.artist});
 
   @override
   State<StatefulWidget> createState() => ArtistPageState();
 }
 
+/// The state for the [ArtistPage] widget.
 class ArtistPageState extends State<ArtistPage> {
+  /// Index of the currently selected tab.
   int _selectedIdx = 0;
+
+  /// Controller for the page view.
   final PageController _controller = PageController();
 
   @override
@@ -45,6 +54,7 @@ class ArtistPageState extends State<ArtistPage> {
     );
   }
 
+  /// Builds the navigation bar for switching between Works and Posts.
   NavigationBar _buildNavigationBar() {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -143,6 +153,7 @@ class ArtistPageState extends State<ArtistPage> {
     );
   }
 
+  /// Creates the page view for Works and Posts.
   Container _pageView() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -160,6 +171,7 @@ class ArtistPageState extends State<ArtistPage> {
     );
   }
 
+  /// Builds the Works page, including recommended showcases and album grid.
   ListView _workPage() {
     return ListView(
       children: [
@@ -169,6 +181,7 @@ class ArtistPageState extends State<ArtistPage> {
     );
   }
 
+  /// Builds the Posts page (currently a placeholder).
   ListView _postPage() {
     return ListView(
       children: [
@@ -184,6 +197,7 @@ class ArtistPageState extends State<ArtistPage> {
     );
   }
 
+  /// Creates the app bar with artist information.
   AppBar _infoBar() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -247,7 +261,7 @@ class ArtistPageState extends State<ArtistPage> {
                   TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            WidgetStateProperty.all(secondaryColor),
+                        WidgetStateProperty.all(secondaryColor),
                       ),
                       onPressed: () => {},
                       child: Text('Follow', style: TextStyle(color: primaryColor),)),
@@ -280,6 +294,7 @@ class ArtistPageState extends State<ArtistPage> {
     );
   }
 
+  /// Builds the recommended showcase section.
   Visibility _recommendShowcase() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -370,6 +385,9 @@ class ArtistPageState extends State<ArtistPage> {
     );
   }
 
+  /// Creates a grid view of albums.
+  ///
+  /// [playlists] is the list of playlists (albums) to display.
   Column _buildGridAlbums(List<Playlist> playlists) {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;

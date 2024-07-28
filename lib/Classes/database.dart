@@ -20,47 +20,40 @@ class DatabaseHelper {
   /// Factory constructor that returns the same instance of [DatabaseHelper].
   factory DatabaseHelper() => _instance;
 
-
+  /// Private constructor for internal use.
   DatabaseHelper._internal();
 
-  /// Getter for the database instance.
-  /// If the database is already initialized, it returns the existing instance,
-  /// otherwise, it initializes the database and returns the new instance.
-
-
+  /// Initializes the frontend data by loading from the database.
   static Future<void> initializeFrontendData() async {
     await _loadFromDatabase();
   }
 
+  /// Loads data from the database and initializes the application's data structures.
+  ///
+  /// This method retrieves albums, songs, and artists from the database,
+  /// creates necessary mappings, and initializes the data managers.
   static Future<void> _loadFromDatabase() async {
-    // read data from db
-    // read album
-    final jsonAlbums =
-        await http.get(Uri.http('$fhlIP', '/api/db/load_from_database/albums'));
-
+    // Fetch albums from the database
+    final jsonAlbums = await http.get(Uri.http('$fhlIP', '/api/db/load_from_database/albums'));
     final List<dynamic> albumMaps = await jsonDecode(jsonAlbums.body);
-    final List<Album> albums =
-        albumMaps.map((map) => Album.fromMap(map)).toList();
+    final List<Album> albums = albumMaps.map((map) => Album.fromMap(map)).toList();
 
-    final jsonSongs =
-        await http.get(Uri.http(fhlIP, '/api/db/load_from_database/songs'));
-    // read song
-    final List<dynamic>songMaps = await jsonDecode(jsonSongs.body);
+    // Fetch songs from the database
+    final jsonSongs = await http.get(Uri.http(fhlIP, '/api/db/load_from_database/songs'));
+    final List<dynamic> songMaps = await jsonDecode(jsonSongs.body);
     final List<Song> songs = songMaps.map((map) => Song.fromMap(map)).toList();
 
+    // Fetch artists from the database
     final jsonArtists = await http.get(Uri.http(fhlIP, '/api/db/load_from_database/artists'));
-    // read artist
     final List<dynamic> artistMap = await jsonDecode(jsonArtists.body);
     final List<Artist> artists = artistMap.map((map) => Artist.fromMap(map)).toList();
 
-
-
-
-    // create the mapping of instances' ID to themselves
+    // Create mappings
     HashMap<int, Album> id2Album = HashMap();
     HashMap<int, Song> id2Song = HashMap();
     HashMap<String, Artist> name2Artist = HashMap();
     HashMap<int, String> songId2ArtistName = HashMap();
+
     for (Album album in albums) {
       id2Album.putIfAbsent(album.getId(), () => album);
     }
@@ -76,33 +69,39 @@ class DatabaseHelper {
       final int song_id = map['song_id'];
       final int album_id = map['album_id'];
       songs2Albums.putIfAbsent(id2Song[song_id]!, () => id2Album[album_id]!);
-      songId2ArtistName.putIfAbsent(map['song_id'], () => map['artist_name']??'unknown');
+      songId2ArtistName.putIfAbsent(map['song_id'], () => map['artist_name'] ?? 'unknown');
     }
 
-    // call _initManager method to initialize the data managers
+    // Initialize data managers
     await _initManagers(albums, songs, artists, id2Album, id2Song, name2Artist,
         songMaps, songs2Albums, songId2ArtistName);
   }
 
+  /// Initializes the data managers with the loaded data.
+  ///
+  /// This method initializes ArtistWorksManager, PlaylistSongManager, and SearchEngine
+  /// with the data loaded from the database.
   static Future<void> _initManagers(
-    List<Album> albums,
-    List<Song> songs,
-    List<Artist> artists,
-    HashMap<int, Album> id2Album,
-    HashMap<int, Song> id2Song,
-    HashMap<String, Artist> name2Artist,
-    List<dynamic>? relationships,
-    Map<Song, Album> songs2Albums,
+      List<Album> albums,
+      List<Song> songs,
+      List<Artist> artists,
+      HashMap<int, Album> id2Album,
+      HashMap<int, Song> id2Song,
+      HashMap<String, Artist> name2Artist,
+      List<dynamic>? relationships,
+      Map<Song, Album> songs2Albums,
       Map<int, String> songId2ArtistName,
-  ) async {
-    //Init AWM
+      ) async {
+    // Initialize ArtistWorksManager
     await ArtistWorksManager.init(
         albums, songs, artists, id2Album, id2Song, name2Artist, relationships,
-      songId2ArtistName, songs2Albums);
-    //Init PSM
+        songId2ArtistName, songs2Albums);
+
+    // Initialize PlaylistSongManager
     await PlaylistSongManager.init(
         albums, songs, id2Album, id2Song, songs2Albums);
-    //Init Search Engine
+
+    // Initialize SearchEngine
     SearchEngine.init(
         artists.toSet(), albums.toSet(), {}, songs.toSet(), HashSet());
   }

@@ -1,27 +1,17 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
-import 'package:spoplusplusfy/Classes/customized_playlist.dart';
 import 'package:spoplusplusfy/Classes/normal_user.dart';
-import 'package:spoplusplusfy/Classes/playlist_song_manager.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
-import 'package:spoplusplusfy/Pages/login_signup_page.dart';
-import 'package:spoplusplusfy/Pages/playlist_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
+import 'package:spoplusplusfy/Pages/video_preview_page.dart'; // Assuming you have a VideoPreviewPage for preview
 
-import '../Classes/album.dart';
-import '../Classes/database.dart';
-import '../Classes/person.dart';
 import '../main.dart';
-import 'artist_page.dart';
-import 'video_preview_page.dart'; // Assuming you have a VideoPreviewPage for preview
 
 class VideoUploadPage extends StatefulWidget {
   final PageController pageController;
@@ -35,14 +25,10 @@ class VideoUploadPage extends StatefulWidget {
   }
 }
 
-class _VideoUploadPageState extends State<VideoUploadPage>
-    with SingleTickerProviderStateMixin {
+class _VideoUploadPageState extends State<VideoUploadPage> with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
-
   final List<Song> _resultSongs = [];
-  final List<Song> _foundSongs = [];
   late NormalUser user;
-
   static int _control = 210;
 
   @override
@@ -81,157 +67,12 @@ class _VideoUploadPageState extends State<VideoUploadPage>
     );
   }
 
-  Visibility _songShowcase(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-    var primaryColor = Theme.of(context).primaryColor;
-    var secondaryColor = Theme.of(context).hintColor;
-    return Visibility(
-      visible: _resultSongs.isNotEmpty,
-      maintainAnimation: true,
-      maintainState: true,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 700),
-        curve: Curves.fastOutSlowIn,
-        opacity: _resultSongs.isNotEmpty ? 1 : 0,
-        child: Column(
-          children: [
-            _showcaseHeadline('Songs', context),
-            Container(
-              height: 20,
-            ),
-            SizedBox(
-              height: height,
-              child: ListView.separated(
-                shrinkWrap: true,
-                primary: false,
-                padding: const EdgeInsets.only(left: 25, right: 25),
-                separatorBuilder: (context, index) => SizedBox(
-                  height: height / 100,
-                ),
-                itemCount: _resultSongs.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      // Pop out window for confirm choosing this song for uploading video.
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Confirm Selection"),
-                            content: Text(
-                                "Do you want to choose this song for uploading the video?"),
-                            actions: [
-                              TextButton(
-                                child: Text("Cancel"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              TextButton(
-                                child: Text("Confirm"),
-                                onPressed: () {
-                                  _pickVideo(context, _resultSongs[index]);
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                      height: height / 20,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        border: Border.all(color: secondaryColor, width: 2),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Container(
-                            width: width * 4 / 11,
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              _resultSongs[index].getName(),
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: secondaryColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          SizedBox(
-                            width: width * 2 / 9,
-                            child: Text(
-                              ArtistWorksManager.getArtistsOfSongAsString(
-                                  _resultSongs[index]),
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: secondaryColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          SizedBox(
-                            width: width * 1 / 15,
-                            child: Text(
-                              _formatTime(_resultSongs[index].getDuration()),
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: secondaryColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Row _showcaseHeadline(String arg, BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 25),
-          child: Text(
-            arg,
-            style: _headlineTextStyle(context),
-          ),
-        ),
-      ],
-    );
-  }
-
+  /// Displays the search field widget.
   Container _searchField(BuildContext context) {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
+
     return Container(
         margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: TextField(
@@ -261,27 +102,127 @@ class _VideoUploadPageState extends State<VideoUploadPage>
                 colorFilter: ColorFilter.mode(secondaryColor, BlendMode.srcIn),
               ),
             ),
-            suffixIcon: SizedBox(
-              width: width / 4,
-              child: IntrinsicHeight(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    VerticalDivider(
-                      color: secondaryColor,
-                      thickness: 2,
-                      indent: 10,
-                      endIndent: 10,
-                    ),
-                  ],
-                ),
-              ),
-            ),
           ),
         ));
   }
 
+  /// Displays the list of songs that match the search query.
+  Visibility _songShowcase(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    var primaryColor = Theme.of(context).primaryColor;
+    var secondaryColor = Theme.of(context).hintColor;
 
+    return Visibility(
+      visible: _resultSongs.isNotEmpty,
+      maintainAnimation: true,
+      maintainState: true,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.fastOutSlowIn,
+        opacity: _resultSongs.isNotEmpty ? 1 : 0,
+        child: Column(
+          children: [
+            _showcaseHeadline('Songs', context),
+            Container(
+              height: 20,
+            ),
+            SizedBox(
+              height: height,
+              child: ListView.separated(
+                shrinkWrap: true,
+                primary: false,
+                padding: const EdgeInsets.only(left: 25, right: 25),
+                separatorBuilder: (context, index) => SizedBox(
+                  height: height / 100,
+                ),
+                itemCount: _resultSongs.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      _showConfirmDialog(context, _resultSongs[index]);
+                    },
+                    child: Container(
+                      height: height / 20,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(color: secondaryColor, width: 2),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const SizedBox(width: 20),
+                          Container(
+                            width: width * 4 / 11,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _resultSongs[index].getName(),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: secondaryColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          SizedBox(
+                            width: width * 2 / 9,
+                            child: Text(
+                              ArtistWorksManager.getArtistsOfSongAsString(_resultSongs[index]),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: secondaryColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          SizedBox(
+                            width: width * 1 / 15,
+                            child: Text(
+                              _formatTime(_resultSongs[index].getDuration()),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: secondaryColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Displays the headline for the showcase.
+  Row _showcaseHeadline(String arg, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 25),
+          child: Text(
+            arg,
+            style: _headlineTextStyle(context),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Defines the text style for the headline.
   TextStyle _headlineTextStyle(BuildContext context) {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -291,6 +232,36 @@ class _VideoUploadPageState extends State<VideoUploadPage>
       fontSize: 27,
     );
   }
+
+  /// Shows a confirmation dialog to confirm the song selection.
+  void _showConfirmDialog(BuildContext context, Song song) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Selection"),
+          content: Text("Do you want to choose this song for uploading the video?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Confirm"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _pickVideo(context, song);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Opens the file picker to pick a video file.
   Future<void> _pickVideo(BuildContext context, Song song) async {
     if (await _requestPermissions()) {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -300,7 +271,7 @@ class _VideoUploadPageState extends State<VideoUploadPage>
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VideoPreviewPage(videoFile: File(result.files.single.path!), song: song, user: widget.user,),
+            builder: (context) => VideoPreviewPage(videoFile: File(result.files.single.path!), song: song, user: widget.user),
           ),
         );
       }
@@ -308,12 +279,14 @@ class _VideoUploadPageState extends State<VideoUploadPage>
       _showPermissionDeniedMessage(context);
     }
   }
+
+  /// Requests the necessary permissions to access the storage.
   Future<bool> _requestPermissions() async {
     if (Platform.isAndroid) {
       if (await Permission.storage.request().isGranted) {
         return true;
       }
-      if (Platform.isAndroid && await Permission.videos.request().isGranted && await Permission.photos.request().isGranted) {
+      if (await Permission.videos.request().isGranted && await Permission.photos.request().isGranted) {
         return true;
       }
     } else {
@@ -324,21 +297,18 @@ class _VideoUploadPageState extends State<VideoUploadPage>
     return false;
   }
 
+  /// Shows a message indicating that the permissions were denied.
   void _showPermissionDeniedMessage(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Permission denied to read external storage')),
     );
   }
 
+  /// Formats the duration of the song.
   String _formatTime(int duration) {
     int h = duration ~/ 3600;
     int m = (duration - h * 3600) ~/ 60;
     String s = (duration - h * 3600 - m * 60).toString().padLeft(2, '0');
     return h != 0 ? '$h:$m:0$s' : '$m:$s';
   }
-
 }
-
-
-
-
