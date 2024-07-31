@@ -6,47 +6,12 @@ import 'package:spoplusplusfy/Classes/person.dart';
 import 'package:spoplusplusfy/Pages/social_mode_player_page.dart';
 import 'package:spoplusplusfy/Pages/video_upload_page.dart';
 
-import '../Classes/database.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseHelper.initializeFrontendData();
-  runApp(MyApp());
-}
-
-/// Main entry point of the application.
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'User Page Demo',
-      navigatorKey: navigatorKey,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        scaffoldBackgroundColor: Colors.black,
-        brightness: Brightness.dark,
-      ),
-      home: UserPage(
-        user: NormalUser(
-          name: 'John Doe',
-          portrait: Image.asset('assets/images/pf.jpg'),
-          id: 23,
-          gender: Gender.Mysterious,
-          age: 3,
-          bio: 'this is a test bio',
-        ),
-        isSelf: true,
-      ),
-    );
-  }
-}
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 /// Represents the user profile page.
 class UserPage extends StatefulWidget {
-  final NormalUser user;
+  final Person user;
   final bool isSelf;
 
   const UserPage({super.key, required this.user, required this.isSelf});
@@ -57,7 +22,7 @@ class UserPage extends StatefulWidget {
 
 class UserPageState extends State<UserPage> {
   int _selectedIdx = 0;
-  NormalUser get user => widget.user;
+  Person get user => widget.user;
 
   final PageController _controller = PageController();
 

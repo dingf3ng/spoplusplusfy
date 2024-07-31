@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
 
+import '../Classes/person.dart';
 import '../Utilities/api_service.dart';
 
 
@@ -930,34 +931,34 @@ class SignupPageState extends State<SignupPage>
                       child: OutlinedButton(
                         onPressed: () async {
                           try {
-                            var response = await http.patch(
-                                Uri.parse('http://$fhlIP/api/profiles/update_by_email/${_emailController.text}/'),
-                                headers: <String, String>{
-                                  'Content-Type': 'application/json; charset=UTF-8',
-                                },
-                                body: jsonEncode({
-                                  'bio' : _bioController.text,
-                                })
-                            );
-                            if (response.statusCode != 201 || response.statusCode != 200) {
-                              showDialog(context: context, builder: (context) {
-                                var errorType = jsonDecode(response.body).keys.toList()[0];
-                                if (errorType.runtimeType != String) {
-                                  errorType = errorType[0];
-                                }
-                                var errorDialog = jsonDecode(response.body).values.toList()[0];
-                                if (errorDialog.runtimeType != String) {
-                                  errorDialog = errorDialog[0];
-                                }
-                                return AlertDialog(
-                                    title: Text(errorType),
-                                    content: SingleChildScrollView(
-                                        child: ListBody(
-                                          children: <Widget>[
-                                            Text(errorDialog),
-                                          ],)));
-                              });
-                            }
+                            // var response = await http.patch(
+                            //     Uri.parse('http://$fhlIP/api/profiles/update_by_email/${_emailController.text}/'),
+                            //     headers: <String, String>{
+                            //       'Content-Type': 'application/json; charset=UTF-8',
+                            //     },
+                            //     body: jsonEncode({
+                            //       'bio' : _bioController.text,
+                            //     })
+                            // );
+                            // if (response.statusCode != 201 || response.statusCode != 200) {
+                            //   showDialog(context: context, builder: (context) {
+                            //     var errorType = jsonDecode(response.body).keys.toList()[0];
+                            //     if (errorType.runtimeType != String) {
+                            //       errorType = errorType[0];
+                            //     }
+                            //     var errorDialog = jsonDecode(response.body).values.toList()[0];
+                            //     if (errorDialog.runtimeType == List) {
+                            //       errorDialog = errorDialog[0];
+                            //     }
+                            //     return AlertDialog(
+                            //         title: Text(errorType),
+                            //         content: SingleChildScrollView(
+                            //             child: ListBody(
+                            //               children: <Widget>[
+                            //                 Text(errorDialog),
+                            //               ],)));
+                            //   });
+                            // }
                             _controller.nextPage(
                                 duration: const Duration(milliseconds: 600),
                                 curve: Curves.ease);
@@ -1212,7 +1213,7 @@ class LoginPageState extends State<LoginPage>
                               _isLoading = false;
                             });
 
-                            if (response.statusCode == 200) {
+                            if (response.statusCode == 200 || response.statusCode == 201) {
                               Navigator.pop(context);
                               SharedPreferences.getInstance().then((sp) {
                                 sp.setString('token', jsonDecode(response.body)['key']);

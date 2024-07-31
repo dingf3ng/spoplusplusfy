@@ -62,12 +62,12 @@ abstract class Person implements Name {
   ///
   /// Returns a [Person] object (either [NormalUser] or [Artist]).
   factory Person.fromProfileJson(String json) {
-    Map jsonMap = jsonDecode(json);
+    var jsonMap = jsonDecode(json);
     String name = jsonMap['username'] ?? 'unknown';
-    int id = jsonMap['id'] ?? '0';
+    int id = jsonMap['user'] ?? '0';
     Gender gender = Gender.Mysterious;
     Image portrait = jsonMap['portrait'] ?? Image.asset('assets/images/pf.jpg');
-    String bio = jsonMap['bio'];
+    String bio = jsonMap['bio'] ?? 'no bio';
     int age = jsonMap['age'] ?? 0;
     bool isArtist = jsonMap['is_artist'] ?? false;
     if (!isArtist) {
@@ -150,7 +150,7 @@ abstract class Person implements Name {
   ///
   /// Returns a [Future<bool>] indicating whether a user is logged in.
   static Future<bool> deviceIsLoggedIn() async {
-    return (SharedPreferences.getInstance()).then((sp) { return sp.getString('token')!.isEmpty;});
+    return (SharedPreferences.getInstance()).then((sp) { return sp.getString('token')?.isNotEmpty ?? false;});
   }
 
   /// Gets the authentication token for the logged-in user.
@@ -168,19 +168,19 @@ abstract class Person implements Name {
     if (!await deviceIsLoggedIn()) throw Exception('Device is not logged in');
     if (_personLoggedIn != null) return _personLoggedIn!;
     Future<Person> person = http.get(Uri.parse(
-        'http://$fhlIP/api/profiles/'
+        'http://$fhlIP/api/profiles/get_by_token/'
     ),
         headers: <String, String> {
           'Content-Type' : 'application/json; charset=UTF-8',
-          'Authorization' : 'Token ${await getToken()}'
+          'Authorization' : 'Token ${await (() {getToken().then(print); return getToken(); })()}'
         }
     ).then((response) {
       if (response.statusCode == 200) {
-        List<dynamic> videoJson = jsonDecode(response.body);
-        return Person.fromProfileJson(jsonDecode(response.body));
+        var videoJson = jsonDecode(response.body);
+        return Person.fromProfileJson(response.body);
       } else {
-        throw Exception('Failed to load user ' + jsonDecode(response.body).toList().keys[0] + ' '
-            + jsonDecode(response.body).toList().values[0]);
+        throw Exception('Failed to load user ' + jsonDecode(response.body).keys.first + ' '
+            + jsonDecode(response.body).keys.first);
       }
     }
     );

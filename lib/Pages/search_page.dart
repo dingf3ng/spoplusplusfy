@@ -40,6 +40,10 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
   final List<CustomizedPlaylist> _resultPlaylists = [];
   final List<Song> _resultSongs = [];
   final List<Song> _foundSongs = [];
+  Future<Person> user = Person.deviceIsLoggedIn().then((isLoggedIn) => isLoggedIn
+      ? Person.getPersonLoggedInOnDevice()
+      : Future.value(NormalUser(name:'Unregistered', id: 0, gender: Gender.Mysterious,
+    age: 0, bio: 'Null', portrait: Image.asset('assets/images/pf.jpg'),)  ));
 
   static int _control = 210;
 
@@ -376,7 +380,6 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                                 return GestureDetector(
                                   onTap: () {
                                     refresh((){
-                                      print('heello');
                                       themeNotifier.changeTheme(
                                           true, index);
                                     });
@@ -555,6 +558,26 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                 color: secondaryColor,
               ),
             );
+          } else if (snapshot.hasError) {
+            return Text(
+              'Error loading name',
+              style: TextStyle(
+                fontFamily: 'NotoSans',
+                fontWeight: FontWeight.w600,
+                fontStyle: FontStyle.italic,
+                color: secondaryColor,
+              ),
+            );
+          } else if (!snapshot.hasData) {
+            return Text(
+              'Cannot find username',
+              style: TextStyle(
+                fontFamily: 'NotoSans',
+                fontWeight: FontWeight.w600,
+                fontStyle: FontStyle.italic,
+                color: secondaryColor,
+              ),
+            );
           } else {
             return Text(
               snapshot.data!.getName(),
@@ -563,7 +586,8 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                 fontWeight: FontWeight.w600,
                 fontStyle: FontStyle.italic,
                 color: secondaryColor,
-              ), );
+              ),
+            );
           }
         });
   }
@@ -572,15 +596,12 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
-    Future<Person> user = Person.deviceIsLoggedIn().then((isLoggedIn) => isLoggedIn
-        ? Person.getPersonLoggedInOnDevice()
-        : Future.value(NormalUser(name:'Unregister', id: 0, gender: Gender.Mysterious,
-      age: 0, bio: 'Null', portrait: Image.asset('assets/images/pf.jpg'),)  ));
+
 
     return Scaffold(
       extendBodyBehindAppBar: false,
       backgroundColor: primaryColor,
-      appBar: _appBar(),
+      appBar: _appBar(_usernameDisplay(user)),
       body: ListView(
         children: [
           _searchField(),
@@ -981,7 +1002,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
   }
 
   /// Builds the app bar for the search page.
-  AppBar _appBar() {
+  AppBar _appBar(Widget usernameDisplay) {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
 
@@ -1006,12 +1027,32 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
       ),
       actions: [
         GestureDetector(
-          onTap: () {
+          onTap: () async {
             Navigator.push(
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
-                const LoginPage(),
+                    FutureBuilder(
+                      future: Person.deviceIsLoggedIn(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: Text("Loading..."),
+                          );
+                        } else if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.data == true) {
+                            // Using a future function inside FutureBuilder isn't directly possible,
+                            // so we handle the navigation outside.
+                            _navigateToUserPage(context);
+                          } else {
+                            return LoginPage();
+                          }
+                        }
+                          return const Center(
+                            child: Text("An error occurred. Please try again."),
+                          );
+                      },
+                    ),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                   const begin = Offset(0.0, -1.0);
@@ -1032,15 +1073,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'UserName ',
-                style: TextStyle(
-                  fontFamily: 'NotoSans',
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FontStyle.italic,
-                  color: secondaryColor,
-                ),
-              ),
+              usernameDisplay,
               SvgPicture.asset('assets/icons/user_gold.svg',
                   colorFilter:
                   ColorFilter.mode(secondaryColor, BlendMode.srcIn),
@@ -1147,6 +1180,14 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
       fontSize: 27,
     );
   }
+}
+
+void _navigateToUserPage(BuildContext context) async {
+  var user = await Person.getPersonLoggedInOnDevice();
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => UserPage(user: user, isSelf: true)),
+  );
 }
 
 /// Formats the duration of a song to a string format.

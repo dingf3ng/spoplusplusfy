@@ -15,7 +15,7 @@ import 'user_page.dart';
 class VideoPreviewPage extends StatefulWidget {
   final File videoFile;
   final Song song;
-  final NormalUser user;
+  final Person user;
 
   VideoPreviewPage({required this.videoFile, required this.song, required this.user});
 

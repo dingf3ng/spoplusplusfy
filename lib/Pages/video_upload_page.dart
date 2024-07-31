@@ -8,14 +8,16 @@ import 'package:provider/provider.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/normal_user.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:spoplusplusfy/Pages/user_page.dart';
 import 'package:spoplusplusfy/Utilities/search_engine.dart';
 import 'package:spoplusplusfy/Pages/video_preview_page.dart'; // Assuming you have a VideoPreviewPage for preview
 
+import '../Classes/person.dart';
 import '../main.dart';
 
 class VideoUploadPage extends StatefulWidget {
   final PageController pageController;
-  final NormalUser user;
+  final Person user;
 
   const VideoUploadPage({super.key, required this.pageController, required this.user});
 
@@ -28,7 +30,7 @@ class VideoUploadPage extends StatefulWidget {
 class _VideoUploadPageState extends State<VideoUploadPage> with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   final List<Song> _resultSongs = [];
-  late NormalUser user;
+  late Person user;
   static int _control = 210;
 
   @override
@@ -268,8 +270,7 @@ class _VideoUploadPageState extends State<VideoUploadPage> with SingleTickerProv
         type: FileType.video,
       );
       if (result != null && result.files.single.path != null) {
-        Navigator.push(
-          context,
+        navigatorKey.currentState?.push(
           MaterialPageRoute(
             builder: (context) => VideoPreviewPage(videoFile: File(result.files.single.path!), song: song, user: widget.user),
           ),
