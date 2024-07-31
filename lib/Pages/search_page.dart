@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spoplusplusfy/Classes/artist.dart';
 import 'package:spoplusplusfy/Classes/artist_works_manager.dart';
 import 'package:spoplusplusfy/Classes/customized_playlist.dart';
@@ -40,10 +41,12 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
   final List<CustomizedPlaylist> _resultPlaylists = [];
   final List<Song> _resultSongs = [];
   final List<Song> _foundSongs = [];
+  final NormalUser _unregisteredUser = NormalUser(name:'Unregistered', id: 0, gender: Gender.Mysterious,
+  age: 0, bio: 'Null', portrait: Image.asset('assets/images/pf.jpg'),);
   Future<Person> user = Person.deviceIsLoggedIn().then((isLoggedIn) => isLoggedIn
       ? Person.getPersonLoggedInOnDevice()
-      : Future.value(NormalUser(name:'Unregistered', id: 0, gender: Gender.Mysterious,
-    age: 0, bio: 'Null', portrait: Image.asset('assets/images/pf.jpg'),)  ));
+      : Future(() => NormalUser(name:'Unregistered', id: 0, gender: Gender.Mysterious,
+  age: 0, bio: 'Null', portrait: Image.asset('assets/images/pf.jpg'),)));
 
   static int _control = 210;
 
@@ -435,7 +438,13 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                             ),
                           ),
                           OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              (await SharedPreferences.getInstance()).clear();
+                              Navigator.pop(context);
+                              setState(() {
+                                user = Future(() =>_unregisteredUser);
+                              });
+                            },
                             style: OutlinedButton.styleFrom(
                                 side: BorderSide(
                                   color: secondaryColor,
@@ -513,6 +522,12 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    setState(() {
+      user = Person.deviceIsLoggedIn().then((isLoggedIn) => isLoggedIn
+          ? Person.getPersonLoggedInOnDevice()
+          : Future(() => NormalUser(name:'Unregistered', id: 0, gender: Gender.Mysterious,
+        age: 0, bio: 'Null', portrait: Image.asset('assets/images/pf.jpg'),)));
+    });
     _searchController.addListener(_searchDone);
   }
 

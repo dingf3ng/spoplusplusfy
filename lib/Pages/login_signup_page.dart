@@ -7,6 +7,7 @@ import 'package:newton_particles/newton_particles.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spoplusplusfy/Classes/song.dart';
+import 'package:spoplusplusfy/Pages/search_page.dart';
 
 import '../Classes/person.dart';
 import '../Utilities/api_service.dart';
@@ -457,6 +458,26 @@ class SignupPageState extends State<SignupPage>
     );
   }
 
+  void _showError(var response) {
+    showDialog(context: context, builder: (context) {
+      var errorType = jsonDecode(response.body).keys.toList()[0];
+      if (errorType.runtimeType != String) {
+        errorType = errorType[0];
+      }
+      var errorDialog = jsonDecode(response.body).values.toList()[0];
+      if (errorDialog.runtimeType == List) {
+        errorDialog = errorDialog[0];
+      }
+      return AlertDialog(
+          title: Text(errorType),
+          content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(errorDialog),
+                ],)));
+    });
+  }
+
   Scaffold _userPage() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -864,6 +885,7 @@ class SignupPageState extends State<SignupPage>
     );
   }
 
+
   Scaffold _personalInfoPage() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -931,34 +953,34 @@ class SignupPageState extends State<SignupPage>
                       child: OutlinedButton(
                         onPressed: () async {
                           try {
-                            // var response = await http.patch(
-                            //     Uri.parse('http://$fhlIP/api/profiles/update_by_email/${_emailController.text}/'),
-                            //     headers: <String, String>{
-                            //       'Content-Type': 'application/json; charset=UTF-8',
-                            //     },
-                            //     body: jsonEncode({
-                            //       'bio' : _bioController.text,
-                            //     })
-                            // );
-                            // if (response.statusCode != 201 || response.statusCode != 200) {
-                            //   showDialog(context: context, builder: (context) {
-                            //     var errorType = jsonDecode(response.body).keys.toList()[0];
-                            //     if (errorType.runtimeType != String) {
-                            //       errorType = errorType[0];
-                            //     }
-                            //     var errorDialog = jsonDecode(response.body).values.toList()[0];
-                            //     if (errorDialog.runtimeType == List) {
-                            //       errorDialog = errorDialog[0];
-                            //     }
-                            //     return AlertDialog(
-                            //         title: Text(errorType),
-                            //         content: SingleChildScrollView(
-                            //             child: ListBody(
-                            //               children: <Widget>[
-                            //                 Text(errorDialog),
-                            //               ],)));
-                            //   });
-                            // }
+                            var response = await http.patch(
+                                Uri.parse('http://$fhlIP/api/profiles/update_by_email/${_emailController.text}/'),
+                                headers: <String, String>{
+                                  'Content-Type': 'application/json; charset=UTF-8',
+                                },
+                                body: jsonEncode({
+                                  'bio' : _bioController.text,
+                                })
+                            );
+                            if (response.statusCode != 201 || response.statusCode != 200) {
+                              showDialog(context: context, builder: (context) {
+                                var errorType = jsonDecode(response.body).keys.toList()[0];
+                                if (errorType.runtimeType != String) {
+                                  errorType = errorType[0];
+                                }
+                                var errorDialog = jsonDecode(response.body).values.toList()[0];
+                                if (errorDialog.runtimeType == List) {
+                                  errorDialog = errorDialog[0];
+                                }
+                                return AlertDialog(
+                                    title: Text(errorType),
+                                    content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            Text(errorDialog),
+                                          ],)));
+                              });
+                            }
                             _controller.nextPage(
                                 duration: const Duration(milliseconds: 600),
                                 curve: Curves.ease);
@@ -1200,42 +1222,21 @@ class LoginPageState extends State<LoginPage>
                             _isLoading = true;
                           });
                           try {
-                            var response = await http.post(Uri.parse('http://$fhlIP/api/auth/login'),
-                                headers: {
-                                  'Content-Type' : 'application/json',
-                                },
-                                body: jsonEncode(<String, String> {
-                                  'email': _emailController.text,
-                                  'password' : _passwordController.text,
-                                }));
-
+                            var response = await ApiService().login(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
                             setState(() {
                               _isLoading = false;
                             });
-
+                            // TODO: after logging in first time, the username is still unregistered. Fix this
                             if (response.statusCode == 200 || response.statusCode == 201) {
-                              Navigator.pop(context);
                               SharedPreferences.getInstance().then((sp) {
                                 sp.setString('token', jsonDecode(response.body)['key']);
                               });
+                              Navigator.pop(context);
                             } else {
-                              var errorType = jsonDecode(response.body).keys.toList()[0];
-                              if (errorType.runtimeType != String) {
-                                errorType = errorType[0];
-                              }
-                              var errorDialog = jsonDecode(response.body).values.toList()[0];
-                              if (errorDialog.runtimeType != String) {
-                                errorDialog = errorDialog[0];
-                              }
-                              showDialog(context: context, builder: (context) {
-                                return AlertDialog(
-                                    title: Text(errorType),
-                                    content: SingleChildScrollView(
-                                        child: ListBody(
-                                            children: <Widget>[
-                                              Text(errorDialog),
-                                            ])));
-                              });
+                              _showError(response);
                             }
                           } catch(e) {
                             showDialog(context: context, builder: (context) {
@@ -1288,7 +1289,25 @@ class LoginPageState extends State<LoginPage>
       ),
     );
   }
-
+  void _showError(var response) {
+    var errorType = jsonDecode(response.body).keys.toList()[0];
+    if (errorType.runtimeType != String) {
+      errorType = errorType[0];
+    }
+    var errorDialog = jsonDecode(response.body).values.toList()[0];
+    if (errorDialog.runtimeType != String) {
+      errorDialog = errorDialog[0];
+    }
+    showDialog(context: context, builder: (context) {
+      return AlertDialog(
+          title: Text(errorType),
+          content: SingleChildScrollView(
+              child: ListBody(
+                  children: <Widget>[
+                    Text(errorDialog),
+                  ])));
+    });
+  }
   Column _emailTypingField() {
     var primaryColor = Theme.of(context).primaryColor;
     var secondaryColor = Theme.of(context).hintColor;
@@ -1435,4 +1454,6 @@ class WavePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
+
+
 }

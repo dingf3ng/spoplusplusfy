@@ -1,14 +1,18 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import 'package:spoplusplusfy/Classes/song.dart';
 
-const fhlIP = '10.211.55.5:8000';
+const fhlIP = '10.211.55.5';
 const dfIP = '192.168.2.169';
 const local = '10.0.2.2';
 
 class ApiService {
   final Dio _dio = Dio();
+  static ApiService? apiService;
 
   /// Constructor to initialize Dio with base URL and default headers.
   ///
@@ -17,6 +21,8 @@ class ApiService {
     _dio.options.baseUrl = 'http://$fhlIP'; // Replace with your backend URL
     _dio.options.headers['Content-Type'] = 'application/json';
   }
+
+
 
   /// Uploads a video file along with metadata to the backend.
   ///
@@ -74,4 +80,18 @@ class ApiService {
       print('Error uploading video: $e');
     }
   }
+
+  Future<http.Response> login({required String email, required String password}) {
+    var response = http.post(Uri.parse('http://$fhlIP/api/auth/login'),
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: jsonEncode(<String, String> {
+          'email': email,
+          'password' : password,
+        }));
+    return response;
+
+  }
+
 }
